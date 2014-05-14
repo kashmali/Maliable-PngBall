@@ -1,6 +1,9 @@
+<<<<<<< HEAD
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
+=======
+>>>>>>> 59e3283d395c44c179e218e041e8e412e9cf5832
 
 
 
@@ -30,8 +33,13 @@ public class Window extends JFrame implements ActionListener
     JMenuBar gameMenus = new JMenuBar ();
     
     options.add (exitButton);
+<<<<<<< HEAD
     difficulty.add (easyGameButton);
     difficulty.add (mediumGameButton);
+=======
+    diffuculty.add (easyGameButton);
+    difficulty.add (mediumGameButon);
+>>>>>>> 59e3283d395c44c179e218e041e8e412e9cf5832
     difficulty.add (hardGameButton);
     game.add (highScoreButton);
     game.add (printHighScoreButton);
@@ -52,24 +60,45 @@ public class Window extends JFrame implements ActionListener
     
     BorderLayout border = new BorderLayout ();
     GamePanel gp = new GamePanel ();
+<<<<<<< HEAD
     InformationPanel ip  = new InformationPanel ();
     
     add (gp, border.LINE_START);
     add (ip, border.LINE_END);
+=======
+    
+    
+    add (GamePanel
+>>>>>>> 59e3283d395c44c179e218e041e8e412e9cf5832
     
   }
   
   public void actionPerformed (ActionEvent ae)
   {
+<<<<<<< HEAD
     
   }
   
   public static void main (String[] args)
+=======
+   
+  }
+  
+    public static void main (String[] args)
+>>>>>>> 59e3283d395c44c179e218e041e8e412e9cf5832
   {
     new Window ();       // Create a FrameTest frame
   } // main method
 }
+<<<<<<< HEAD
 
 
 
 
+=======
+    
+    
+    
+    
+    
+>>>>>>> 59e3283d395c44c179e218e041e8e412e9cf5832
