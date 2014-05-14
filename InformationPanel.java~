@@ -1,0 +1,17 @@
+// The "FrameTest2" class.
+import java.awt.*;
+import javax.swing.*;
+import java.awt.event.*;
+
+
+
+
+public class InformationPanel extends JPanel 
+{
+  
+  public InformationPanel ( )
+  {
+
+  }
+  
+}
