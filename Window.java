@@ -11,7 +11,6 @@ public class Window extends JFrame implements ActionListener
   public Window ()
   {
     super ("Maliable P'ngball");
-<<<<<<< HEAD
         
     JMenu options = new JMenu ("Options");
     JMenu game = new JMenu ("Game");
@@ -42,61 +41,40 @@ public class Window extends JFrame implements ActionListener
 
     setJMenuBar (gameMenus);
     
-    setSize (700,800);
-    setVisible (true);
-    setDefaultCloseOperation (JFrame.DISPOSE_ON_CLOSE);
-    setResizable (false);
-=======
-    
-    JMenuItem exitButton = new JMenuItem ("Exit");
-    JMenuItem hardGameButton = new JMenuItem ("Hard");
-    JMenuItem mediumGameButton = new JMenuItem ("Medium");
-    JMenuItem easyGameButton = new JMenuItem ("Easy");
-    JMenuItem instructionsButton = new JMenuItem ("Instructions");
-    JMenuItem formulaButton = new JMenuItem ("Formulas");
-    JMenuItem pauseButton = new JMenuItem ("Pause");
-    JMenuItem highScoreButton = new JMenuItem ("Display High Scores");
-    JMenuItem printHighScoreButton = new JMenuItem ("Print High Scores");
-    
-    JMenu options = new JMenu ("Options");
-    JMenu game = new JMenu ("Game");
-    JMenu difficulty = new JMenu ("Difficulty");
-    JMenu help = new JMenu ("Help");
-    
-    JMenuBar gameMenus = new JMenuBar ();
-    
-    options.add (exitButton);
-    difficulty.add (easyGameButton);
-    difficulty.add (mediumGameButton);
-    difficulty.add (hardGameButton);
-    game.add (highScoreButton);
-    game.add (printHighScoreButton);
-    game.add (pauseButton);
-    help.add (instructionsButton);
-    help.add (formulaButton);
-    
-    gameMenus.add (options);
-    gameMenus.add (game);
-    gameMenus.add (difficulty);
-    gameMenus.add (help);
-    
-    setJMenuBar (gameMenus);
-    
     setSize (500,600);
     setVisible (true);
     setDefaultCloseOperation (JFrame.DISPOSE_ON_CLOSE);
->>>>>>> 59e3283d395c44c179e218e041e8e412e9cf5832
-    
-    BorderLayout border = new BorderLayout ();
+    setResizable (false);
+    ///////////////////////////////////////////////////////////// CANT GET LAYOUT MANAGER TOWORK!!!////////////////////////////////////////////
+   // SpringLayout layout = new SpringLayout ();
+    GridBagLayout layout = new GridBagLayout ();
+    GridBagConstraints gbc = new GridBagConstraints ();
     GamePanel gp = new GamePanel ();
     InformationPanel ip  = new InformationPanel ();
+    this.setLayout (layout);
+ 
+     gbc.gridwidth = 1;
+    gbc.gridy=1;
+    gbc.gridx =1;
+    this.add (gp,gbc);
+    gbc.gridwidth = 1;
+    gbc.gridy=1;
+    gbc.gridx =2;
+    this.add (ip);
     
-    add (gp, border.LINE_START);
-    add (ip, border.LINE_END);
+//    layout.putConstraint (SpringLayout.NORTH, gp, 0, SpringLayout.NORTH, this);
+//    layout.putConstraint (SpringLayout.WEST, gp, 0, SpringLayout.WEST, this);
+//    layout.putConstraint (SpringLayout.EAST, gp, 0, SpringLayout.WEST,ip);
+//    layout.putConstraint (SpringLayout.HORIZONTAL_CENTER, ip, 0, SpringLayout.HORIZONTAL_CENTER, this);
+//    layout.putConstraint (SpringLayout.NORTH, ip, 0, SpringLayout.NORTH, this);
+//    layout.putConstraint (SpringLayout.EAST, gp, 0, SpringLayout.EAST, this);
+//    layout.putConstraint (SpringLayout.HORIZONTAL_CENTER, gp, 0, SpringLayout.HORIZONTAL_CENTER, this);
     
+    
+       revalidate ();
+    repaint();
   }
   
-<<<<<<< HEAD
   public void addMenuItem (JMenu menu, String name)
   {
    JMenuItem item = new JMenuItem (name);
@@ -111,10 +89,6 @@ public class Window extends JFrame implements ActionListener
     {
       System.exit (0);
     }
-=======
-  public void actionPerformed (ActionEvent ae)
-  {
->>>>>>> 59e3283d395c44c179e218e041e8e412e9cf5832
     
   }
   

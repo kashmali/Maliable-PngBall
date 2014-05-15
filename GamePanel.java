@@ -10,11 +10,12 @@ public class GamePanel extends JPanel
   
   public GamePanel ( )
   {
-<<<<<<< HEAD
+   ImagePlacer background = new ImagePlacer ("PinballBackground.png",0,0,500,500);
+    background.setSize (500,500);
+    background.setVisible (true);
+    this.add (background);
+    this.repaint();
     setSize (500,500);
-=======
-
->>>>>>> 59e3283d395c44c179e218e041e8e412e9cf5832
   }
   
 }
