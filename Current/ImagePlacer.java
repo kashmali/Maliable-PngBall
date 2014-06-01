@@ -4,7 +4,7 @@ import java.awt.image.*;
 import javax.imageio.*;
 import java.io.*;
 
-public class ImagePlacer extends Canvas//JPanel
+public class ImagePlacer extends JPanel
 {
   BufferedImage img = null;
   private int x = 0, y = 0, width = 0, height = 0;
@@ -22,7 +22,7 @@ public class ImagePlacer extends Canvas//JPanel
   {
     try 
     {
-      img = ImageIO.read (new File (image)); 
+      img = ImageIO.read (getClass().getResourceAsStream(image)); 
     }
     catch (IOException e)
     {
@@ -30,7 +30,7 @@ public class ImagePlacer extends Canvas//JPanel
     }
   }
   
-  public void paint (Graphics g)
+  public void paintComponent (Graphics g)
   {
    g.drawImage (img,x,y,width,height,null); 
   }

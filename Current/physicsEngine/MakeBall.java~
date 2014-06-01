@@ -1,0 +1,25 @@
+package Files.Current.physicsEngine;
+
+public class MakeBall extends Thread
+{
+  private GameEngine main;
+  
+  public MakeBall (GameEngine main)
+  {
+    this.main = main;
+  }
+  public void run()
+  {
+    while (Main.isRunning) {
+      main.giveBirth(1, 1, Math.random() * 1000.0,
+                     Math.random() * 1000.0, 100);
+      try 
+      {
+        sleep(500);
+      } 
+      catch (InterruptedException e) 
+      {
+      }
+    }
+  }
+}

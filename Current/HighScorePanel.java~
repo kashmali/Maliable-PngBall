@@ -1,0 +1,123 @@
+import javax.swing.JPanel;
+import javax.swing.JLabel;
+import javax.swing.GroupLayout;
+import java.util.ArrayList;
+import java.io.*;
+
+public class HighScorePanel extends JPanel
+{
+  static final File HIGHSCORES = new File ("highscores.txt");
+  private ArrayList<HighScore> scores = new ArrayList<HighScore>(10);
+  
+  public HighScorePanel ()
+  {
+    JLabel[] nameLabels = new JLabel[10];;
+    JLabel[] scoreLabels = new JLabel[10];
+    importFile();
+    for (int x = 0;x < 10;x++)
+    {
+     nameLabels [x] = new JLabel (scores.get(x).getName());
+     scoreLabels [x] = new JLabel (scores.get(x).getScore());
+    }
+    GroupLayout layout = new GroupLayout (this);
+    layout.setHorizonalGroup (layout.createSequentialGroup ()
+                                 .addGroup (layout.createParallelGroup ()
+                                              .addComponent (nameLabels [0])
+                                              .addComponent (nameLabels [1])
+                                              .addComponent (nameLabels [2])
+                                              .addComponent (nameLabels [3])
+                                              .addComponent (nameLabels [4])
+                                              .addComponent (nameLabels [5])
+                                              .addComponent (nameLabels [6])
+                                              .addComponent (nameLabels [7])
+                                              .addComponent (nameLabels [8])
+                                              .addComponent (nameLabels [9])
+                                              .addComponent (new JButton ("Close")))
+                                .addGroup (layout.createParallelGroup ()
+                                             .addComponent (scoreLabels [0])
+                                             .addComponent (scoreLabels [1])
+                                             .addComponent (scoreLabels [2])
+                                             .addComponent (scoreLabels [3])
+                                             .addComponent (scoreLabels [4])
+                                             .addComponent (scoreLabels [5])
+                                             .addComponent (scoreLabels [6])
+                                             .addComponent (scoreLabels [7])
+                                             .addComponent (scoreLabels [8])
+                                             .addComponent (scoreLabels [9]))
+                                          );
+    layout.setVerticalGroup (layout.createParallelGroup ()
+                               .addGroup (layout.createSequentialGroup ()
+                                              .addComponent (nameLabels [0])
+                                              .addComponent (nameLabels [1])
+                                              .addComponent (nameLabels [2])
+                                              .addComponent (nameLabels [3])
+                                              .addComponent (nameLabels [4])
+                                              .addComponent (nameLabels [5])
+                                              .addComponent (nameLabels [6])
+                                              .addComponent (nameLabels [7])
+                                              .addComponent (nameLabels [8])
+                                              .addComponent (nameLabels [9])
+                                         .addComponent (new JButton ("Close")))
+                                .addGroup (layout.createSequentialGroup ()
+                                             .addComponent (scoreLabels [0])
+                                             .addComponent (scoreLabels [1])
+                                             .addComponent (scoreLabels [2])
+                                             .addComponent (scoreLabels [3])
+                                             .addComponent (scoreLabels [4])
+                                             .addComponent (scoreLabels [5])
+                                             .addComponent (scoreLabels [6])
+                                             .addComponent (scoreLabels [7])
+                                             .addComponent (scoreLabels [8])
+                                             .addComponent (scoreLabels [9]))
+                               );
+                              
+    setLayout (layout);
+    setSize (500,500);
+    setVisible (true);
+  }
+  
+  public void importFile ()
+  {
+    try
+    {
+      BufferedReader in = new BufferedReader (new FileReader (HIGHSCORES));
+      for (int x = 0; x < 10; x++)
+      {
+        String name = in.readLine();
+        String score = in.readLine();
+        scores.set (x,new HighScore (name,score));
+      }
+    }
+    catch (IOException e)
+    {
+      System.out.println ("Error Loading High Scores");
+      writeBlankFile();
+    }
+    in.close();
+  }
+  
+  public static void writeFile ()
+  {
+    PrintWriter out = new PrintWriter (new FileWriter (HIGHSCORES));
+    for (int x = 0; x < 10; x++)
+    {
+      HighScore score = scores.get (x);
+      out.println (score.getName());
+      out.println (score.getScore());
+    }
+    out.close();
+  }
+  
+  public static void writeBlankFile ()
+  {
+    PrintWriter out = new PrintWriter (new FileWriter (HIGHSCORES));
+    for (int x = 0; x < 10; x++)
+    {
+      HighScore score = scores.get (x);
+      out.println ("P'ngball Grandmaster");
+      out.println (0);
+    }
+    out.close();
+  }
+  
+}
