@@ -41,6 +41,9 @@ public class GameEngine extends JPanel implements Pausable
   private static Graphics2D g2d;
   private static AffineTransform at;
   public static ArrayList<Spawn> living = new ArrayList<Spawn>();
+  public static ArrayList<Spawn> obstacles = new ArrayList<Spawn>();
+  public static ArrayList<Paddle> paddles = new ArrayList<Paddle>();
+  public static ArrayList<ObstacleLine> lines = new ArrayList<ObstacleLine>();
   public static boolean isRunning = true;
   private int fps;
   public static boolean paused = false;
@@ -51,7 +54,7 @@ public class GameEngine extends JPanel implements Pausable
 
     setIgnoreRepaint(true);
     setSize(X, Y);
-    setBackground (Color.BLUE);
+    setBackground (Color.WHITE);
     // Add the canvas, and display.
     setVisible(true);
     // Set up the BufferStrategy for double buffering.
@@ -81,8 +84,21 @@ public class GameEngine extends JPanel implements Pausable
     long totalTime = 0;
     long curTime = System.currentTimeMillis();
     long lastTime = curTime;
-    giveBirth (50,50,500,500,100);
-
+    //living.add (new CircleSpawn (100,300,0,0,100));
+    //obstacles.add (new RectangleSpawn (100,300,0,0,200,100));
+    //paddles.add (new Paddle (315,450,135,Color.BLACK,Paddle.RIGHT));
+    //paddles.add (new Paddle (85,450,45,Color.BLACK,Paddle.LEFT));
+   // paddles.add (new Paddle (50,200,0,200,Color.BLACK,Paddle.LEFT));
+    //paddles.add (new Paddle (200,400,270,200,Color.BLACK,Paddle.LEFT));
+    //System.out.println (new Paddle (50,400,0,200,Color.BLACK,Paddle.LEFT).toString());
+    //paddles.add (new Paddle (50,400,0,200,Color.BLACK,Paddle.LEFT));
+    //paddles.add (new Paddle (50,400,270,200,Color.BLACK,Paddle.LEFT));
+    //paddles.add (new Paddle (100,100,90,Color.GREEN));
+    ///paddles.add (new Paddle (100,100,180,Color.RED));
+    //paddles.add (new Paddle (100,100,270,Color.BLUE));
+//    lines.add (new ObstacleLine (100,200,300,200,Color.BLACK));
+//    lines.add (new ObstacleLine (100,200,200,300,Color.BLACK));
+//    lines.add (new ObstacleLine (200,300,300,200,Color.BLACK));
     // Start the loop.
     while (isRunning) {
       try {
@@ -142,18 +158,33 @@ public class GameEngine extends JPanel implements Pausable
   {
    super.paint (g);
    g2d = (Graphics2D) g;
-   try
-   {
+   //try{
    for (int i = 0; i < living.size(); i++) {
           /*at = new AffineTransform();
           at.translate(living.get(i).getX(), living.get(i).getY());*/
-          g2d.setColor(Color.BLACK);
+          //g2d.setColor(Color.BLACK);
           Spawn s = living.get(i);
+          //g.fillOval ((int)s.getX(),(int)s.getY(),(int)(((CircleSpawn)s).getRadius() * 2),(int)(((CircleSpawn)s).getRadius() * 2));
           g2d.fill(s.getShape());
         }
-        // display frames per second...
-        g2d.setFont(new Font("Courier New", Font.PLAIN, 12));
-        g2d.setColor(Color.GREEN);
+   for (int x = 0; x < obstacles.size();x++)
+   {
+     Spawn t = obstacles.get(x);
+     //g2d.fill (t.getShape());
+   }
+   //g2d.setColor (Color.BLACK);
+     for (Paddle p: paddles)
+     {     
+       //g.setColor (p.getColour());
+       g2d.draw (p.getLine());
+       System.out.println (p.toString());
+     }
+     for (ObstacleLine l :lines)
+       g2d.draw (new Line2D.Double (l.getX(),l.getY(),l.getX2(),l.getY2()));
+     //g2d.draw (new Line2D.Double (100,100,200,100));
+         //display frames per second...
+        ///g.setFont(new Font("Courier New", Font.PLAIN, 12));
+        //g.setColor(Color.GREEN);
         /*if (fps == 0)
           System.out.println ("0 fps");
         if (g2d == null)
@@ -163,11 +194,13 @@ public class GameEngine extends JPanel implements Pausable
         
           //Errors once and then stops. Don't know why it throws a NullPointerException
           g2d.drawString ("FPS: " + fps,20,20);
-        }
-        catch (NullPointerException e)
-        {
+          if (isPaused())
+            g2d.drawString ("Paused game", 20,40);
+        //}
+        //catch (NullPointerException e)
+        //{
           
-        }
+        //}
         Toolkit.getDefaultToolkit().sync();
         g.dispose ();
   }
@@ -177,17 +210,16 @@ public class GameEngine extends JPanel implements Pausable
     return false;
   }
 
-  public static synchronized int giveBirth(int x, int y, double vx,
-                                           double vy, int m)
+  public static synchronized int giveBirth(int x, int y, double vx, double vy,int m)
   {
     if (living.size() >= MAX_SPAWN) return 1;
-    living.add(new Spawn(x, y, vx, vy, m));
+    living.add(new CircleSpawn(x, y, vx, vy,m));
     return 0;
   }
   
-  public static void pauseThread ()
+  public void pauseThread ()
   {
-    while (paused)
+    /*while (paused)
     {
       try
       {
@@ -197,12 +229,17 @@ public class GameEngine extends JPanel implements Pausable
       {
         
       }
-    }    
+    }    */
   }
   
   public boolean isPaused ()
   {
    return paused; 
+  }
+  
+  public void pause ()
+  {
+   paused = true; 
   }
   
   public void keyPressed (KeyEvent e)

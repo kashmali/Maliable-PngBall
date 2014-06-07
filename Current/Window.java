@@ -2,6 +2,7 @@ import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
 import Files.Current.physicsEngine.*;
+import Files.Current.physicsEngine.Paddle;
 
 //Every once in a while this program just errors with a null pointer exception
 public class Window extends JFrame implements ActionListener
@@ -70,14 +71,23 @@ public class Window extends JFrame implements ActionListener
   {   
     public void keyReleased(KeyEvent e) 
     {
+      if (!Window.e.living.isEmpty())
       Window.e.living.get (0).keyReleased(e);
+      for (Paddle p : Window.e.paddles)
+        p.keyReleased (e);
+       
     }
     
     public void keyPressed(KeyEvent e)
     {
+      if (!Window.e.living.isEmpty())
+      {
       for (Spawn x : Window.e.living)
       x.keyPressed(e);
       Window.e.keyPressed (e);
+      }
+      for (Paddle p :Window.e.paddles)
+        p.keyPressed (e);
     }
   }
 }

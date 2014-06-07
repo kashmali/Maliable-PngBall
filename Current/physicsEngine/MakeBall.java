@@ -8,13 +8,15 @@ public class MakeBall extends Thread implements Pausable
   {
     this.main = main;
   }
+  
   public void run()
   {
     while (main.isRunning) 
     {
-      main.giveBirth(1, 1, Math.random() * 1000.0,Math.random() * 1000.0, 100);
       if (main.isPaused())
         pauseThread();
+      main.giveBirth(1, 1,(float) (Math.random() * 1000.0),(float)(Math.random() * 1000.0), 100);
+      
       try 
       {
         sleep(500);

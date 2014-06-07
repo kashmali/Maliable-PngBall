@@ -5,7 +5,7 @@ import java.awt.event.*;
 public class GamePanel extends ImagePlacer
 {
   
-  public GamePanel ( )
+  public GamePanel ()
   {
    //super ("DownToEarthGames.png",0,0,500,500);
    super ("PinballBackground.png",0,0,400,500);

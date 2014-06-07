@@ -6,34 +6,37 @@ import java.awt.event.KeyEvent;
 import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
 
-public class Spawn
+public abstract class Spawn
 {
-  private double vx, vy, radius;
+    CollisionResponse earliestCollisionResponse = new CollisionResponse();
+  protected float vx, vy;
   protected Shape shape;
-  protected double x,y;
+  protected float x,y;
   private ArrayList<Accel> accelerations = new ArrayList<Accel>();
 
-  public Spawn(int x, int y, double vx, double vy, int m)
+  public Spawn(int x, int y, float vx, float vy, int m)
   {
     this.x = x;
     this.y = y;
     this.vx = vx;
     this.vy = vy;
-    this.radius = 15.0;
-    this.shape = new Ellipse2D.Double(x, y,radius * 2, radius * 2);
   }
 
   public Spawn(int x, int y)
   {
-    this(x, y, 0.0, 0.0, 100);
+    this(x, y, 0.0f, 0.0f,100);
   }
-
+  
+  public abstract void updatePos(float newX, float newY); 
+  public abstract int getLength();
+  public abstract int getHeight();
+  
   public Vector2D velVector()
   {
-    return new Vector2D(this.vx(), this.vy());
+    return new Vector2D(this.getvx(), this.getvy());
   }
 
-  public void applyDrag(double drag)
+  public void applyDrag(float drag)
   {
     this.vx = (drag * this.vx);
     this.vy = (drag * this.vy);
@@ -55,68 +58,45 @@ public class Spawn
     this.accelerations.add(a);
   }
 
-  public void updateVelocity(double vx, double vy)
+  public void updateVelocity(float vx, float vy)
   {
     this.vx = vx;
     this.vy = vy;
   }
 
-  public void updatePos(double newX, double newY)
-  {
-    this.x = newX;
-    this.y = newY;
-    shape = new Ellipse2D.Double(newX, newY,radius * 2, radius * 2);
-  }
-
-  public double vx()
+  public float getvx()
   {
     return this.vx;
   }
 
-  public double vy()
+  public float getvy()
   {
     return this.vy;
   }
 
-  public int dimX()
-  {
-    return (int) (this.radius * 2);
-  }
-
-  public int dimY()
-  {
-    return (int) (this.radius * 2);
-  }
-
   public Point2D getCenter()
   {
-    return new Point2D.Double(this.x + (this.dimX() / 2), this.y
-                              + (this.dimY() / 2));
+    return new Point2D.Float(this.x + (this.getLength() / 2), this.y + (this.getHeight() / 2));
   }
 
-  public double getRadius()
-  {
-    return this.radius;
-  }
-
-  public double getX()
+  public float getX()
   {
     return this.x;
   }
 
-  public double getY()
+  public float getY()
   {
     return this.y;
   }
 
-  public double getX2()
+  public float getX2()
   {
-    return (this.x + this.dimX());
+    return (this.x + this.getLength());
   }
 
-  public double getY2()
+  public float getY2()
   {
-    return (this.y + this.dimY());
+    return (this.y + this.getHeight());
   }
   
   public Shape getShape ()
@@ -124,7 +104,7 @@ public class Spawn
    return shape; 
   }
 
-  public void setX(int newX)
+  public void setX (int newX)
   {
     this.x = newX;
   }
@@ -133,22 +113,19 @@ public class Spawn
   {
     this.y = newY;
   }
-  public void setRadius (double newRadius)
-  {
-   this.radius = newRadius; 
-  }
+  
   
   public void keyPressed (KeyEvent e)
   {
    int key = e.getKeyCode ();
    switch (key){
-     case KeyEvent.VK_UP : updateVelocity (vx,vy -500); //addAccel (new Accel (100,100)); System.out.println ("Space1");//do Nothing
+     case KeyEvent.VK_W : updateVelocity (vx,-2); //addAccel (new Accel (100,100)); System.out.println ("Space1");//do Nothing
      break;
-     case KeyEvent.VK_RIGHT : updateVelocity (vx + 500,vy);
+     case KeyEvent.VK_D : updateVelocity (2,vy);
      break;
-     case KeyEvent.VK_LEFT : updateVelocity (vx - 500,vy);
+     case KeyEvent.VK_A : updateVelocity (-2,vy);
      break;
-     case KeyEvent.VK_DOWN : updateVelocity (vx, vy + 500);
+     case KeyEvent.VK_S : updateVelocity (vx,2);
      break;
    }
   }

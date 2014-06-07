@@ -6,9 +6,9 @@ import java.awt.event.KeyEvent;
 import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
 
-public class Spawn
+public abstract class Spawn
 {
-  private double vx, vy, radius;
+  private double vx, vy;
   protected Shape shape;
   protected double x,y;
   private ArrayList<Accel> accelerations = new ArrayList<Accel>();
@@ -19,18 +19,20 @@ public class Spawn
     this.y = y;
     this.vx = vx;
     this.vy = vy;
-    this.radius = 15.0;
-    this.shape = new Ellipse2D.Double(x, y,radius * 2, radius * 2);
   }
 
   public Spawn(int x, int y)
   {
-    this(x, y, 0.0, 0.0, 100);
+    this(x, y, 0.0, 0.0,100);
   }
-
+  
+  public abstract void updatePos(double newX, double newY); 
+  public abstract int getLength();
+  public abstract int getHeight();
+  
   public Vector2D velVector()
   {
-    return new Vector2D(this.vx(), this.vy());
+    return new Vector2D(this.getvx(), this.getvy());
   }
 
   public void applyDrag(double drag)
@@ -61,42 +63,19 @@ public class Spawn
     this.vy = vy;
   }
 
-  public void updatePos(double newX, double newY)
-  {
-    this.x = newX;
-    this.y = newY;
-    shape = new Ellipse2D.Double(newX, newY,radius * 2, radius * 2);
-  }
-
-  public double vx()
+  public double getvx()
   {
     return this.vx;
   }
 
-  public double vy()
+  public double getvy()
   {
     return this.vy;
   }
 
-  public int dimX()
-  {
-    return (int) (this.radius * 2);
-  }
-
-  public int dimY()
-  {
-    return (int) (this.radius * 2);
-  }
-
   public Point2D getCenter()
   {
-    return new Point2D.Double(this.x + (this.dimX() / 2), this.y
-                              + (this.dimY() / 2));
-  }
-
-  public double getRadius()
-  {
-    return this.radius;
+    return new Point2D.Double(this.x + (this.getLength() / 2), this.y + (this.getHeight() / 2));
   }
 
   public double getX()
@@ -111,12 +90,12 @@ public class Spawn
 
   public double getX2()
   {
-    return (this.x + this.dimX());
+    return (this.x + this.getLength());
   }
 
   public double getY2()
   {
-    return (this.y + this.dimY());
+    return (this.y + this.getHeight());
   }
   
   public Shape getShape ()
@@ -133,22 +112,20 @@ public class Spawn
   {
     this.y = newY;
   }
-  public void setRadius (double newRadius)
-  {
-   this.radius = newRadius; 
-  }
+  
   
   public void keyPressed (KeyEvent e)
   {
    int key = e.getKeyCode ();
    switch (key){
-     case KeyEvent.VK_UP : updateVelocity (vx,vy -500); //addAccel (new Accel (100,100)); System.out.println ("Space1");//do Nothing
+     case KeyEvent.VK_W : updateVelocity (vx,-250); //addAccel (new Accel (100,100)); System.out.println ("Space1");//do Nothing
      break;
-     case KeyEvent.VK_RIGHT : updateVelocity (vx + 500,vy);
+     case KeyEvent.VK_D : updateVelocity (250,vy);
      break;
-     case KeyEvent.VK_LEFT : updateVelocity (vx - 500,vy);
+     case KeyEvent.VK_A : updateVelocity (-250,vy);
      break;
-     case KeyEvent.VK_DOWN : updateVelocity (vx, vy + 500);
+     case KeyEvent.VK_S : updateVelocity (vx,250);
+     break;
    }
   }
   

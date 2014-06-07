@@ -1,0 +1,80 @@
+import java.awt.geom.Line2D;
+public class Paddle
+{
+  
+  private int orientation;
+  private double length;
+  private double angle;
+  private double x,y;
+  private Line2D.Double line;
+  //Add angle caps
+  
+  public static final int RIGHT = 0;
+  public static final int LEFT = 1;
+ public Paddle()
+ {
+   x = 0.0;
+   y = 0.0;
+   angle = 90.0;
+   length = 20;
+   orientation = RIGHT;
+   line = new Line2D.Double (x,y,getX2(),getY2());
+ }
+ 
+ public void createLine ()
+ {
+   //calculates the new coordinates to new angles
+   line = new Line2D.Double (x,y,getX2(),getY2());
+ }
+ 
+ public void setAngle (double newAngle)
+ {
+   angle = newAngle;
+ }
+ 
+ public void setX (double newX)
+ {
+   x = newX;
+ }
+ 
+ public void setY (double newY)
+ {
+   y = newY;
+ }
+ 
+ public void setLength (double newLength)
+ {
+   length = newLength;
+ }
+ 
+ public double getAngle ()
+ {
+   return angle;
+ }
+ 
+ public double getX()
+ {
+   return x;
+ }
+ 
+ public double getY()
+ {
+   return y;
+ }
+ 
+ public double getX2()
+ {
+   return x + Math.cos(angle)*length;
+ }
+ 
+ public double getY2()
+ {
+   return y+Math.sin(angle)*length;
+ }
+ 
+ public int getOrientation ()
+ {
+   return orientation;
+ }
+ 
+}

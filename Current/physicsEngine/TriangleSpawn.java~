@@ -1,3 +1,5 @@
+package Files.Current.physicsEngine;
+
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.awt.event.KeyEvent;
@@ -13,7 +15,6 @@ public class TriangleSpawn extends Spawn
     adjacent = length1;
     opposite = length2;
     shape = new Polygon (new int []{x,x+ length1,x+length1},new int [] {y,y,y + length2},3);
-    setRadius (0);
   }
   
   public TriangleSpawn (int x, int y)
@@ -22,8 +23,6 @@ public class TriangleSpawn extends Spawn
    adjacent = 50;
    opposite = 50;
    shape = new Polygon (new int [] {x, x + 50, x + 50},new int []{y, y, y - 50},3);
-   setRadius (0);
-
   }
  
   public void updatePos(double newX, double newY)
@@ -53,8 +52,13 @@ public class TriangleSpawn extends Spawn
     return adjacent;
   }
   
-  public int dimX ()
+  public int getLength ()
   {
    return adjacent; 
+  }
+  
+  public int getHeight ()
+  {
+    return opposite;
   }
 }

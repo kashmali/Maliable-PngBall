@@ -2,11 +2,11 @@ package Files.Current.physicsEngine;
 
 public class Vector2D
 {
- public double x;
- public double y;
+ public float x;
+ public float y;
  public double restoreAngle;
 
- public Vector2D(double x, double y)
+ public Vector2D(float x, float y)
  {
   this.x = x;
   this.y = y;
@@ -29,8 +29,8 @@ public class Vector2D
   double angle = angle();
   double mag = mag();
   angle -= tiltAngle;
-  x = mag * Math.cos(angle);
-  y = mag * Math.sin(angle);
+  x = (float)(mag * Math.cos(angle));
+  y = (float)(mag * Math.sin(angle));
  }
 
  public void restoreCoordinates()
@@ -38,8 +38,8 @@ public class Vector2D
   double angle = angle();
   double mag = mag();
   angle += restoreAngle;
-  x = mag * Math.cos(angle);
-  y = mag * Math.sin(angle);
+  x = (float)(mag * Math.cos(angle));
+  y = (float)(mag * Math.sin(angle));
   restoreAngle = 0.0;
  }
 }

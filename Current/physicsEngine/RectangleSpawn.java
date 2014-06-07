@@ -7,36 +7,35 @@ import java.awt.Rectangle;
 
 public class RectangleSpawn extends Spawn
 {
-  private int width,height;
+  private int length,height;
   
-  public RectangleSpawn (int x, int y, double vx, double vy,int length1, int length2)
+  public RectangleSpawn (int x, int y, float vx, float vy,int length1, int length2)
   {
     super (x,y,vx,vy,100);
-    this.width =length1;
+    this.length =length1;
     this.height = length2;
-    shape = new Rectangle (x,y,width,height);
-    setRadius (0); //Later change so not everything is a circle
+    shape = new Rectangle (x,y,length,height);
+ //Later change so not everything is a circle
              }
   
   public RectangleSpawn (int x, int y)
   {
-    super (x,y,0.0,0.0,100);
-    this.width = 50;
+    super (x,y,0.0f,0.0f,100);
+    this.length = 50;
     this.height = 50;
-    shape = new Rectangle (x,y,width,height);
-    setRadius (0);  
+    shape = new Rectangle (x,y,length,height); 
   }
   
-  public void updatePos(double newX, double newY)
+  public void updatePos(float newX, float newY)
   {
-    this.x = newX;
+    /*this.x = newX;
     this.y = newY;
-    shape = new Rectangle ((int)x,(int)y,width,height);
+    shape = new Rectangle ((int)x,(int)y,length,height);*/
   }
   
-  public void setWidth (int newWidth)
+  public void setLength (int newLength)
   {
-    this.width = newWidth;
+    this.length = newLength;
   }
   
   public void setHeight (int newHeight)
@@ -44,25 +43,13 @@ public class RectangleSpawn extends Spawn
    this.height = newHeight; 
   }
   
-  public int getWidth ()
+  public int getLength ()
   {
-     return width;
+     return length;
   }
   
   public int getHeight ()
   {
     return height;
-  }
-  
-  public int dimX ()
-  {
-   return width; 
-  }
-  
-  public int dimY()
-  {
-   return height; 
-  }
-  
-  
+  }  
 }

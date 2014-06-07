@@ -1,6 +1,6 @@
 package Files.Current.physicsEngine;
 
-public class MakeBall extends Thread
+public class MakeBall extends Thread implements Pausable
 {
   private GameEngine main;
   
@@ -8,11 +8,15 @@ public class MakeBall extends Thread
   {
     this.main = main;
   }
+  
   public void run()
   {
-    while (Main.isRunning) {
-      main.giveBirth(1, 1, Math.random() * 1000.0,
-                     Math.random() * 1000.0, 100);
+    while (main.isRunning) 
+    {
+      if (main.isPaused())
+        pauseThread();
+      main.giveBirth(1, 1, Math.random() * 1000.0,Math.random() * 1000.0, 100);
+      
       try 
       {
         sleep(500);
@@ -21,5 +25,20 @@ public class MakeBall extends Thread
       {
       }
     }
+  }
+  
+  public void pauseThread ()
+  {
+    while (main.isPaused())
+    {
+      try
+      {
+     Thread.sleep (1);
+      }
+      catch (InterruptedException e)
+      {
+        
+      }
+    }    
   }
 }

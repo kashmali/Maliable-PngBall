@@ -1,0 +1,58 @@
+package Files.Current.physicsEngine;
+
+import java.awt.Color;
+import java.awt.Graphics;
+
+/**
+ * An obstacle line-Segment with two definite end-points.
+ * 
+ * @author Hock-Chuan Chua
+ * @version October 2010
+ */
+public class ObstacleLine {
+   double x1, y1;   // Line-segment's starting point
+   double x2, y2;   // Line-segment's ending point
+   Color color;  // Line-segment's drawing color
+   
+   /** Constructors */
+   public ObstacleLine(double x1, double y1, double x2, double y2, Color color) {
+      this.x1 = x1;
+      this.y1 = y1;
+      this.x2 = x2;
+      this.y2 = y2;
+      this.color = color;
+   }
+   /** Constructor with the default color */
+   public ObstacleLine(double x1, double y1, double x2, double y2) {
+      this(x1, y1, x2, y2, Color.YELLOW);
+   }
+
+   /** Set or reset the bounds (for window resizing) */
+   public void set(double x1, double y1, double x2, double y2) {
+      this.x1 = x1;
+      this.y1 = y1;
+      this.x2 = x2;
+      this.y2 = y2;
+   }
+   
+   public double getX()
+   {
+     return x1;
+   }
+   
+   public double getY()
+   {
+     return y1;
+   }
+   
+   public double getX2()
+   {
+     return x2;
+   }
+   
+   public double getY2()
+   {
+     return y2;
+   }
+
+}
