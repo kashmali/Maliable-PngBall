@@ -76,6 +76,17 @@ public class Paddle
     this.colour = colour;
     line = new Line2D.Double (x,y,getX2(),getY2());
   }
+  public Paddle(double x, double y,double angle,double length,Color colour,int orientation)
+  {
+    this.x = x;
+    this.y = y;
+    this.angle = angle;
+    this.length = length;
+    angleVelocity = 0.0;
+    this.orientation = orientation;
+    this.colour = colour;
+    line = new Line2D.Double (x,y,getX2(),getY2());
+  }
   public void setAngleVelocity (double newVelocity)
   {
     angleVelocity = newVelocity;

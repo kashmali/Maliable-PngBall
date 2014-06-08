@@ -57,7 +57,16 @@ public abstract class Spawn
   {
     this.accelerations.add(a);
   }
-
+  public void sumForces (float timeFraction)
+  {
+Accel theAccel = sumAccel();
+      // Apply the resulting change in velocity.
+      float vx = (float)Math.min (MoveEngine.MAX_SPEED,getvx() + (theAccel.ax() * timeFraction));
+      float vy = (float)Math.min (MoveEngine.MAX_SPEED,getvy() + (theAccel.ay() * timeFraction));
+      updateVelocity(vx, vy);
+      // Apply drag coefficient
+      applyDrag((float)(1.0 - (timeFraction * 0.0003)));
+  }
   public void updateVelocity(float vx, float vy)
   {
     this.vx = vx;
@@ -119,7 +128,7 @@ public abstract class Spawn
   {
    int key = e.getKeyCode ();
    switch (key){
-     case KeyEvent.VK_W : updateVelocity (vx,-2); //addAccel (new Accel (100,100)); System.out.println ("Space1");//do Nothing
+     case KeyEvent.VK_W : updateVelocity (vx, -2); //addAccel (new Accel (100,100)); System.out.println ("Space1");//do Nothing
      break;
      case KeyEvent.VK_D : updateVelocity (2,vy);
      break;

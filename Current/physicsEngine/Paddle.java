@@ -4,6 +4,10 @@ import java.awt.geom.Line2D;
 import java.awt.Color;
 import java.awt.event.*;
 
+// The Logic
+//If collides then
+//if moving, add velocity of the ball of a fixed amount
+//direction is the normal of the paddle
 public class Paddle
 {
   
@@ -14,6 +18,7 @@ public class Paddle
   private double angleVelocity;//degress per update
   private Line2D.Double line;
   private Color colour;
+  public double x2,y2;
   //Add angle caps
   
   public static final int RIGHT = 0;//degrees 225 - 135
@@ -70,7 +75,7 @@ public class Paddle
     this.x = x;
     this.y = y;
     this.angle = angle;
-    length = 100;
+    length = 90;
     angleVelocity = 0.0;
     this.orientation = orientation;
     this.colour = colour;
@@ -170,11 +175,11 @@ public class Paddle
     int key = e.getKeyCode ();
     if (key == KeyEvent.VK_RIGHT && orientation == RIGHT)
     {
-      setAngleVelocity (.5); 
+      setAngleVelocity (10); 
     }
     else if (key == KeyEvent.VK_LEFT && orientation == LEFT)
     {
-      setAngleVelocity (.5); 
+      setAngleVelocity (10); 
     }
   }
   
@@ -183,11 +188,11 @@ public class Paddle
     int key = e.getKeyCode ();
     if (key == KeyEvent.VK_RIGHT && orientation == RIGHT)
     {
-      setAngleVelocity (-.5); 
+      setAngleVelocity (-10); 
     }
     else if (key == KeyEvent.VK_LEFT && orientation == LEFT)
     {
-      setAngleVelocity (-.5);
+      setAngleVelocity (-10);
     }
   }
   

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 //Speed is different between the two engines
 public class MoveEngine implements Pausable
 {
-  public final int MAX_SPEED = 500;
+  public static final int MAX_SPEED = 500;
   public final int UPDATE_RATE = 30;
   private long timePassed = 0;
   private long curTime = 0;
@@ -104,15 +104,18 @@ public class MoveEngine implements Pausable
       double newX = oldX + (s.getvx() * timeFraction);
       double newY = oldY + (s.getvy() * timeFraction);
       //s.updatePos(newX, newY);
-      checkWallCollisions(s);
+      //checkWallCollisions(s);
     }
-    //movePaddles();
+    // must be synchronized with the collision.
     checkCollisions();
   }
   
   private synchronized void checkCollisions()
   {
     float time = 1.0f;
+    //apply constant forces
+    for (Spawn s : main.living)
+      s.updateVelocity (s.getvx(),s.getvy() + 0.45f);
     do
     {
       float tMin = time;
@@ -144,7 +147,13 @@ public class MoveEngine implements Pausable
         checkObstacleCollision (s,(RectangleSpawn)main.obstacles.get(x));        
       }*/
       //CollisionResponse earliestCollision = new CollisionResponse();
-      
+      for (int x = 0;x < main.paddles.size();x++)
+      {
+        Paddle p = main.paddles.get (x);
+        ((CircleSpawn)s).intersect (p,tMin);
+           if (s.earliestCollisionResponse.t < tMin){
+             tMin = s.earliestCollisionResponse.t;}
+      }
       for (int y = 0;y < main.lines.size();y++)
       {
         
@@ -155,18 +164,60 @@ public class MoveEngine implements Pausable
         ((CircleSpawn)s).intersect (l,tMin);
            //if (tempResponse.t < earliestCollision.t)
            //  earliestCollision.copy (tempResponse);
-           if (s.earliestCollisionResponse.t <= tMin)
-           {             
-                 System.out.println (y);
-                 System.out.println (s.earliestCollisionResponse.t);
-           }
            if (s.earliestCollisionResponse.t < tMin){
              tMin = s.earliestCollisionResponse.t;}
            
            
           //pointIntersectsLineHorizontal (s,(float)l.getY(),0.05f);
       }
+      for (int y = 0;y < main.pseudoPaddles.size();y++)
+      {
+        
+        PseudoPaddle p = main.pseudoPaddles.get (y);
+          //There is a little gap that balls can get into
+         // CollisionResponse tempResponse = new CollisionResponse();
+          // pointIntersectsLineSegment (s,(float)l.getX(),(float)l.getY(),(float)l.getX2(),(float)l.getY2(),tMin,tempResponse);
+        ((CircleSpawn)s).intersect (p,tMin);
+           //if (tempResponse.t < earliestCollision.t)
+           //  earliestCollision.copy (tempResponse);
+           if (s.earliestCollisionResponse.t < tMin){
+             tMin = s.earliestCollisionResponse.t;}
+           
+           
+          //pointIntersectsLineHorizontal (s,(float)l.getY(),0.05f);
+      }
+      //lineCollide (tMin, s, s.earliestCollisionResponse);
+      
+      for (int z = 0; z < main.paddles.size();z++)
+      {
+       Paddle p = main.paddles.get (z);
+       if (p.getAngleVelocity () > 0)
+       {
+         for (Spawn q : main.living)
+         {
+            // if intersects spawn
+//           find angle to the center point of the spawn
+//             find where the spawn is relative to the paddle
+//             add the velocity to the spawn to find its next location
+//             find the point that is closest to the paddle
+//             x +- Cos0 * radius
+//             y += Sin0 * radius
+//             find the angle to this close point
+//             find the time for the current angle to reach the new angle
+//             find the impact point of the ball
+//             if the time is within the time limit and the collision is on the paddle
+//             launch the ball
+           
+           //check if the new velocity of line will intersect with the spawn
+           //move paddles goes elsewhere, in line with the rest of the collision
+           //update velocity of spawn, new CollisionResponse
+         }
+        
+         
+       }
+      }
       ((CircleSpawn)s).update (tMin);
+      movePaddles (tMin);
       }
     time -= tMin;
     } while (time > 1e-2f);
@@ -253,82 +304,9 @@ public class MoveEngine implements Pausable
     }
   }
   
-  //sometimes, it will randomly go through, should check the corners
-  //Also, it shakes when resting on top
-  //High speeds will crash the program through the bottom
-  public synchronized void checkObstacleCollision (Spawn s, RectangleSpawn t)
-  {
-    //ends of the box
-    float maxX = t.getX() + t.getLength();
-    float maxY = t.getY() + t.getHeight();
-    //if there is a collision...
-    if (t.getShape().intersects (s.getShape().getBounds()))
-    {      
-      int place = determineArea (s,t);
-      //main.pause();
-      switch (place){
-        case 1 : case 3  : case 7 : case 9:
-          //s.updatePos (s.getX() - (s.getvx() * timeFraction),s.getY() - (s.getY() * timeFraction));
-          //s.updateVelocity (s.getvx() * -main.BOUNCE, -s.getvy() * -main.BOUNCE);
-          break;
-        case 5:
-          //Something has gone wrong if this happens
-          System.out.println ("What happened?");
-          //s.updatePos (s.getX() - (s.getvx() * timeFraction),s.getY() - (s.getY() * timeFraction));
-          s.updateVelocity (s.getvx() * -main.BOUNCE, -s.getvy() * -main.BOUNCE);
-          break;
-        case 2:
-          s.updateVelocity (s.getvx() * -main.BOUNCE, s.getvy());
-          s.updatePos (t.getX() - s.getLength(),s.getY());
-          break;
-        case 4:
-          s.updateVelocity (s.getvx(), s.getvy() * -main.BOUNCE);
-          s.updatePos (s.getX(),t.getY() - s.getHeight());
-          break;
-        case 6:
-          s.updateVelocity (s.getvx(), s.getvy() * -main.BOUNCE);
-          s.updatePos (s.getX(),maxY);
-          break;
-        case 8 :
-          s.updateVelocity (s.getvx()* -main.BOUNCE, s.getvy());
-          s.updatePos (maxX,s.getY());
-          break;
-        default :
-          System.out.println ("Something has gone terribly wrong with rectangle collision");
-          s.updatePos (0,0);
-          break;
-      }
-    }
-  }
+
   
-  
-  public int determineArea (Spawn s, RectangleSpawn t)
-  {
-    Rectangle area;// = new Rectangle (t.getX(), t.getY(),t.getLength(),t.getHeight());
-    
-    int counter = 0;
-    //change the box parameters
-    int length = t.getLength();
-    int height = t.getHeight();      
-    for (int x = 0; x < 3;x++)
-    {
-      
-      for (int y = 0;y < 3;y++)
-      {
-        counter++;
-        area = new Rectangle ((int)((t.getX() - length) + (x * length)),(int)((t.getY() - height) + (y * height)),length, height);
-        
-        if (area.contains (s.getCenter()))
-        {
-          System.out.println (counter);
-          return counter;
-        }
-      }        
-    }
-    return 5;
-  }
-  
-  public void movePaddles()
+  public void movePaddles(float time)
   {
     //if angle > 360; angle = angle mod 360 - ake sure that the angle does not exceed 360 degrees
     //if o = right, if angle < 135, if angle > 225
@@ -341,7 +319,7 @@ public class MoveEngine implements Pausable
       int o = p.getOrientation ();
       if (o == Paddle.RIGHT)
       {
-        p.setAngle (formatAngle(p.getAngle() + velocity)); //turning clockwise
+        p.setAngle (formatAngle(p.getAngle() + velocity * time)); //turning clockwise
         if (p.getAngle() < 135)
         {
           p.setAngle (135);
@@ -356,7 +334,7 @@ public class MoveEngine implements Pausable
       }
       else if (o == Paddle.LEFT)
       {
-        p.setAngle (formatAngle(p.getAngle() - velocity)); //turning counterclockwise
+        p.setAngle (formatAngle(p.getAngle() - velocity * time)); //turning counterclockwise
         if (p.getAngle() > 45 && p.getAngle() < 180)
         {
           p.setAngle (45);
@@ -425,7 +403,7 @@ public class MoveEngine implements Pausable
       // Accept 0 < t <= timeLimit
       if (t > 0 && t <= timeLimit) {
          response.t = t;
-         response.newSpeedX = -speedX;  // Reflect horizontally
+         response.newSpeedX = -speedX * main.BOUNCE;  // Reflect horizontally
          response.newSpeedY = speedY;   // No change vertically
       }
       // Error analysis:
@@ -467,7 +445,7 @@ public class MoveEngine implements Pausable
       if (t > 0 && t <= timeLimit) {
          response.t = t;
            //s.updateVelocity (s.getvx(),-s.getvy() * main.BOUNCE);
-         response.newSpeedY = -speedY;  // Reflect vertically
+         response.newSpeedY = -speedY * main.BOUNCE;  // Reflect vertically
          response.newSpeedX = speedX;   // No change horizontally
       }
    }
@@ -581,7 +559,7 @@ public class MoveEngine implements Pausable
       result = rotate(speedPAfter, speedQAfter, -lineAngle);
       response.newSpeedX = (float)result[0];
       response.newSpeedY = (float)result[1];
-      System.out.println ("Collision");
+      //System.out.println ("Collision");
    }
 
    /**

@@ -7,15 +7,18 @@ import java.util.ArrayList;
 //Chamge time to be relative to the computer
 //Change collisions so that only the first one is registered
 //Speed is different between the two engines
-public class MoveEngine extends Thread implements Pausable
+public class MoveEngine implements Pausable
 {
   public final int MAX_SPEED = 500;
+  public final int UPDATE_RATE = 30;
   private long timePassed = 0;
   private long curTime = 0;
   private long lastTime = 0;
+  private long timeLeft = 0;
   private double timeFraction = 0.0;
   private static GameEngine main;
   private ArrayList<Accel> constForces = new ArrayList<Accel>();
+  private static CollisionResponse tempResponse = new CollisionResponse();
   
   public MoveEngine (GameEngine main)
   {
@@ -31,18 +34,19 @@ public class MoveEngine extends Thread implements Pausable
   {
     curTime = System.currentTimeMillis();
     initializeConstForces();
-    while (main.isRunning) {
+    //while (main.isRunning) {
       if (main.isPaused())
         this.pauseThread();
+      
+      //applyConstForces();
+     //sumForces();
       updateTime();
-      applyConstForces();
-     sumForces();
       moveEnts();
-      try {
-        sleep(1);
-      } catch (InterruptedException e) {
-      }
-    }
+//      try {
+//        Thread.sleep(timeLeft);
+//      } catch (InterruptedException e) {
+//      }
+    //}
   }
   
   private void updateTime()
@@ -50,6 +54,8 @@ public class MoveEngine extends Thread implements Pausable
     lastTime = curTime;
     curTime = System.currentTimeMillis();
     timePassed = (curTime - lastTime);
+    timeLeft = 1000L/ UPDATE_RATE - timePassed;
+    if (timeLeft < 5) timeLeft = 5;
     timeFraction = (timePassed / 1000.0);
   }
   
@@ -80,11 +86,11 @@ public class MoveEngine extends Thread implements Pausable
       // Get the sum of all accelerations acting on object.
       Accel theAccel = s.sumAccel();
       // Apply the resulting change in velocity.
-      double vx = Math.min (MAX_SPEED,s.getvx() + (theAccel.ax() * timeFraction));
-      double vy = Math.min (MAX_SPEED,s.getvy() + (theAccel.ay() * timeFraction));
+      float vx = (float)Math.min (MAX_SPEED,s.getvx() + (theAccel.ax() * timeFraction));
+      float vy = (float)Math.min (MAX_SPEED,s.getvy() + (theAccel.ay() * timeFraction));
       s.updateVelocity(vx, vy);
       // Apply drag coefficient
-      s.applyDrag(1.0 - (timeFraction * main.DRAG));
+      s.applyDrag((float)(1.0 - (timeFraction * main.DRAG)));
     }
   }
   
@@ -97,7 +103,7 @@ public class MoveEngine extends Thread implements Pausable
       // Calculate the new x and y coords.
       double newX = oldX + (s.getvx() * timeFraction);
       double newY = oldY + (s.getvy() * timeFraction);
-      s.updatePos(newX, newY);
+      //s.updatePos(newX, newY);
       checkWallCollisions(s);
     }
     //movePaddles();
@@ -106,10 +112,14 @@ public class MoveEngine extends Thread implements Pausable
   
   private synchronized void checkCollisions()
   {
-    for (int i = 0; i < main.living.size(); i++) 
+    float time = 1.0f;
+    do
+    {
+      float tMin = time;
+      for (int i = 0; i < main.living.size(); i++) 
     {
       Spawn s = main.living.get(i);
-      Point2D sCenter = s.getCenter();
+      /*Point2D sCenter = s.getCenter();
       for (int j = i + 1; j < main.living.size(); j++) 
       {
         Spawn t = main.living.get(j);
@@ -127,22 +137,56 @@ public class MoveEngine extends Thread implements Pausable
           System.out.println ("Some casting issues");
         }
       }
+      
+      //Put these two together
       for (int x = 0; x < main.obstacles.size();x++)
       {       
         checkObstacleCollision (s,(RectangleSpawn)main.obstacles.get(x));        
-      }
+      }*/
+      //CollisionResponse earliestCollision = new CollisionResponse();
+      
       for (int y = 0;y < main.lines.size();y++)
       {
+        
         ObstacleLine l = main.lines.get (y);
-        {
           //There is a little gap that balls can get into
-           pointIntersectsLineSegment (s,(float)l.getX(),(float)l.getY(),(float)l.getX2(),(float)l.getY2(),0.01f);
+         // CollisionResponse tempResponse = new CollisionResponse();
+          // pointIntersectsLineSegment (s,(float)l.getX(),(float)l.getY(),(float)l.getX2(),(float)l.getY2(),tMin,tempResponse);
+        ((CircleSpawn)s).intersect (l,tMin);
+           //if (tempResponse.t < earliestCollision.t)
+           //  earliestCollision.copy (tempResponse);
+           if (s.earliestCollisionResponse.t <= tMin)
+           {             
+                 System.out.println (y);
+                 System.out.println (s.earliestCollisionResponse.t);
+           }
+           if (s.earliestCollisionResponse.t < tMin){
+             tMin = s.earliestCollisionResponse.t;}
+           
+           
           //pointIntersectsLineHorizontal (s,(float)l.getY(),0.05f);
-        }
       }
-    }
+      ((CircleSpawn)s).update (tMin);
+      }
+    time -= tMin;
+    } while (time > 1e-2f);
   }
   
+  public void lineCollide (float time,Spawn s,CollisionResponse earliestCollisionResponse)
+  {
+    // Check if this ball is responsible for the first collision?
+      if (earliestCollisionResponse.t <= time) { // FIXME: threshold?
+         // This ball collided, get the new position and speed
+         s.setX((int)(earliestCollisionResponse.getNewX(s.getX(),s.getvx())));
+         s.setY((int)(earliestCollisionResponse.getNewY(s.getY(), s.getvy())));
+         s.updateVelocity (earliestCollisionResponse.newSpeedX,earliestCollisionResponse.newSpeedY);
+      } else {
+         // This ball does not involve in a collision. Move straight.
+         s.updatePos (s.getX() + s.getvx() * time,s.getY() +s.getvy() * time);         
+      }
+      // Clear for the next collision detection
+      earliestCollisionResponse.reset();
+  }
   private synchronized void collide(Spawn s, Spawn t, double distBetween)
   {
     // Get the relative x and y dist between them.
@@ -162,7 +206,7 @@ public class MoveEngine extends Thread implements Pausable
     // now apply a simple 1D momentum equation where the new x-velocity of
     // the first object equals a negative times the x-velocity of the
     // second.
-    double swap = sVel.x;
+    float swap = sVel.x;
     sVel.x = tVel.x;
     tVel.x = swap;
     // Now we need to get the vectors back into normal coordinate space.
@@ -175,18 +219,18 @@ public class MoveEngine extends Thread implements Pausable
     double minDist = ((CircleSpawn)s).getRadius() + ((CircleSpawn)t).getRadius();
     double overlap = minDist - distBetween;
     double toMove = overlap / 2;
-    double newX = s.getX() + (toMove * Math.cos(collisionAngle));
-    double newY = s.getY() + (toMove * Math.sin(collisionAngle));
+    float newX = s.getX() + (float)(toMove * Math.cos(collisionAngle));
+    float newY = s.getY() + (float)(toMove * Math.sin(collisionAngle));
     s.updatePos(newX, newY);
-    newX = t.getX() - (toMove * Math.cos(collisionAngle));
-    newY = t.getY() - (toMove * Math.sin(collisionAngle));
+    newX = t.getX() - (float)(toMove * Math.cos(collisionAngle));
+    newY = t.getY() - (float)(toMove * Math.sin(collisionAngle));
     t.updatePos(newX, newY);
   }
   
   private synchronized void checkWallCollisions(Spawn s)
   {
-    int maxY = (int)main.getSize().getHeight() - (int)s.getHeight();
-    int maxX = (int)main.getSize().getWidth() - (int)s.getLength();
+    int maxY = (int)main.getSize().getHeight() - 15;//(int)s.getHeight();
+    int maxX = (int)main.getSize().getWidth() - 15;//(int)s.getLength();
     //Top boundary
     if (s.getY() > maxY) {
       s.updatePos(s.getX(), maxY);
@@ -198,13 +242,13 @@ public class MoveEngine extends Thread implements Pausable
       s.updateVelocity((s.getvx() * -main.BOUNCE), s.getvy());
     }
     //Left boundary
-    if (s.getX() < 1) {
-      s.updatePos(1, s.getY());
+    if (s.getX() < 1 + ((CircleSpawn) s).getRadius()) {
+      s.updatePos(((CircleSpawn) s).getRadius(), s.getY());
       s.updateVelocity((s.getvx() * -main.BOUNCE), s.getvy());
     }
     //Bottom boundary
-    if (s.getY() < 1){
-      s.updatePos (s.getX(),1);
+    if (s.getY() < 1 + ((CircleSpawn) s).getRadius()){
+      s.updatePos (s.getX(),((CircleSpawn) s).getRadius());
       s.updateVelocity(s.getvx(), (s.getvy() * -main.BOUNCE));
     }
   }
@@ -215,8 +259,8 @@ public class MoveEngine extends Thread implements Pausable
   public synchronized void checkObstacleCollision (Spawn s, RectangleSpawn t)
   {
     //ends of the box
-    double maxX = t.getX() + t.getLength();
-    double maxY = t.getY() + t.getHeight();
+    float maxX = t.getX() + t.getLength();
+    float maxY = t.getY() + t.getHeight();
     //if there is a collision...
     if (t.getShape().intersects (s.getShape().getBounds()))
     {      
@@ -224,13 +268,13 @@ public class MoveEngine extends Thread implements Pausable
       //main.pause();
       switch (place){
         case 1 : case 3  : case 7 : case 9:
-          s.updatePos (s.getX() - (s.getvx() * timeFraction),s.getY() - (s.getY() * timeFraction));
+          //s.updatePos (s.getX() - (s.getvx() * timeFraction),s.getY() - (s.getY() * timeFraction));
           //s.updateVelocity (s.getvx() * -main.BOUNCE, -s.getvy() * -main.BOUNCE);
           break;
         case 5:
           //Something has gone wrong if this happens
           System.out.println ("What happened?");
-          s.updatePos (s.getX() - (s.getvx() * timeFraction),s.getY() - (s.getY() * timeFraction));
+          //s.updatePos (s.getX() - (s.getvx() * timeFraction),s.getY() - (s.getY() * timeFraction));
           s.updateVelocity (s.getvx() * -main.BOUNCE, -s.getvy() * -main.BOUNCE);
           break;
         case 2:
@@ -352,21 +396,21 @@ public class MoveEngine extends Thread implements Pausable
     * @param response : If collision is detected, update the collision time and response.
     *                   Otherwise, set collision time to infinity.
     */
-   public static float pointIntersectsLineVertical(Spawn s, float lineX, float timeLimit) {
-     float pointX = (float)s.getCenter().getX();
-     float pointY = (float)s.getCenter().getY();
-     float speedX = (float)s.getvx();
-     float speedY = (float)s.getvy();
-     float radius = (float)((CircleSpawn)s).getRadius();
+   public static void pointIntersectsLineVertical(Spawn s, float lineX, float timeLimit,CollisionResponse response) {
+     float pointX = s.getX();
+     float pointY = s.getY();
+     float speedX = s.getvx();
+     float speedY = s.getvy();
+     float radius = ((CircleSpawn)s).getRadius();
       // Assumptions:
       assert (radius >= 0) : "Negative radius!";
       assert (timeLimit > 0) : "Non-positive time";
 
-     float response = Float.MAX_VALUE;  // Reset detected collision time to infinity
+     response.reset();  // Reset detected collision time to infinity
 
       // No collision possible if speedX is zero
       if (speedX == 0) { // FIXME: Should I use a threshold?
-         return response;
+         return;
       }
 
       // Compute the distance to the line, offset by radius.
@@ -380,11 +424,10 @@ public class MoveEngine extends Thread implements Pausable
       float t = distance / speedX;  // speedX != 0
       // Accept 0 < t <= timeLimit
       if (t > 0 && t <= timeLimit) {
-         response = t;
-        // response.newSpeedX = -speedX;  // Reflect horizontally
-         //response.newSpeedY = speedY;   // No change vertically
+         response.t = t;
+         response.newSpeedX = -speedX;  // Reflect horizontally
+         response.newSpeedY = speedY;   // No change vertically
       }
-      return response;
       // Error analysis:
       // nextX = lineX, which falls on the line. It never crosses the line. 
       // In next step t = 0 which is excluded from the acceptable t.
@@ -393,22 +436,22 @@ public class MoveEngine extends Thread implements Pausable
    /**
     * @see movingPointIntersectsLineVertical().
     */
-   public static float pointIntersectsLineHorizontal(Spawn s,float lineY, float timeLimit) {
-     float pointX = (float)s.getCenter().getX();
-     float pointY = (float)s.getCenter().getY();
-     float speedX = (float)s.getvx();
-     float speedY = (float)s.getvy();
-     float radius = (float)((CircleSpawn)s).getRadius();
+   public static void pointIntersectsLineHorizontal(Spawn s,float lineY, float timeLimit,CollisionResponse response) {
+     float pointX = s.getX();
+     float pointY = s.getY();
+     float speedX = s.getvx();
+     float speedY = s.getvy();
+     float radius = ((CircleSpawn)s).getRadius();
 
       // Assumptions:
       assert (radius >= 0) : "Negative radius!";
       assert (timeLimit > 0) : "Non-positive time";
 
-     float response = Float.MAX_VALUE;  // Reset detected collision time to infinity
+     response.reset();  // Reset detected collision time to infinity
 
       // No collision possible if speedY is zero
       if (speedY == 0) { // Should I use a threshold?
-         return response;
+         return;
       }
 
       // Compute the distance to the line, offset by radius.
@@ -422,13 +465,11 @@ public class MoveEngine extends Thread implements Pausable
       float t = distance / speedY;  // speedY != 0
       // Accept 0 < t <= timeLimit
       if (t > 0 && t <= timeLimit) {
-         response = t;
-           System.out.println (distance);
+         response.t = t;
            //s.updateVelocity (s.getvx(),-s.getvy() * main.BOUNCE);
-         //response.newSpeedY = -speedY;  // Reflect vertically
-         //response.newSpeedX = speedX;   // No change horizontally
+         response.newSpeedY = -speedY;  // Reflect vertically
+         response.newSpeedX = speedX;   // No change horizontally
       }
-      return response;
    }
    
    // The solution for colliding to a line has tow parts: t and lambda.
@@ -455,11 +496,11 @@ public class MoveEngine extends Thread implements Pausable
          Spawn s,
          float lineX1, float lineY1, float lineX2, float lineY2) {
      
-     float pointX = (float)s.getCenter().getX();
-     float pointY = (float)s.getCenter().getY();
-     float speedX = (float)s.getvx();
-     float speedY = (float)s.getvy();
-     float radius = (float)((CircleSpawn)s).getRadius();
+     float pointX = s.getX();
+     float pointY = s.getY();
+     float speedX = s.getvx();
+     float speedY = s.getvy();
+     float radius = ((CircleSpawn)s).getRadius();
       double lineVectorX = lineX2 - lineX1;
       double lineVectorY = lineY2 - lineY1;
 
@@ -517,12 +558,13 @@ public class MoveEngine extends Thread implements Pausable
     * @param t : the given detected collision time
     */
    private static void pointIntersectsLineResponse(Spawn s,
-         float lineX1, float lineY1, float lineX2, float lineY2, float t) {
-      float pointX = (float)s.getCenter().getX();
-     float pointY = (float)s.getCenter().getY();
-     float speedX = (float)s.getvx();
-     float speedY = (float)s.getvy();
-       float response = t;
+         float lineX1, float lineY1, float lineX2, float lineY2, float t,CollisionResponse response) {
+      float pointX = s.getX();
+     float pointY = s.getY();
+     float speedX = s.getvx();
+     float speedY = s.getvy();
+     
+       response.t = t;
       
       // Direction along the line of collision is P, normal is N.
       // Project velocity from (x, y) to (p, n)
@@ -537,7 +579,8 @@ public class MoveEngine extends Thread implements Pausable
 
       // Project back from (p, n) to (x, y)
       result = rotate(speedPAfter, speedQAfter, -lineAngle);
-      s.updateVelocity (result[0],result[1]);
+      response.newSpeedX = (float)result[0];
+      response.newSpeedY = (float)result[1];
       System.out.println ("Collision");
    }
 
@@ -562,45 +605,41 @@ public class MoveEngine extends Thread implements Pausable
     * @param response : If collision is detected, update the collision time and response.
     *                   Otherwise, set collision time to infinity.
     */
-   public static float pointIntersectsLineSegmentNoEndPoints(Spawn s,
+   public static void pointIntersectsLineSegmentNoEndPoints(Spawn s,
          float lineX1, float lineY1, float lineX2, float lineY2,
-         float timeLimit) {
-      float pointX = (float)s.getCenter().getX();
-     float pointY = (float)s.getCenter().getY();
-     float speedX = (float)s.getvx();
-     float speedY = (float)s.getvy();
-     float radius = (float)((CircleSpawn)s).getRadius();
+         float timeLimit,CollisionResponse response) {
+      float pointX = s.getX();
+     float pointY = s.getY();
+     float speedX = s.getvx();
+     float speedY = s.getvy();
+     float radius = ((CircleSpawn)s).getRadius();
       // Assumptions:
       assert (radius >= 0) : "Negative radius!";
       assert (timeLimit > 0) : "Non-positive time";
       // lineX1 == lineX2 && lineY1 == lineY2, a point?
-      float response = Float.MAX_VALUE;
+
       // If line is vertical or horizontal, use simplified solution.
       if (lineX1 == lineX2) {  // Vertical line
-         response = pointIntersectsLineVertical(s,lineX1, timeLimit);
+         pointIntersectsLineVertical(s,lineX1, timeLimit,response);
          // Need to confirm that the point of impact is within the line-segment
-         double impactY = pointY + speedY * response;
+         double impactY = response.getImpactY (pointY,speedY);
          if (!(impactY >= lineY1 && impactY <= lineY2 || impactY >= lineY2 && impactY <= lineY1)) {
-               response = Float.MAX_VALUE;// no collision
+               response.reset();// no collision
          }
-         if (response > 0 && response <= timeLimit)
+         if (response.t > 0 && response.t <= timeLimit)
            s.updateVelocity (-s.getvx()* main.BOUNCE,s.getvy());
-         return response;
+         return;
       } else if (lineY1 == lineY2) {  // Horizontal line
-         response = pointIntersectsLineHorizontal(s, lineY1, timeLimit);
+         pointIntersectsLineHorizontal(s, lineY1, timeLimit,response);
          // Need to confirm that the point of impact is within the line-segment
-         double impactX = pointX + speedX * response;
+         double impactX = response.getImpactX (pointX,speedX);
          if (!(impactX >= lineX1 && impactX <= lineX2 || impactX >= lineX2 && impactX <= lineX1)) {
-            response = Float.MAX_VALUE;;//no collision
+            response.reset();//no collision
          }
-         if (response > 0 && response <= timeLimit)
-         {
-           s.updateVelocity (s.getvx(),-s.getvy() * main.BOUNCE);
-         }
-         return response;
+         return;
       }
 
-      //response.reset();  // Set detected collision time to infinity
+      response.reset();  // Set detected collision time to infinity
 
       // Call helper method to compute the collision time.
       float[] result = pointIntersectsLineDetection(
@@ -613,9 +652,8 @@ public class MoveEngine extends Thread implements Pausable
       if (t > 0 && t <= timeLimit && lambda >=0 && lambda <= 1) {
          // Call helper method to compute response.
          pointIntersectsLineResponse(s, 
-                  lineX1, lineY1, lineX2, lineY2, t);
+                  lineX1, lineY1, lineX2, lineY2, t,response);
       }
-      return response;
    }
    
    /**
@@ -641,35 +679,34 @@ public class MoveEngine extends Thread implements Pausable
     */
    public static void pointIntersectsLineSegment(Spawn s,
          float lineX1, float lineY1, float lineX2, float lineY2,
-         float timeLimit) {
-      float pointX = (float)s.getCenter().getX();
-     float pointY = (float)s.getCenter().getY();
-     float speedX = (float)s.getvx();
-     float speedY = (float)s.getvy();
-     float radius = (float)((CircleSpawn)s).getRadius();
+         float timeLimit,CollisionResponse response) {
+      float pointX = s.getX();
+     float pointY = s.getY();
+     float speedX = s.getvx();
+     float speedY = s.getvy();
+     float radius = ((CircleSpawn)s).getRadius();
       // Assumptions:
       assert (radius >= 0) : "Negative radius!";
       assert (timeLimit > 0) : "Non-positive time";
       // lineX1 == lineX2 && lineY1 == lineY2, a point?
       
-      float response = Float.MAX_VALUE;  // Reset the resultant response for earliest collision
+      response.reset();  // Reset the resultant response for earliest collision
 
       // Check the line segment for probable collision.
-      float tempResponse = pointIntersectsLineSegmentNoEndPoints(s, lineX1, lineY1, lineX2, lineY2,timeLimit);
-      if (tempResponse < response) {
-         response = tempResponse;//response.copy(tempResponse);
+      pointIntersectsLineSegmentNoEndPoints(s, lineX1, lineY1, lineX2, lineY2,timeLimit,tempResponse);
+      if (tempResponse.t < response.t) {
+         response.copy(tempResponse);
       }
       // Check the two end points (with radius = 0) for probable collision
-      tempResponse = pointIntersectsPoint(
-            s,
+      pointIntersectsPoint(s,
             lineX1, lineY1, 0,
-            timeLimit);
-      if (tempResponse < response) {
-         response = tempResponse;
+            timeLimit,tempResponse);
+      if (tempResponse.t < response.t) {
+         response.copy (tempResponse);
       }
-      tempResponse = pointIntersectsPoint(s,lineX2, lineY2, 0,timeLimit);
-      if (tempResponse < response) {
-         response = tempResponse;
+      pointIntersectsPoint(s,lineX2, lineY2, 0,timeLimit,tempResponse);
+      if (tempResponse.t < response.t) {
+         response.copy (tempResponse);
       }
    }
    /**
@@ -692,20 +729,20 @@ public class MoveEngine extends Thread implements Pausable
     * @param p1Response : If collision is detected, update the collision time and response for p1.
     *                   Otherwise, set collision time to infinity.
     */
-   public static float pointIntersectsPoint(
+   public static void pointIntersectsPoint(
          Spawn s, 
          float p2X, float p2Y, float p2Radius,
-         float timeLimit) {
-     float pointX = (float)s.getCenter().getX();
-     float pointY = (float)s.getCenter().getY();
-     float speedX = (float)s.getvx();
-     float speedY = (float)s.getvy();
-     float radius = (float)((CircleSpawn)s).getRadius();
+         float timeLimit, CollisionResponse response) {
+     float pointX = s.getX();
+     float pointY = s.getY();
+     float speedX = s.getvx();
+     float speedY = s.getvy();
+     float radius = ((CircleSpawn)s).getRadius();
       // Assumptions:
       assert (radius >= 0) : "Negative radius!";
       assert (timeLimit > 0) : "Non-positive time";
 
-      float response = Float.MAX_VALUE;  // Set detected collision time to infinity
+      response.reset();  // Set detected collision time to infinity
       
       // Call helper method to compute and return the collision time t.
       float t = pointIntersectsMovingPointDetection(
@@ -715,9 +752,8 @@ public class MoveEngine extends Thread implements Pausable
       // Accept 0 < t <= timeLimit
       if (t > 0 && t <= timeLimit) {
          // Call helper method to compute and return the response given collision time t.
-         response = pointIntersectsPointResponse(s, p2X, p2Y, t);
+        pointIntersectsPointResponse(s, p2X, p2Y, t,response);
       }
-      return response;
    }
    
    /**
@@ -735,17 +771,17 @@ public class MoveEngine extends Thread implements Pausable
     *                     Reset time to infinity if error is detected.
     * @param t : the given detected collision time.
     */
-   private static float pointIntersectsPointResponse(Spawn s,float p2X, float p2Y,float t) {
-      float pointX = (float)s.getCenter().getX();
-     float pointY = (float)s.getCenter().getY();
-     float speedX = (float)s.getvx();
-     float speedY = (float)s.getvy();
+   private static void pointIntersectsPointResponse(Spawn s,float p2X, float p2Y,float t,CollisionResponse response) {
+      float pointX = s.getX();
+     float pointY = s.getY();
+     float speedX = s.getvx();
+     float speedY = s.getvy();
 
-      float response = t; // Update collision time in response
+      response.t = t; // Update collision time in response
       
       // Need to get the point of impact to form the line of collision.
-      double p1ImpactX = pointX  + speedX * t;; 
-      double p1ImpactY = pointY + speedY * t; 
+      double p1ImpactX = response.getImpactX (pointX,speedX);
+      double p1ImpactY = response.getImpactY (pointY, speedY); 
       
       // Direction along the line of collision is P, normal is N.
       // Get the direction along the line of collision
@@ -760,8 +796,7 @@ public class MoveEngine extends Thread implements Pausable
       // Needed to resolve overlaps.
       if (p1SpeedP <= 0) {
          //System.out.println("velocities cannot collide! t = " + t);
-         response = Float.MAX_VALUE;  // No collision, keep moving.
-         return response;
+         response.reset();  // No collision, keep moving.
       }
 
       double p1SpeedPAfter = -p1SpeedP;
@@ -769,8 +804,8 @@ public class MoveEngine extends Thread implements Pausable
 
       // Project the velocities back from (p, n) to (x, y)
       result = rotate(p1SpeedPAfter, p1SpeedNAfter, -lineAngle);
-      s.updateVelocity (result[0],result[1]);
-      return response;
+      response.newSpeedX = (float)result[0];
+      response.newSpeedY = (float)result[1];
    }
    /**
     * Helper method to detect the collision time (t) for two moving points.
@@ -792,9 +827,9 @@ public class MoveEngine extends Thread implements Pausable
       
      float p1X = (float)s.getCenter().getX();
      float p1Y = (float)s.getCenter().getY();
-     float p1SpeedX = (float)s.getvx();
-     float p1SpeedY = (float)s.getvy();
-     float p1Radius = (float)((CircleSpawn)s).getRadius();
+     float p1SpeedX = s.getvx();
+     float p1SpeedY = s.getvy();
+     float p1Radius = ((CircleSpawn)s).getRadius();
 
       // Rearrange the parameters to set up the quadratic equation.
       double centerX = p1X - p2X;
