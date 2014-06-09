@@ -88,6 +88,8 @@ public class Window extends JFrame implements ActionListener
       }
       for (Paddle p :Window.e.paddles)
         p.keyPressed (e);
+      for (PseudoPaddle p : Window.e.pseudoPaddles)
+        p.keyPressed (e);
     }
   }
 }

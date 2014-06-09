@@ -63,8 +63,13 @@ public class Window extends JFrame implements ActionListener
   
   public static void main (String[] args)
   {
-    Window w = new Window ();       // Create a FrameTest frame
-    e.run();
+    Window w = new Window ();   // Create a FrameTest frame
+    while (true){
+    e.gamerun();
+    try {Thread.sleep (300);}
+    catch (InterruptedException e){}
+    }
+    
   } // main method
   
   private class TAdapter extends KeyAdapter 

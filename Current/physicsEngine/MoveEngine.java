@@ -35,8 +35,8 @@ public class MoveEngine implements Pausable
     curTime = System.currentTimeMillis();
     initializeConstForces();
     //while (main.isRunning) {
-      if (main.isPaused())
-        this.pauseThread();
+//      if (main.isPaused())
+//        this.pauseThread();
       
       //applyConstForces();
      //sumForces();

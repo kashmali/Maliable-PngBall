@@ -26,18 +26,11 @@ public class GameEngine extends JPanel implements Pausable
   public static final int MAX_SPAWN = 20; //30
   public static final int X = 500;
   public static final int Y = 500;
-  public static final float GRAVITY = 1500; //1500
-  public static final float DRAG = 0.3f; //0.2
-  public static final float BOUNCE = 0.9f; //0.5
+  public static final float GRAVITY = .0000981f; //1500
+  public static final float DRAG = 0.1f; //0.2
+  public static final float BOUNCE = 1f; //0.5
   public final int UPDATE_RATE = 60;
   public static final String TITLE = "Mike's 2d Physics Engine greatly modified by Jason using code written by Hock-Chuan Chua";
-  private static JFrame f;
-  private static Canvas c;
-  public static BufferStrategy b;
-  private static GraphicsEnvironment ge;
-  private static GraphicsDevice gd;
-  private static GraphicsConfiguration gc;
-  private static BufferedImage buffer;
   private static Graphics graphics;
   private static Graphics2D g2d;
   private static AffineTransform at;
@@ -45,6 +38,7 @@ public class GameEngine extends JPanel implements Pausable
   public static ArrayList<Spawn> obstacles = new ArrayList<Spawn>();
   public static ArrayList<Paddle> paddles = new ArrayList<Paddle>();
   public static ArrayList<ObstacleLine> lines = new ArrayList<ObstacleLine>();
+  public static ArrayList<PseudoPaddle> pseudoPaddles = new ArrayList<PseudoPaddle>();
   public static boolean isRunning = true;
   private int fps;
   public static boolean paused = false;
@@ -60,14 +54,7 @@ public class GameEngine extends JPanel implements Pausable
     setVisible(true);
     // Set up the BufferStrategy for double buffering.
     setDoubleBuffered(true);
-    
-    //b = getBufferStrategy();
-    // Get graphics configuration...
-    ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-    gd = ge.getDefaultScreenDevice();
-    gc = gd.getDefaultConfiguration();
-    // Create off-screen drawing surface
-    buffer = gc.createCompatibleImage(X, Y);
+
     // Objects needed for rendering...
     graphics = null;
     g2d = null;
@@ -85,22 +72,24 @@ public class GameEngine extends JPanel implements Pausable
     long totalTime = 0;
     long curTime = System.currentTimeMillis();
     long lastTime = curTime;
-    living.add (new CircleSpawn (15,15,0,0,100));
+    living.add (new CircleSpawn (16,16,0,0,100));
     //obstacles.add (new RectangleSpawn (100,300,0,0,200,100));
-    //paddles.add (new Paddle (315,450,135,Color.BLACK,Paddle.RIGHT));
-    //paddles.add (new Paddle (85,450,45,Color.BLACK,Paddle.LEFT));
-   // paddles.add (new Paddle (50,200,0,200,Color.BLACK,Paddle.LEFT));
-    //paddles.add (new Paddle (200,400,270,200,Color.BLACK,Paddle.LEFT));
-    //System.out.println (new Paddle (50,400,0,200,Color.BLACK,Paddle.LEFT).toString());
-    //paddles.add (new Paddle (50,400,0,200,Color.BLACK,Paddle.LEFT));
-    //paddles.add (new Paddle (50,400,270,200,Color.BLACK,Paddle.LEFT));
-    //paddles.add (new Paddle (100,100,90,Color.GREEN));
-    ///paddles.add (new Paddle (100,100,180,Color.RED));
-    //paddles.add (new Paddle (100,100,270,Color.BLUE));
+//    paddles.add (new Paddle (215,450,135,Color.BLACK,Paddle.RIGHT));
+//    paddles.add (new Paddle (85,450,45,Color.BLACK,Paddle.LEFT));
+
     lines.add (new ObstacleLine (100,200,300,200,Color.BLACK));
-    //lines.add (new ObstacleLine (200,200,200,400,Color.BLACK));
     lines.add (new ObstacleLine (100,200,200,300,Color.BLACK));
     lines.add (new ObstacleLine (200,300,300,200,Color.BLACK));
+    
+    //walls
+    lines.add (new ObstacleLine (0,0,0,550,Color.BLACK));
+    lines.add (new ObstacleLine (400,0,400,550,Color.BLACK));
+    lines.add (new ObstacleLine (0,0,400,0,Color.BLACK));
+    
+    //slopes to the paddle
+    lines.add (new ObstacleLine (0,400,100,500,Color.BLACK));
+    lines.add (new ObstacleLine (400,400,300,500,Color.BLACK));
+    pseudoPaddles.add (new PseudoPaddle (150,500,100,Color.BLACK));
     // Start the loop.
     while (isRunning) {
         // Calculations for FPS.
@@ -121,6 +110,10 @@ public class GameEngine extends JPanel implements Pausable
         moveEngine.run();
         repaint ();
         
+        //If the player dies
+        if (living.get(0).getY() > 590)
+          isRunning = false;
+        
         timeTakenMillis = System.currentTimeMillis() - beginTimeMillis;
                timeLeftMillis = 1000L / UPDATE_RATE - timeTakenMillis;
                if (timeLeftMillis < 5) timeLeftMillis = 5; // Set a minimum
@@ -128,36 +121,7 @@ public class GameEngine extends JPanel implements Pausable
                // Delay and give other thread a chance
                try {
                   Thread.sleep(timeLeftMillis);
-        // clear back buffer...
-       /* g2d = buffer.createGraphics();
-        g2d.setColor(Color.WHITE);
-        g2d.fillRect(0, 0, X, Y);
-        // Draw entities/////////////////////////////////////////////////////////////////////////////////////////////////////////////ADD OBSTACLES HERE///////
-        g2d.setColor(Color.BLACK);
-     g2d.fill(new Rectangle2D.Double (0,100,480,30));
-     g2d.fill(new Rectangle2D.Double (160,200,480,30));
-     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        for (int i = 0; i < living.size(); i++) {
-          at = new AffineTransform();
-          at.translate(living.get(i).getX(), living.get(i).getY());
-          g2d.setColor(Color.BLACK);
-          Spawn s = living.get(i);
-          g2d.fill(new Ellipse2D.Double(s.getX(), s.getY(), s
-                                        .getRadius() * 2, s.getRadius() * 2));
-        }
-        // display frames per second...
-        g2d.setFont(new Font("Courier New", Font.PLAIN, 12));
-        g2d.setColor(Color.GREEN);
-        g2d.drawString(String.format("FPS: %s", fps), 20, 20);*/
-        // Blit image and flip...
-        /*graphics = getGraphics();
-        if (graphics == null)
-          System.out.println ("Null image");
-        graphics.drawImage(buffer, 0, 0, null);
-        if (!b.contentsLost()) 
-          b.show();*/
-        // Let the OS have a little time...
-        //Thread.sleep(15);
+
       } catch (InterruptedException e) {
       } finally {
         // release resources
@@ -165,6 +129,7 @@ public class GameEngine extends JPanel implements Pausable
         if (g2d != null) g2d.dispose();
       }
     }
+    System.out.println ("Game Over");
   }
 
   public void paintComponent (Graphics g)
@@ -187,12 +152,14 @@ public class GameEngine extends JPanel implements Pausable
 //     g2d.fill (t.getShape());
 //   }
    //g.setColor (Color.BLACK);
-//     for (Paddle p: paddles)
-//     {     
-//       g2d.setColor (p.getColour());
-//       g2d.draw (p.getLine());
-//       //System.out.println (p.toString());
-//     }
+     for (Paddle p: paddles)
+     {     
+       g.setColor (p.getColour());
+       g.drawLine ((int)p.getX(),(int)p.getY(),(int)p.getX2(),(int)p.getY2());
+       //System.out.println (p.toString());
+     }
+    for (PseudoPaddle p : pseudoPaddles)
+      g.drawLine ((int)p.getX(),(int)p.getY(),(int)p.getX2(),(int)p.getY2());
      for (ObstacleLine l :lines)
        g.drawLine ((int)l.getX(),(int)l.getY(),(int)l.getX2(),(int)l.getY2());
 //     //g2d.draw (new Line2D.Double (100,100,200,100));
@@ -217,6 +184,12 @@ public class GameEngine extends JPanel implements Pausable
 //        //}
 //        Toolkit.getDefaultToolkit().sync();
         //g.dispose ();
+        if (isRunning == false)
+        {
+          g.setColor (Color.RED);
+          g.drawLine (0,0,400,550);
+          g.drawLine (0,550,400,0);
+        }
   }
   public static boolean allDead()
   {

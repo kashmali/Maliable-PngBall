@@ -35,14 +35,14 @@ public class GameEngine extends JPanel implements Pausable
   private static Graphics2D g2d;
   private static AffineTransform at;
   public static ArrayList<Spawn> living = new ArrayList<Spawn>();
-  public static ArrayList<Spawn> obstacles = new ArrayList<Spawn>();
+  public static ArrayList<ButtonObstacle> buttons = new ArrayList<ButtonObstacle>();
   public static ArrayList<Paddle> paddles = new ArrayList<Paddle>();
   public static ArrayList<ObstacleLine> lines = new ArrayList<ObstacleLine>();
   public static ArrayList<PseudoPaddle> pseudoPaddles = new ArrayList<PseudoPaddle>();
   public static boolean isRunning = true;
   private int fps;
   public static boolean paused = false;
-  
+  MoveEngine moveEngine;
   public GameEngine ()
   {
     // Create canvas for painting...
@@ -54,25 +54,16 @@ public class GameEngine extends JPanel implements Pausable
     setVisible(true);
     // Set up the BufferStrategy for double buffering.
     setDoubleBuffered(true);
-
+ moveEngine = new MoveEngine(this);
     // Objects needed for rendering...
     graphics = null;
     g2d = null;
+    initialize();
   }
   
-  public void run ()
+  public void initialize ()
   {
-    MoveEngine moveEngine = new MoveEngine(this);
-    //moveEngine.start();
-//    Thread makeBall = new MakeBall (this);
-//    makeBall.start();
-    
-    fps = 0;
-    int frames = 0;
-    long totalTime = 0;
-    long curTime = System.currentTimeMillis();
-    long lastTime = curTime;
-    living.add (new CircleSpawn (16,16,0,0,100));
+   living.add (new CircleSpawn (16,16,0,0,100));
     //obstacles.add (new RectangleSpawn (100,300,0,0,200,100));
 //    paddles.add (new Paddle (215,450,135,Color.BLACK,Paddle.RIGHT));
 //    paddles.add (new Paddle (85,450,45,Color.BLACK,Paddle.LEFT));
@@ -89,7 +80,30 @@ public class GameEngine extends JPanel implements Pausable
     //slopes to the paddle
     lines.add (new ObstacleLine (0,400,100,500,Color.BLACK));
     lines.add (new ObstacleLine (400,400,300,500,Color.BLACK));
-    pseudoPaddles.add (new PseudoPaddle (150,500,100,Color.BLACK));
+    pseudoPaddles.add (new PseudoPaddle (150,500,100,Color.BLACK)); 
+  }
+  
+  public void reset ()
+  {
+    living.clear ();
+    buttons.clear();
+    lines.clear();
+    paddles.clear();
+    pseudoPaddles.clear();
+  }
+  
+  public void gamerun ()
+  {
+   
+    //moveEngine.start();
+//    Thread makeBall = new MakeBall (this);
+//    makeBall.start();
+    fps = 0;
+    int frames = 0;
+    long totalTime = 0;
+    long curTime = System.currentTimeMillis();
+    long lastTime = curTime;
+    
     // Start the loop.
     while (isRunning) {
         // Calculations for FPS.
@@ -99,20 +113,25 @@ public class GameEngine extends JPanel implements Pausable
         lastTime = curTime;
         curTime = System.currentTimeMillis();
         totalTime += curTime - lastTime;
+        
         if (totalTime > 1000) {
           totalTime -= 1000;
           fps = frames;
           frames = 0;
         }
         ++frames;
-        if (paused)
-          pauseThread();
-        moveEngine.run();
+        
+        if (!paused)
+        {
+          moveEngine.run();
+        }
         repaint ();
+      
         
         //If the player dies
-        if (living.get(0).getY() > 590)
+        if (living.get(0).getY() > 590){
           isRunning = false;
+        }
         
         timeTakenMillis = System.currentTimeMillis() - beginTimeMillis;
                timeLeftMillis = 1000L / UPDATE_RATE - timeTakenMillis;
@@ -122,19 +141,25 @@ public class GameEngine extends JPanel implements Pausable
                try {
                   Thread.sleep(timeLeftMillis);
 
-      } catch (InterruptedException e) {
-      } finally {
-        // release resources
-        if (graphics != null) graphics.dispose();
-        if (g2d != null) g2d.dispose();
-      }
+               } catch (InterruptedException e) {}
+//      } finally {
+//        // release resources
+//        if (graphics != null) graphics.dispose();
+//        if (g2d != null) g2d.dispose();
+//      }
+        
     }
     System.out.println ("Game Over");
+    living.get (0).updatePos (16,16);
+    isRunning = true;
+   // run();
   }
 
   public void paintComponent (Graphics g)
   {
    super.paintComponent (g);
+   
+    //System.out.println ("Print");
    //g2d = (Graphics2D) g;
 //   //try{
    for (int i = 0; i < living.size(); i++) {
@@ -158,10 +183,10 @@ public class GameEngine extends JPanel implements Pausable
        g.drawLine ((int)p.getX(),(int)p.getY(),(int)p.getX2(),(int)p.getY2());
        //System.out.println (p.toString());
      }
-    for (PseudoPaddle p : pseudoPaddles)
-      g.drawLine ((int)p.getX(),(int)p.getY(),(int)p.getX2(),(int)p.getY2());
-     for (ObstacleLine l :lines)
-       g.drawLine ((int)l.getX(),(int)l.getY(),(int)l.getX2(),(int)l.getY2());
+    for (PseudoPaddle p : pseudoPaddles){
+      g.drawLine ((int)p.getX(),(int)p.getY(),(int)p.getX2(),(int)p.getY2());}
+    for (ObstacleLine l :lines){
+      g.drawLine ((int)l.getX(),(int)l.getY(),(int)l.getX2(),(int)l.getY2());}
 //     //g2d.draw (new Line2D.Double (100,100,200,100));
 //         //display frames per second...
 //        g2d.setFont(new Font("Courier New", Font.PLAIN, 12));
@@ -175,21 +200,24 @@ public class GameEngine extends JPanel implements Pausable
 //        
 //          //Errors once and then stops. Don't know why it throws a NullPointerException
 //          g.drawString ("FPS: " + fps,20,20);
-//          if (isPaused())
-//           g.drawString ("Paused game", 20,40);
+          if (isPaused())
+          {
+           g.drawString ("Paused game", 20,40);
+          }
 //        //}
 //        //catch (NullPointerException e)
 //        //{
 //          
 //        //}
-//        Toolkit.getDefaultToolkit().sync();
-        //g.dispose ();
+        
         if (isRunning == false)
         {
           g.setColor (Color.RED);
           g.drawLine (0,0,400,550);
           g.drawLine (0,550,400,0);
         }
+        Toolkit.getDefaultToolkit().sync();
+        g.dispose ();
   }
   public static boolean allDead()
   {
@@ -229,12 +257,23 @@ public class GameEngine extends JPanel implements Pausable
    paused = true; 
   }
   
+  public boolean acknowledge = false;
   public void keyPressed (KeyEvent e)
   {
    int key = e.getKeyCode ();
    switch (key){
      case KeyEvent.VK_SPACE : paused = !paused;
      break;
+     case KeyEvent.VK_R : 
+//For some strange reason the repaint method stops refrshing once this is pressed
+       System.out.println ("Pressed");
+//       reset ();
+//       initialize();
+//       living.get (0).updatePos (16,16);
+//       isRunning = true;
+       gamerun();
+       break;
+
    }
   }
 }
