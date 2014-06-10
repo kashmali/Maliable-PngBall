@@ -33,7 +33,7 @@ public class GameEngine extends JPanel implements Pausable
   public static final String TITLE = "Mike's 2d Physics Engine greatly modified by Jason using code written by Hock-Chuan Chua";
   private static Graphics graphics;
   private static Graphics2D g2d;
-  private static AffineTransform at;
+//  private static AffineTransform at;
   public static ArrayList<Spawn> living = new ArrayList<Spawn>();
   public static ArrayList<ButtonObstacle> buttons = new ArrayList<ButtonObstacle>();
   public static ArrayList<Paddle> paddles = new ArrayList<Paddle>();
@@ -42,9 +42,16 @@ public class GameEngine extends JPanel implements Pausable
   public static boolean isRunning = true;
   private int fps;
   public static boolean paused = false;
+  public static boolean terminated = false;
   public static int score = 0;
   MoveEngine moveEngine;
-  HighScoreManager highscoreManager;
+ public  HighScoreManager highscoreManager;
+  
+  public static final int EASY_LAYOUT = 0;
+  public static final int MEDIUM_LAYOUT = 1;
+  public static final int HARD_LAYOUT = 2;
+  
+  
   public GameEngine ()
   {
     // Create canvas for painting...
@@ -68,18 +75,7 @@ public class GameEngine extends JPanel implements Pausable
     //The ball
    living.add (new CircleSpawn (16,16,0,0,100));
 
-   //Button
-   buttons.add (new ButtonObstacle (50,200,15,1.1f,Color.BLACK));
-   buttons.add (new ButtonObstacle (150,200,15,1.1f,Color.BLACK));
-   buttons.add (new ButtonObstacle (250,200,15,1.1f,Color.BLACK));
-   buttons.add (new ButtonObstacle (350,200,15,1.1f,Color.BLACK));
 
-   //Center obstacle
-//    lines.add (new ObstacleLine (100,200,300,200,Color.BLACK));
-//    lines.add (new ObstacleLine (100,200,200,300,Color.BLACK));
-//    lines.add (new ObstacleLine (200,300,300,200,Color.BLACK));
-    
-   lines.add (new BumperObstacleLine (200,0,300,100));
     //walls
     lines.add (new ObstacleLine (0,0,0,550,Color.BLACK));
     lines.add (new ObstacleLine (400,0,400,550,Color.BLACK));
@@ -100,6 +96,46 @@ public class GameEngine extends JPanel implements Pausable
     pseudoPaddles.clear();
   }
   
+  public void easyLayout ()
+  {
+    
+   //Button
+   buttons.add (new ButtonObstacle (50,200,15,1.1f,Color.BLACK));
+   buttons.add (new ButtonObstacle (150,200,15,1.1f,Color.BLACK));
+   buttons.add (new ButtonObstacle (250,200,15,1.1f,Color.BLACK));
+   buttons.add (new ButtonObstacle (350,200,15,1.1f,Color.BLACK));
+
+  }
+  
+  public void mediumLayout ()
+  {
+    //   Center obstacle
+    lines.add (new BumperObstacleLine (100,200,300,200));
+    lines.add (new ObstacleLine (100,200,200,300,Color.BLACK));
+    lines.add (new ObstacleLine (200,300,300,200,Color.BLACK));
+    
+  }
+  
+  public void hardLayout ()
+  {
+       buttons.add (new ButtonObstacle (200,200,30,1.1f,Color.BLACK));
+       lines.add (new BumperObstacleLine (200,150,250,200));
+  lines.add (new BumperObstacleLine (200,150,150,200));
+  }
+  
+  public void setGameLayout (int layout)
+  {
+    reset ();
+    initialize ();
+    switch (layout){
+      case EASY_LAYOUT : easyLayout();
+      break;
+      case MEDIUM_LAYOUT : mediumLayout ();
+      break;
+      case HARD_LAYOUT : hardLayout ();
+      break;
+    }      
+    }
   public void gamerun ()
   {
    
@@ -129,12 +165,15 @@ public class GameEngine extends JPanel implements Pausable
         }
         ++frames;
         
+        if (terminated)
+          break;
         if (!paused)
         {
           moveEngine.run();
         }
         repaint ();
-      
+      //repaint the info panel somehow
+        //Maybe it doesn't even need to be repainted, just put in static information
         
         //If the player dies
         if (living.get(0).getY() > 590){
@@ -160,10 +199,10 @@ public class GameEngine extends JPanel implements Pausable
     System.out.println ("Game Over");
     living.get (0).updatePos (16,16);
     isRunning = true;
-    System.out.println (score);
-    if (highscoreManager.checkScores (score))
+    //System.out.println (score);
+    
       pause();
-    score = 0;
+   // score = 0;
    // run();
   }
 
@@ -263,7 +302,16 @@ public class GameEngine extends JPanel implements Pausable
   {
     score += increment;
   }
+public int getScore ()
+{
+  return score;
+}
 
+public void resetGame ()
+{
+  terminated = false;
+  score = 0;
+}
   public boolean acknowledge = false;
   private ObstacleLine cheat = new ObstacleLine (0,510,400,510,Color.BLACK);
   public void keyPressed (KeyEvent e)
@@ -285,6 +333,9 @@ public class GameEngine extends JPanel implements Pausable
        break;
      case KeyEvent.VK_Z :
        lines.remove (cheat);
+       break;
+     case KeyEvent.VK_ENTER :
+       terminated = true;
        break;
 
    }

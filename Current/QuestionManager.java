@@ -2,14 +2,14 @@ import java.awt.*;
 import java.util.*;
 import java.io.*;
 
-public class GetQuestions
+public class QuestionManager
 {
   public static ArrayList <String> questions = new ArrayList<String> ();
   public static ArrayList <String> options = new ArrayList<String> ();
   public static ArrayList <String> correctAnswers = new ArrayList<String> ();
   
   static BufferedReader in;
-  public GetQuestions ()
+  public QuestionManager ()
   {
     importFile ("QuestionDocument.txt");
   }
@@ -19,7 +19,10 @@ public class GetQuestions
     int questionNumber =0, optionNumber = 0, answerNumber =0;
     int amount =0;
     
-    
+    //Question format
+    //6 lines are question
+    //4 lines are answers
+    //last line is the correct answer
     questionNumber = (int) Math.random () * 12 * 6;
     optionNumber = (int) Math.random () * 12 * 4;
     answerNumber = (int) Math.random () * 12 * 1;
@@ -95,8 +98,8 @@ public class GetQuestions
         
         correctAnswers.add (correctAnswer);
         counter ++;
-        System.out.print ("Question Number" + counter);
-        System.out.println ("answer : " + correctAnswer);
+//        System.out.print ("Question Number" + counter);
+//        System.out.println ("answer : " + correctAnswer);
       }
       
     }

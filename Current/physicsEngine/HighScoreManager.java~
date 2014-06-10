@@ -5,11 +5,12 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JButton;
 import javax.swing.JTextField;
+import javax.swing.JOptionPane;
 import javax.swing.GroupLayout;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.awt.Font;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.awt.*;
 import java.io.*;
 
@@ -19,12 +20,13 @@ public class HighScoreManager
   //static final File HIGHSCORES = new File ("highscores.jp");
   static final String HIGHSCORES = "highscores.txt";
   
- public HighScoreManager () 
- {
-   importFile (HIGHSCORES);
- }
- 
- public void importFile (String fileName)
+  public HighScoreManager () 
+  {
+    importFile (HIGHSCORES);
+    //sort array just in case
+  }
+  
+  public void importFile (String fileName)
   {    
     try
     {   
@@ -35,7 +37,7 @@ public class HighScoreManager
         int score;
         try
         {
-        score = Integer.parseInt (in.readLine());
+          score = Integer.parseInt (in.readLine());
         }
         catch (NumberFormatException e)
         {
@@ -58,18 +60,18 @@ public class HighScoreManager
   {
     try
     {
-    PrintWriter out = new PrintWriter (new FileWriter (HIGHSCORES));
-    for (int x = 0; x < 10; x++)
-    {
-      HighScore score = scores.get (x);
-      out.println (score.getName());
-      out.println (score.getScore());
-    }
-    out.close();
+      PrintWriter out = new PrintWriter (new FileWriter (HIGHSCORES));
+      for (int x = 0; x < 10; x++)
+      {
+        HighScore score = scores.get (x);
+        out.println (score.getName());
+        out.println (score.getScore());
+      }
+      out.close();
     }
     catch (IOException e)
     {
-     System.out.println ("Error writing highscore file"); 
+      System.out.println ("Error writing highscore file"); 
     }
   }
   
@@ -77,17 +79,17 @@ public class HighScoreManager
   {
     try
     {
-    PrintWriter out = new PrintWriter (new FileWriter (HIGHSCORES));
-    for (int x = 0; x < 10; x++)
-    {
-      out.println ("P'ngball Grandmaster");
-      out.println (0);
-    }
-    out.close();
+      PrintWriter out = new PrintWriter (new FileWriter (HIGHSCORES));
+      for (int x = 0; x < 10; x++)
+      {
+        out.println ("P'ngball Grandmaster");
+        out.println (0);
+      }
+      out.close();
     }
     catch (IOException e)
     {
-     System.out.println ("Error writing highscore file"); 
+      System.out.println ("Error writing highscore file"); 
     }
     
   }
@@ -97,73 +99,83 @@ public class HighScoreManager
     return scores;
   }
   
-  public void checkScores (int score)
+  public boolean checkScores (int score)
   {
     for (int x = 0; x < scores.size();x++)
     {
-     if (scores.get (x).getScore() < score)
-     {
-       insertScore (x,score);
-     }
+      if (scores.get (x).getScore() < score)
+      {
+        insertScore (x,score);
+        return true;
+      }
     }
+    return false;
     
   }
   
-  public void insertScore (int location, int score)
+  public void insertScore (final int location, final int score)
   {
-    new NamePromptFrame (score);
     class NamePromptPanel extends JPanel implements ActionListener
-  {
-      JTextField nameField = new JTextField (10);
-    public NamePromptPanel (int score, JFrame parent)
     {
-      
-      JButton submitButton = new JButton ("Submit");
-    add (new JLabel ("Score: " + score));
-    add (new JLabel ("Enter your name: "));
-    add (nameField);
-    add (submitButton);
-    setSize (300,200);
-    setVisible (true);
-    }
-    
-     public void actionPerformed (ActionEvent ae)
-     {
-      if (ae.getActionCommand().equals ("Submit"))
+      JTextField nameField = new JTextField (10);
+      JFrame parent;
+      public NamePromptPanel (int score, JFrame parent)
       {
-        String name = nameField.getText();
-       if (name.length() > 0)
-       {
-         scores.add (location,new HighScore (name,score));
-         scores.remove (10);
-          parent.dispose ();
-       }
-        else
+        this.parent = parent;
+        JButton submitButton = new JButton ("Submit");
+        submitButton.addActionListener (this);
+        add (new JLabel ("Score: " + score));
+        add (new JLabel ("Enter your name: "));
+        add (nameField);
+        add (submitButton);
+        setSize (300,200);
+        setFocusable (true);
+        setVisible (true);
+      }
+      
+      public void actionPerformed (ActionEvent ae)
+      {
+        System.out.println ("Pressed");
+        if (ae.getActionCommand().equals ("Submit"))
         {
-           JOptionPane.showMessageDialog (this, "You must input a name", "Name Error", JOptionPane.ERROR_MESSAGE);
+          String name = nameField.getText();
+          if (name.length() > 0)
+          {
+            scores.add (location,new HighScore (name,score));
+            scores.remove (10);
+            parent.dispose ();
+          }
+          else
+          {
+            JOptionPane.showMessageDialog (this, "You must input a name", "Name Error", JOptionPane.ERROR_MESSAGE);
+          }
         }
       }
-     }
-  }
-  
-  class NamePromptFrame extends JFrame implements ActionListener
-  {
-    public NamePromptFrame (int score)
-    {
-      super ("New Highscore");
-      add (new NamePromptPanel (score, this));
-      setSize (300,200);
-      setVisible (true);
-   setAutoRequestFocus (true);
-   setResizable (false);
-   setDefaultCloseOperation (JFrame.DISPOSE_ON_CLOSE);
     }
-    
-   
-  }
-    
-    
+    class NamePromptFrame extends JFrame
+    {
+      public NamePromptFrame (int score)
+      {
+        super ("New Highscore");
+        add (new NamePromptPanel (score, this));
+        setSize (300,200);
+        setVisible (true);
+        setAutoRequestFocus (true);
+        setResizable (false);
+        setDefaultCloseOperation (JFrame.DISPOSE_ON_CLOSE);
+      }
+      
+    }
+    JFrame temp = new JFrame ("New HighScore");
+    temp.add (new NamePromptPanel (score, temp));
+        temp.setSize (300,200);
+        temp.setVisible (true);
+        temp.setAutoRequestFocus (true);
+        temp.setResizable (false);
+        temp.setDefaultCloseOperation (JFrame.DISPOSE_ON_CLOSE);
+                                
   }
   
-  
+    
+    
 }
