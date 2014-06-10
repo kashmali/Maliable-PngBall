@@ -1,0 +1,405 @@
+Which of the following objects have momentum? Include all that apply, NO SPACES.
+ 
+ 
+ 
+ 
+ 
+a. An electron is orbiting the nucleus of an atom.
+b. A UPS truck is stopped in front of the school building.
+c. A Yugo (a compact car) is moving with a constant speed.
+d. A small flea walking with constant speed across Fido's back.
+ACD
+A truck driving along a highway road has a large quantity of momentum.
+If it moves at the same speed but has twice as much mass, its momentum is ________________.
+ 
+ 
+ 
+ 
+a. zero	
+b. quadrupled
+c. doubled
+d. unchanged
+C
+A ball is dropped from the same height upon various flat surfaces.
+For the same collision time, impulses are smaller when the most bouncing take place.
+ 
+ 
+ 
+ 
+a. True	
+b. False
+ 
+ 
+B
+Consider a karate expert. During a talent show, she executes a swift blow to a cement
+block and breaks it with her bare hand. During the collision between her hand and the
+block, the ___.
+ 
+ 
+ 
+a. time of impact on both the block and the expert's hand is the same
+b. force on both the block and the expert's hand have the same magnitude
+c. impulse on both the block and the expert's hand have the same magnitude
+d. all of the above.
+D
+It is NOT possible for a rocket to accelerate in outer space because ____. 
+List all that apply.
+ 
+ 
+ 
+ 
+a. there is no air in space
+b. there is no friction in space
+c. there is no gravity in outer space
+d. ... nonsense! Rockets do accelerate in outer space.
+D
+In order to catch a ball, a baseball player naturally moves his or her hand
+backward in the direction of the ball's motion once the ball contacts the hand.
+This habit causes the force of impact on the players hand to be reduced in size 
+principally because ___.
+ 
+ 
+a. the resulting impact velocity is lessened
+b. the momentum change is decreased
+c. the time of impact is increased
+d. the time of impact is decreased
+C
+Suppose that Paul D. Trigger fires a bullet from a gun. The speed of the bullet 
+leaving the muzzle will be the same as the speed of the recoiling gun ____.
+ 
+ 
+ 
+ 
+a. because momentum is conserved
+b. because velocity is conserved
+c. because both velocity and momentum are conserved
+d. only if the mass of the bullet equals the mass of the gun
+D
+Suppose that you're driving down the highway and a moth crashes into the windshield 
+of your car. Which undergoes the greater change is momentum?
+ 
+ 
+ 
+ 
+a. the moth
+b. your car	
+c. both the same 
+d. Cannot predict
+C
+Suppose that you're driving down the highway and a moth crashes into the windshield 
+of your car. Which undergoes the greater force?
+ 
+ 
+ 
+ 
+a. the moth	
+b. your car	
+c. both the same
+ 
+C
+Suppose that you're driving down the highway and a moth crashes into the windshield
+of your car. Which undergoes the greater impulse?
+ 
+ 
+ 
+ 
+a. the moth	
+b. your car	
+c. both the same
+ 
+C
+Suppose that you're driving down the highway and a moth crashes into the windshield
+of your car. Which undergoes the greater acceleration?
+ 
+ 
+ 
+ 
+a. the moth	
+b. your car	
+c. both the same
+ 
+A
+In a physics experiment, two equal-mass carts roll towards each other on a level,
+low-friction track. One cart rolls rightward at 2 m/s and the other cart rolls 
+leftward at 1 m/s. After the carts collide, they couple (attach together) and roll 
+together with a speed of _____________ m/s. Ignore resistive forces.
+ 
+ 
+a. 0.5	
+b. 0.33	
+c. 0.67 	
+d. 1.0	
+A
+The time required for a boat travelling at 3.75 m/s boat to cross the 86.4 m wide
+river is ___ seconds.
+ 
+ 
+ 
+ 
+a. 4.2	
+b. 15.8	
+c. 21.6	
+d. 23.0
+D
+Location C is the location where the boat ultimately lands on the opposite shore. 
+What is the distance from location B to location C (C being the location the boat 
+landed, and B being the target). Given that the river is 100m across, the velocity 
+of the boat is 10 m/s relative to the water and the river is moving at 5 m/s relative 
+to the ground. Assuming that location B is across the river on start-up.
+ 
+a. 45	
+b. 50	
+c. 42	
+d. 47
+B
+If the current on a particular day was flowing with two times the velocity,
+then the time to cross the river would be ____.
+ 
+ 
+ 
+ 
+a. two times greater	
+b. one-half as great
+c. the same as it was when the current flowed at any speed
+d. less, but not one-half the original time
+C
+An object is undergoing free fall motion. As it falls, the object's ____.
+ 
+ 
+ 
+ 
+ 
+a. speed increases	
+b. acceleration increases
+c. both of these	
+d. none of these
+A
+A football is kicked into the air at an angle of 45 degrees with the horizontal. 
+At the very top of the ball's path, its velocity is _______.
+ 
+ 
+ 
+ 
+a. entirely vertical	
+b. entirely horizontal
+c. both vertical and horizontal	
+d. not enough information given to know.
+B
+A football is kicked into the air at an angle of 45 degrees with the horizontal. 
+At the very top of the ball's path, its acceleration is _______.
+(Neglect the effects of air resistance.)
+ 
+ 
+ 
+a. entirely vertical	
+b. entirely horizontal
+c. both vertical and horizontal	
+d. not enough information given to know
+A
+A football is kicked into the air at an angle of 45 degrees with the horizontal.
+At the very top of the ball's path, the net force acting upon it is _______. 
+(Neglect the effects of air resistance.)
+ 
+ 
+ 
+a. entirely vertical	
+b. entirely horizontal
+c. both vertical and horizontal	
+d. not enough information given to know.
+A
+At what point in its path is the horizontal component of the velocity (vx) 
+of a projectile the smallest?
+ 
+ 
+ 
+ 
+a. The instant it is thrown.	
+b. It is the same throughout the path.	
+c. At the top.
+d. As it nears the top.		
+B
+At what point in its path is the vertical component of the velocity (vy) 
+of a projectile the smallest?
+ 
+ 
+ 
+ 
+a. The instant it is thrown.	
+b. Halfway to the top.	
+c. At the top.
+d. As it nears the top.		
+C
+An airplane that flies at 100 km/h in a 100 km/h hurricane crosswind has 
+a speed (relative to the ground) of ____ km/h.
+ 
+ 
+ 
+ 
+a. 0 	
+b. 100	
+c. 141	
+d. 200
+C
+Roll a bowling ball off the edge of a table. As it falls, its horizontal 
+component of velocity ___.
+ 
+ 
+ 
+ 
+a. decreases	
+b. remains constant	
+c. increases
+d. none of the above
+B
+A projectile is launched at an angle of 15 degrees above the horizontal and
+lands down range. For the same speed, what other projection angle would 
+produce the same downrange distance?
+ 
+ 
+ 
+a. 30 degrees.	
+b. 45 degrees.	
+c. 50 degrees.	
+d. 75 degrees.	
+D
+Jason P'ng starts at the classroom door and walks:
+    2.0 meters, West,   12.0 meters, North,
+    31.0 meters, West,  8.0 meters, South
+    3.0 meters, East.
+Using either a scaled diagram or a calculator, determine the magnitude 
+of Jason’s resulting displacement. Magnitude = ______ meters.
+a. 30.3
+b. -30.3
+c. 33.1
+d. -33.1 
+A
+Daniel Chen hikes 12.4 km, south. The hiker then makes a turn towards the
+southeast and finishes at the final destination. The overall displacement
+of the two-legged trip is 19.7 km at 309 degrees. Determine the magnitude
+of the second leg of the trip. Magnitude = ______ km.
+ 
+ 
+a. 13.2
+b. 9.5
+c. 14.4
+d. 12.7
+D
+If an Eric Tseng is launched horizontally with a speed of 12.0 m/s from 
+the top of a 24.6-meter high building. Determine his horizontal displacement.
+Horizontal Displacement = ______ m.
+ 
+ 
+ 
+a. 30.2
+b. 27.4
+c. 27.0
+d. 30.0
+C
+A projectile is launched with an initial speed of 21.8 m/s at an angle 
+of 35.0-degrees above the horizontal.
+Determine the peak height of the projectile.
+Height = ______ m.
+ 
+ 
+a. There is no peak height
+b. 20.6
+c. 7.98
+d. 12.3
+C
+A projectile is launched horizontally from the top of a 45.2-meter high 
+cliff and lands a distance of 17.6 meters from the base of the cliff. 
+Determine the magnitude of the launch velocity.
+Launch Velocity = ______ m/s.
+ 
+ 
+a. 6.34
+b. 4.56
+c. 9.87
+d. 5.79
+D
+Two physics students stand on the top of their 3.29-meter second-story 
+deck and launch a water balloon from a homemade winger. The balloon is 
+launched upward at a speed of 45.2 m/s and an angle of 39.1 degrees. 
+The balloon lands in a retention pond whose surface is 2.92 meters *below grade*. 
+Determine the horizontal distance from launch location to landing location.
+The Landing Location is ______ m away.
+a. 211
+b. 216
+c. 221
+d. 226
+A
+A place kicker kicks a football from 39.6 meters from the goal posts. 
+The kick leaves the ground with a speed of 24.8 m/s at an angle of 49.6 degrees. 
+The goal posts are 3.10-meters high.
+Determine the amount by which the kick clears the goal posts.
+It clears the goal post by _____ meters.
+ 
+a. 15.6
+b. 13.7
+c. 12.2
+d. 14.3
+B
+An airplane starts at Point A and flies 210. km at 311 degrees to Point B. 
+The plane then flies 179 km at 109 degrees to Point C. Finally, 
+the plane flies 228 km at 29 degrees to Point D. 
+Determine the resulting magnitude from point A to D.
+The magnitude from A to D is ______ km.
+ 
+a. 304
+b. 256
+c. 311
+d. 278
+A
+Sammy Sosa clubs a home run which sails 421 feet and lands on an apartment 
+balcony located a vertical distance of 59.0 feet above the level of the 
+ball-bat contact location. An observer times the flight to the balcony to 
+take 3.40 seconds. Given: 1.00 meter = 3.28 feet.
+Determine the magnitude of the velocity at which the ball leaves the bat.
+The magnitude is; vi = ______ m/s.
+a. 67.3
+b. 43.7
+c. 54.7
+d. 56.3
+B
+Cupid wishes to shoot an arrow through the open window of a tall building. 
+The window is 32.8 meters above the ground and Cupid stands 63.6 meters 
+from the base of the building. If Cupid aims the arrow at an angle of 
+51.5 degrees above the horizontal, with what minimum speed must he fire 
+the arrow in order for it to enter the window?
+Speed = ______ m/s.
+a. 33.3
+b. 28.9
+c. 32.7
+d. 29.4
+C
+In a Physics demonstration, a projectile is launched from a height of 1.23 
+above the ground with a speed of 10.6 m/s at an angle of 30.0 degrees 
+above the horizontal.
+With what speed does the projectile land?
+It lands with a speed of ______ m/s.
+ 
+a. 13.4
+b. 14.6
+c. 10.2
+d. 11.7
+D
+A car is parked on a cliff overlooking the sea. The cliff is inclined at an
+angle of 29.0 degrees below the horizontal. The negligent driver leaves the
+car in neutral and it begins rolling from rest towards the cliff's edge with
+an acceleration 4.50 m/s/s. The car moves a linear distance of 57.2 m to the
+edge of the cliff before plunging into the ocean below. 
+Find the speed (in m/s) of the car the moment it leaves the cliff.
+a. 25.2 m/s
+b. 22.7 m/s
+c. 16.9 m/s
+d. 16.3 m/s
+B
+
+
+
+
+
+
+
+
+

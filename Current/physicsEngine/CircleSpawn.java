@@ -53,6 +53,14 @@ public class CircleSpawn extends Spawn
    this.radius = newRadius; 
   }
   
+  public void intersect (ButtonObstacle button, float timeLimit)
+  {
+    MoveEngine.pointIntersectsPoint (this, button.getX(),button.getY(),button.getRadius(),timeLimit, tempResponse);
+    if (tempResponse.t < earliestCollisionResponse.t) {
+            earliestCollisionResponse.copy(tempResponse);
+            GameEngine.increaseScore (20);
+      }
+  }
   //The following two methods changed something to make the collision work
   
   /**
@@ -74,6 +82,8 @@ public class CircleSpawn extends Spawn
         if (lineSegment instanceof PseudoPaddle){
           pseudoPaddleHit = true;
         }
+        else if (lineSegment instanceof BumperObstacleLine)
+          GameEngine.increaseScore (((BumperObstacleLine)lineSegment).getScoreValue());
             earliestCollisionResponse.copy(tempResponse);
       }
    }
@@ -122,7 +132,6 @@ public class CircleSpawn extends Spawn
       earliestCollisionResponse.newSpeedY = 5;
        else if (earliestCollisionResponse.newSpeedY < 0)
       earliestCollisionResponse.newSpeedY = -20;
-      System.out.println ("PseudoHit");
      }
       // Check if this ball is responsible for the first collision?
       if (earliestCollisionResponse.t <= time) { // FIXME: threshold?

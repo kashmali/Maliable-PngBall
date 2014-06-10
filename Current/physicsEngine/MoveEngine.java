@@ -186,6 +186,13 @@ public class MoveEngine implements Pausable
            
           //pointIntersectsLineHorizontal (s,(float)l.getY(),0.05f);
       }
+      for (int c = 0; c< main.buttons.size();c++)
+      {
+        ButtonObstacle b = main.buttons.get (c);
+        ((CircleSpawn)s).intersect (b,tMin);
+        if (s.earliestCollisionResponse.t < tMin){
+             tMin = s.earliestCollisionResponse.t;}
+      }
       //lineCollide (tMin, s, s.earliestCollisionResponse);
       
       for (int z = 0; z < main.paddles.size();z++)

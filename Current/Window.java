@@ -11,15 +11,17 @@ public class Window extends JFrame implements ActionListener
   //Add Window Listener
   
   static GameEngine e;
-    
+    static InformationPanel infoP;
+    static GetQuestions gq;
   public Window ()
   {
     super ("Maliable P'ngball");
     setJMenuBar (new GameMenu (this));
     //GamePanel gameP = new GamePanel ();
-    InformationPanel infoP  = new InformationPanel ();
+    infoP  = new InformationPanel ();
     //this.add (gameP);
     e = new GameEngine();
+    gq = new GetQuestions ();
     e.setVisible (true);
     this.add (e); //getContentPane()
     addKeyListener(new TAdapter());
@@ -40,6 +42,7 @@ public class Window extends JFrame implements ActionListener
             public void windowClosing(WindowEvent event)
             {
               //May have to count windows if more are added
+              HighScoreManager.writeFile ();
                     System.exit(0);
             }
         });
@@ -52,18 +55,34 @@ public class Window extends JFrame implements ActionListener
   {
     if (ae.getActionCommand ().equals("Exit"))
     {
+      HighScoreManager.writeFile ();
       System.exit (0);
     }
     else if (ae.getActionCommand().equals ("Display"))
     {
-      new HighScoreFrame ();
+      GameEngine.paused = true;
+      InfoFrame frame = new InfoFrame ("High Scores");
+    }
+    else if (ae.getActionCommand().equals ("Instructions"))
+    {
+      GameEngine.paused = true;
+      InfoFrame frame = new InfoFrame ("Instructions");
+    }
+    else if (ae.getActionCommand().equals ("Pause"))
+    {
+      GameEngine.paused = !GameEngine.paused;
+    }
+    else if (ae.getActionCommand().equals ("Formulas"))
+    {
+      GameEngine.paused = true;
+      InfoFrame frame = new InfoFrame ("Formulas");
     }
     repaint ();
   }
   
-  public static void main (String[] args)
+  public  void runProgram()
   {
-    Window w = new Window ();   // Create a FrameTest frame
+    //Window w = new Window ();   // Create a FrameTest frame
     while (true){
     e.gamerun();
     try {Thread.sleep (300);}

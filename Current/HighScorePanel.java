@@ -7,22 +7,27 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.awt.Font;
 import java.awt.event.ActionListener;
+import java.awt.*;
 import java.io.*;
+
+import Files.Current.physicsEngine.*;
 
 public class HighScorePanel extends JPanel
 {
-  //static final File HIGHSCORES = new File ("highscores.jp");
-  static final String HIGHSCORES = "highscores.txt";
-  public static ArrayList<HighScore> scores = new ArrayList<HighScore>(10);
   
   public HighScorePanel (JFrame parent)
   {
     JLabel[] nameLabels = new JLabel[10];;
     JLabel[] scoreLabels = new JLabel[10];
+    JLabel name = new JLabel ("Name");
+    JLabel score = new JLabel ("Score");
     JButton closeButton = new JButton ("Close");
     closeButton.addActionListener ((ActionListener)parent);
-    importFile(HIGHSCORES);
     Font font = new Font (Font.SERIF,Font.PLAIN, 20);
+    Font titleFont = new Font (Font.SERIF,Font.BOLD, 30);
+    name.setFont (titleFont);
+    score.setFont (titleFont);
+    ArrayList<HighScore> scores = HighScoreManager.getScores ();
     for (int x = 0;x < 10;x++)
     {
      nameLabels [x] = new JLabel (scores.get(x).getName());
@@ -35,6 +40,7 @@ public class HighScorePanel extends JPanel
     layout.setAutoCreateContainerGaps (true);
     layout.setHorizontalGroup (layout.createSequentialGroup ()
                                  .addGroup (layout.createParallelGroup ()
+                                              .addComponent (name)
                                               .addComponent (nameLabels [0])
                                               .addComponent (nameLabels [1])
                                               .addComponent (nameLabels [2])
@@ -47,6 +53,7 @@ public class HighScorePanel extends JPanel
                                               .addComponent (nameLabels [9])
                                               .addComponent (closeButton))
                                 .addGroup (layout.createParallelGroup ()
+                                             .addComponent (score)
                                              .addComponent (scoreLabels [0])
                                              .addComponent (scoreLabels [1])
                                              .addComponent (scoreLabels [2])
@@ -59,6 +66,9 @@ public class HighScorePanel extends JPanel
                                              .addComponent (scoreLabels [9]))
                                           );
     layout.setVerticalGroup (layout.createSequentialGroup()
+                               .addGroup (layout.createParallelGroup()
+                                            .addComponent (name)
+                                            .addComponent (score))
                                .addGroup (layout.createParallelGroup()
                                             .addComponent (nameLabels [0])
                                             .addComponent (scoreLabels [0]))
@@ -97,72 +107,6 @@ public class HighScorePanel extends JPanel
     setVisible (true);
   }
   
-  public void importFile (String fileName)
-  {    
-    try
-    {   
-      BufferedReader in = new BufferedReader (new FileReader (fileName));
-      for (int x = 0; x < 10; x++)
-      {
-        String name = in.readLine();
-        int score;
-        try
-        {
-        score = Integer.parseInt (in.readLine());
-        }
-        catch (NumberFormatException e)
-        {
-          System.out.println ("Error with highscore file. Score is not an integer");
-          score = 0;
-        }
-        scores.add (new HighScore (name,score));
-      }
-      in.close ();
-    }
-    catch (IOException e)
-    {
-      System.out.println ("Error Loading High Scores");
-      writeBlankFile();
-      importFile (fileName);
-    }
-  }
   
-  public static void writeFile ()
-  {
-    try
-    {
-    PrintWriter out = new PrintWriter (new FileWriter (HIGHSCORES));
-    for (int x = 0; x < 10; x++)
-    {
-      HighScore score = scores.get (x);
-      out.println (score.getName());
-      out.println (score.getScore());
-    }
-    out.close();
-    }
-    catch (IOException e)
-    {
-     System.out.println ("Error writing highscore file"); 
-    }
-  }
-  
-  public static void writeBlankFile ()
-  {
-    try
-    {
-    PrintWriter out = new PrintWriter (new FileWriter (HIGHSCORES));
-    for (int x = 0; x < 10; x++)
-    {
-      out.println ("P'ngball Grandmaster");
-      out.println (0);
-    }
-    out.close();
-    }
-    catch (IOException e)
-    {
-     System.out.println ("Error writing highscore file"); 
-    }
-    
-  }
   
 }

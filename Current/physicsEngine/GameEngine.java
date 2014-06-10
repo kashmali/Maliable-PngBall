@@ -42,11 +42,12 @@ public class GameEngine extends JPanel implements Pausable
   public static boolean isRunning = true;
   private int fps;
   public static boolean paused = false;
+  public static int score = 0;
   MoveEngine moveEngine;
+  HighScoreManager highscoreManager;
   public GameEngine ()
   {
     // Create canvas for painting...
-
     //setIgnoreRepaint(true);
     setSize(X, Y);
     setBackground (Color.WHITE);
@@ -59,19 +60,26 @@ public class GameEngine extends JPanel implements Pausable
     graphics = null;
     g2d = null;
     initialize();
+    highscoreManager = new HighScoreManager();
   }
   
   public void initialize ()
   {
+    //The ball
    living.add (new CircleSpawn (16,16,0,0,100));
-    //obstacles.add (new RectangleSpawn (100,300,0,0,200,100));
-//    paddles.add (new Paddle (215,450,135,Color.BLACK,Paddle.RIGHT));
-//    paddles.add (new Paddle (85,450,45,Color.BLACK,Paddle.LEFT));
 
-    lines.add (new ObstacleLine (100,200,300,200,Color.BLACK));
-    lines.add (new ObstacleLine (100,200,200,300,Color.BLACK));
-    lines.add (new ObstacleLine (200,300,300,200,Color.BLACK));
+   //Button
+   buttons.add (new ButtonObstacle (50,200,15,1.1f,Color.BLACK));
+   buttons.add (new ButtonObstacle (150,200,15,1.1f,Color.BLACK));
+   buttons.add (new ButtonObstacle (250,200,15,1.1f,Color.BLACK));
+   buttons.add (new ButtonObstacle (350,200,15,1.1f,Color.BLACK));
+
+   //Center obstacle
+//    lines.add (new ObstacleLine (100,200,300,200,Color.BLACK));
+//    lines.add (new ObstacleLine (100,200,200,300,Color.BLACK));
+//    lines.add (new ObstacleLine (200,300,300,200,Color.BLACK));
     
+   lines.add (new BumperObstacleLine (200,0,300,100));
     //walls
     lines.add (new ObstacleLine (0,0,0,550,Color.BLACK));
     lines.add (new ObstacleLine (400,0,400,550,Color.BLACK));
@@ -152,13 +160,17 @@ public class GameEngine extends JPanel implements Pausable
     System.out.println ("Game Over");
     living.get (0).updatePos (16,16);
     isRunning = true;
+    System.out.println (score);
+    if (highscoreManager.checkScores (score))
+      pause();
+    score = 0;
    // run();
   }
 
   public void paintComponent (Graphics g)
   {
    super.paintComponent (g);
-   
+   g.drawString ("Score: " + Integer.toString (score),70,20);
     //System.out.println ("Print");
    //g2d = (Graphics2D) g;
 //   //try{
@@ -187,28 +199,18 @@ public class GameEngine extends JPanel implements Pausable
       g.drawLine ((int)p.getX(),(int)p.getY(),(int)p.getX2(),(int)p.getY2());}
     for (ObstacleLine l :lines){
       g.drawLine ((int)l.getX(),(int)l.getY(),(int)l.getX2(),(int)l.getY2());}
-//     //g2d.draw (new Line2D.Double (100,100,200,100));
+    for (ButtonObstacle b : buttons){
+      g.fillOval ((int)(b.getX() - b.getRadius()),(int)(b.getY() - b.getRadius()),(int)(b.getRadius() * 2),(int)(b.getRadius() * 2));}
 //         //display frames per second...
 //        g2d.setFont(new Font("Courier New", Font.PLAIN, 12));
-//        g2d.setColor(Color.GREEN);
-//        /*if (fps == 0)
-//          System.out.println ("0 fps");
-//        if (g2d == null)
-//          System.out.println ("Null Graphics");*/
         g.drawString(String.format("FPS: %s", fps), 20, 20);
 //        
 //        
 //          //Errors once and then stops. Don't know why it throws a NullPointerException
-//          g.drawString ("FPS: " + fps,20,20);
           if (isPaused())
           {
            g.drawString ("Paused game", 20,40);
           }
-//        //}
-//        //catch (NullPointerException e)
-//        //{
-//          
-//        //}
         
         if (isRunning == false)
         {
@@ -257,21 +259,32 @@ public class GameEngine extends JPanel implements Pausable
    paused = true; 
   }
   
+  public static void increaseScore (int increment)
+  {
+    score += increment;
+  }
+
   public boolean acknowledge = false;
+  private ObstacleLine cheat = new ObstacleLine (0,510,400,510,Color.BLACK);
   public void keyPressed (KeyEvent e)
   {
    int key = e.getKeyCode ();
    switch (key){
-     case KeyEvent.VK_SPACE : paused = !paused;
+     case KeyEvent.VK_P : paused = !paused;
      break;
-     case KeyEvent.VK_R : 
+     case KeyEvent.VK_X : 
 //For some strange reason the repaint method stops refrshing once this is pressed
        System.out.println ("Pressed");
 //       reset ();
 //       initialize();
 //       living.get (0).updatePos (16,16);
 //       isRunning = true;
-       gamerun();
+       //gamerun();
+       if (!lines.contains (cheat))
+       lines.add (cheat);
+       break;
+     case KeyEvent.VK_Z :
+       lines.remove (cheat);
        break;
 
    }
