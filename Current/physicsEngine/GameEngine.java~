@@ -42,9 +42,10 @@ public class GameEngine extends JPanel implements Pausable
   public static boolean isRunning = true;
   private int fps;
   public static boolean paused = false;
+  public static boolean terminated = false;
   public static int score = 0;
   MoveEngine moveEngine;
-  HighScoreManager highscoreManager;
+ public  HighScoreManager highscoreManager;
   
   public static final int EASY_LAYOUT = 0;
   public static final int MEDIUM_LAYOUT = 1;
@@ -164,6 +165,8 @@ public class GameEngine extends JPanel implements Pausable
         }
         ++frames;
         
+        if (terminated)
+          break;
         if (!paused)
         {
           moveEngine.run();
@@ -197,9 +200,9 @@ public class GameEngine extends JPanel implements Pausable
     living.get (0).updatePos (16,16);
     isRunning = true;
     //System.out.println (score);
-    if (highscoreManager.checkScores (score))
+    
       pause();
-    score = 0;
+   // score = 0;
    // run();
   }
 
@@ -299,7 +302,16 @@ public class GameEngine extends JPanel implements Pausable
   {
     score += increment;
   }
+public int getScore ()
+{
+  return score;
+}
 
+public void resetGame ()
+{
+  terminated = false;
+  score = 0;
+}
   public boolean acknowledge = false;
   private ObstacleLine cheat = new ObstacleLine (0,510,400,510,Color.BLACK);
   public void keyPressed (KeyEvent e)
@@ -321,6 +333,9 @@ public class GameEngine extends JPanel implements Pausable
        break;
      case KeyEvent.VK_Z :
        lines.remove (cheat);
+       break;
+     case KeyEvent.VK_ENTER :
+       terminated = true;
        break;
 
    }

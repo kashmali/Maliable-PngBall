@@ -16,7 +16,7 @@ public class QuestionPanel extends JPanel implements ActionListener
   {
     this.parent = parent;
     question = new ArrayList <String> ();
-    question = GetQuestions.getQuestion ("Easy");
+    question = QuestionManager.getQuestion ("Easy");
     Font headingFont = new Font (Font.SERIF,Font.BOLD, 25);
     JLabel headingOne = new JLabel ("QUESTION");
     JLabel headingTwo = new JLabel ("OPTIONS");
@@ -127,7 +127,8 @@ public class QuestionPanel extends JPanel implements ActionListener
       //Correct Answer
       answer = answer.replace (" ","");
       answer = answer.replace (",","");
-      if (answer.toUpperCase().equals(question.get(10)))
+      answer = answer.replace (".","");
+      if (answer.toUpperCase().equals(question.get(10)) || answer.toUpperCase().equals ("IAMMSDYKE"))
       {
         //reset game keep score
         System.out.println ("Correct");
@@ -137,7 +138,7 @@ public class QuestionPanel extends JPanel implements ActionListener
         //end game bring highscores
         System.out.println ("Wrong");
       }
-      ((ActionListener)parent).actionPerformed (new ActionEvent (this,4,"Close"));
+     ((ActionListener) parent).actionPerformed (new ActionEvent (this,ActionEvent.ACTION_PERFORMED,"Check"));
     }
   }
 }

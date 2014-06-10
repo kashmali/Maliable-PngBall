@@ -44,6 +44,7 @@ public class GameEngine extends JPanel implements Pausable
   public static boolean paused = false;
   public static boolean terminated = false;
   public static int score = 0;
+  public static int layout;
   MoveEngine moveEngine;
  public  HighScoreManager highscoreManager;
   
@@ -78,7 +79,7 @@ public class GameEngine extends JPanel implements Pausable
 
     //walls
     lines.add (new ObstacleLine (0,0,0,550,Color.BLACK));
-    lines.add (new ObstacleLine (400,0,400,550,Color.BLACK));
+    lines.add (new ObstacleLine (396,0,396,550,Color.BLACK));
     lines.add (new ObstacleLine (0,0,400,0,Color.BLACK));
     
     //slopes to the paddle
@@ -104,6 +105,7 @@ public class GameEngine extends JPanel implements Pausable
    buttons.add (new ButtonObstacle (150,200,15,1.1f,Color.BLACK));
    buttons.add (new ButtonObstacle (250,200,15,1.1f,Color.BLACK));
    buttons.add (new ButtonObstacle (350,200,15,1.1f,Color.BLACK));
+    layout = EASY_LAYOUT;
 
   }
   
@@ -113,7 +115,7 @@ public class GameEngine extends JPanel implements Pausable
     lines.add (new BumperObstacleLine (100,200,300,200));
     lines.add (new ObstacleLine (100,200,200,300,Color.BLACK));
     lines.add (new ObstacleLine (200,300,300,200,Color.BLACK));
-    
+    layout = MEDIUM_LAYOUT;
   }
   
   public void hardLayout ()
@@ -121,6 +123,7 @@ public class GameEngine extends JPanel implements Pausable
        buttons.add (new ButtonObstacle (200,200,30,1.1f,Color.BLACK));
        lines.add (new BumperObstacleLine (200,150,250,200));
   lines.add (new BumperObstacleLine (200,150,150,200));
+  layout = HARD_LAYOUT;
   }
   
   public void setGameLayout (int layout)
@@ -136,6 +139,17 @@ public class GameEngine extends JPanel implements Pausable
       break;
     }      
     }
+  
+  public static String getLayoutAsString ()
+  {
+    switch (layout){
+      case EASY_LAYOUT : return "Level 1";
+      case MEDIUM_LAYOUT : return "Level 2";
+      case HARD_LAYOUT : return "Level 3";
+      default :return "Can't be found";
+    }  
+  }
+  
   public void gamerun ()
   {
    
@@ -302,6 +316,7 @@ public class GameEngine extends JPanel implements Pausable
   {
     score += increment;
   }
+  
 public int getScore ()
 {
   return score;
@@ -336,6 +351,7 @@ public void resetGame ()
        break;
      case KeyEvent.VK_ENTER :
        terminated = true;
+       
        break;
 
    }

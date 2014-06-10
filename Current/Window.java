@@ -20,15 +20,16 @@ public class Window extends JFrame implements ActionListener
   /**
    * Panel that displays information about the current gameplay.
    */
-    static InformationPanel infoP;
-    /**
+  static InformationPanel infoP;
+  /**
    * The Question manager to read in and access the questions from the question file.
    */
-    static QuestionManager gq;
-    
-    static JPanel mainPanel;
-    //Add a picture panel
-    static GameMenu menuBar;
+  static QuestionManager gq;
+  HighScorePanel highscores;
+  QuestionPanel questions;
+  static JPanel mainPanel;
+  //Add a picture panel
+  static GameMenu menuBar;
   public Window ()
   {
     super ("Maliable P'ngball");
@@ -64,11 +65,27 @@ public class Window extends JFrame implements ActionListener
     layout.addLayoutComponent ("Stasis",stasis);
     layout.addLayoutComponent ("Logo",logo);
     menuPanel.setLayout (layout2);
-       
+    
+    //Instruction
+    InstructionsPanel instructions = new InstructionsPanel (this);
+    
+    //HighScores
+    highscores = new HighScorePanel (this);
+    
+    //Formulas
+    FormulaPanel formulas = new FormulaPanel (this);
+    
+    //Question
+    questions = new QuestionPanel (this);
+    
     //The main Panel
     mainPanel = new JPanel (new CardLayout()); 
     mainPanel.add ("Menu", menuPanel);
     mainPanel.add ("Game", gamePanel);
+    mainPanel.add ("Instructions",instructions);
+    mainPanel.add ("High Scores",highscores);
+    mainPanel.add ("Formulas", formulas);
+    mainPanel.add ("Question",questions);
     mainPanel.setFocusable(true);
     mainPanel.addKeyListener(new TAdapter());
     
@@ -81,75 +98,91 @@ public class Window extends JFrame implements ActionListener
     setVisible (true);
     setDefaultCloseOperation (JFrame.DISPOSE_ON_CLOSE);
     addWindowListener(new WindowAdapter()
-        {
-            public void windowClosing(WindowEvent event)
-            {
-              //May have to count windows if more are added
-              HighScoreManager.writeFile ();
-                    System.exit(0);
-            }
-        });
+                        {
+      public void windowClosing(WindowEvent event)
+      {
+        //May have to count windows if more are added
+        HighScoreManager.writeFile ();
+        System.exit(0);
+      }
+    });
     setResizable (false);
     //setAutoRequestFocus (true);
     repaint();
   }
-    
+  
   public void actionPerformed (ActionEvent ae)
   {
-    if (ae.getActionCommand ().equals("Exit"))
+    String command = ae.getActionCommand ();
+    if (command.equals("Exit"))
     {
       HighScoreManager.writeFile ();
       System.exit (0);
     }
-    else if (ae.getActionCommand().equals ("Display"))
+    else if (command.equals ("Display"))
     {
-      GameEngine.paused = true;
-      InfoFrame frame = new InfoFrame ("High Scores");
+//      GameEngine.paused = true;
+//      InfoFrame frame = new InfoFrame ("High Scores");
+      mainPanel.remove (highscores);
+      highscores = new HighScorePanel (this);
+      mainPanel.add ("High Scores", highscores);
+      show ("High Scores");
     }
-    else if (ae.getActionCommand().equals ("Instructions"))
+    else if (command.equals ("Instructions"))
     {
-      GameEngine.paused = true;
-      InfoFrame frame = new InfoFrame ("Instructions");
+//      GameEngine.paused = true;
+//      InfoFrame frame = new InfoFrame ("Instructions");
+      show ("Instructions");
     }
-    else if (ae.getActionCommand().equals ("Pause"))
+    else if (command.equals ("Formulas"))
     {
-      GameEngine.paused = !GameEngine.paused;
+//      GameEngine.paused = true;
+//      InfoFrame frame = new InfoFrame ("Formulas");
+      show ("Formulas");
     }
-    else if (ae.getActionCommand().equals ("Formulas"))
-    {
-      GameEngine.paused = true;
-      InfoFrame frame = new InfoFrame ("Formulas");
-    }
-    else if (ae.getActionCommand().equals ("Easy"))
+    else if (command.equals ("Easy"))
     {
       //change question set.
       //Alert the user of the change.
     }
-    else if (ae.getActionCommand().equals ("Medium"))
+    else if (command.equals ("Medium"))
     {
       
     }
-    else if (ae.getActionCommand().equals ("Hard"))
+    else if (command.equals ("Hard"))
     {
       
     }
-    else if (ae.getActionCommand().equals ("Print"))
+    else if (command.equals ("Print"))
     {
       //print function
     }
-    else if (ae.getActionCommand().equals ("Start"))
+    else if (command.equals ("Start"))
     {
       StasisPanel.removeStasis ();
-      CardLayout cl = (CardLayout)(mainPanel.getLayout());
-      cl.show (mainPanel, "Game");
+      show ("Game");
       //get out of stasis
-     //remove old panels
+      //remove old panels
       //put new panels
       
+    }
+    else if (command.equals ("Close"))
+    {
+      show ("Menu");
+    }
+    else if (command.equals ("Check"))
+    {
+      StasisPanel.removeStasis();
+      show ("Game"); 
     }
     repaint ();
   }
   
+  public void show (String panel)
+  {
+    CardLayout cl = (CardLayout)(mainPanel.getLayout());
+    cl.show (mainPanel, panel);
+  }
   public  void runProgram()
   {
     //Window w = new Window ();   // Create a FrameTest frame
@@ -162,32 +195,36 @@ public class Window extends JFrame implements ActionListener
       for (int x = 0; x < 3; x++)
       {
         e.setGameLayout (x);
-    e.gamerun();
-    if (e.terminated){
-      break;}
-    //add Ability to terminate
-    //update score
-    try {
-      Thread.sleep (300);
-      
-    }
-    catch (InterruptedException e){}
-    
-    showQuestion ();
-    e.pause();
-    }
-   e.highscoreManager.checkScores (e.getScore());
-     e.resetGame ();
-    StasisPanel.addStasis ();
-    menuBar.setVisible (true);
-      CardLayout cl = (CardLayout)(mainPanel.getLayout());
-      cl.show (mainPanel, "Menu");
+        e.gamerun();
+        if (e.terminated){
+          break;}
+        //add Ability to terminate
+        //update score
+        try {
+          Thread.sleep (300);
+          
+        }
+        catch (InterruptedException e){}
+        
+        showQuestion ();
+        StasisPanel.addStasis ();
+        StasisPanel.stasis ();
+        e.pause();
+      }
+      e.highscoreManager.checkScores (e.getScore());
+      e.resetGame ();
+      StasisPanel.addStasis ();
+      menuBar.setVisible (true);
+      show ("Menu");
     }
   } // main method
   
   public void showQuestion ()
   {
-    InfoFrame frame = new InfoFrame ("QuestionPanel");
+    mainPanel.remove (questions);
+      questions = new QuestionPanel (this);
+      mainPanel.add ("Question", questions);
+      show ("Question");
   }
   
   public void terminate ()
@@ -200,29 +237,26 @@ public class Window extends JFrame implements ActionListener
     public void keyReleased(KeyEvent e) 
     {
       if (!Window.e.living.isEmpty())
-      Window.e.living.get (0).keyReleased(e);
+        Window.e.living.get (0).keyReleased(e);
       for (Paddle p : Window.e.paddles)
         p.keyReleased (e);
-       
+      
     }
     
     public void keyPressed(KeyEvent e)
     {
       if (!Window.e.living.isEmpty())
       {
-      for (Spawn x : Window.e.living)
-      x.keyPressed(e);
-      Window.e.keyPressed (e);
+        for (Spawn x : Window.e.living)
+          x.keyPressed(e);
+        Window.e.keyPressed (e);
       }
       for (Paddle p :Window.e.paddles)
         p.keyPressed (e);
       for (PseudoPaddle p : Window.e.pseudoPaddles)
         p.keyPressed (e);
       //if space is pressed and the game hasn't started yet
+      
     }
   }
 }
-
-
-
-

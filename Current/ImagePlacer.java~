@@ -22,7 +22,7 @@ public class ImagePlacer extends JPanel
   {
     try 
     {
-      img = ImageIO.read (new File (image)); 
+      img = ImageIO.read (getClass().getResourceAsStream(image)); 
     }
     catch (IOException e)
     {
@@ -30,7 +30,20 @@ public class ImagePlacer extends JPanel
     }
   }
   
-  public void paint (Graphics g)
+  public static BufferedImage loadImage (String image,Class origin)
+  {
+    BufferedImage img = null;
+    try 
+    {
+      img = ImageIO.read (origin.getClass().getResourceAsStream(image)); 
+    }
+    catch (IOException e)
+    {
+      System.out.println ("Error Loading Image");
+    }
+    return img;
+  }
+  public void paintComponent (Graphics g)
   {
    g.drawImage (img,x,y,width,height,null); 
   }

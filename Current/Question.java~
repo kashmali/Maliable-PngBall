@@ -26,17 +26,17 @@ public class Question
    options [index] = option;
  }
  
- public void getQuestion ()
+ public String[] getQuestion ()
  {
    return question;
  }
  
- public void getOptions ()
+ public String[] getOptions ()
  {
    return options;
  }
  
- public void getAnswer ()
+ public String getAnswer ()
  {
   return answer; 
  }

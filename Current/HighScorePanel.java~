@@ -10,11 +10,10 @@ import java.awt.event.ActionListener;
 import java.awt.*;
 import java.io.*;
 
+import Files.Current.physicsEngine.*;
+
 public class HighScorePanel extends JPanel
 {
-  //static final File HIGHSCORES = new File ("highscores.jp");
-  static final String HIGHSCORES = "highscores.txt";
-  public static ArrayList<HighScore> scores = new ArrayList<HighScore>(10);
   
   public HighScorePanel (JFrame parent)
   {
@@ -24,11 +23,11 @@ public class HighScorePanel extends JPanel
     JLabel score = new JLabel ("Score");
     JButton closeButton = new JButton ("Close");
     closeButton.addActionListener ((ActionListener)parent);
-    importFile(HIGHSCORES);
     Font font = new Font (Font.SERIF,Font.PLAIN, 20);
     Font titleFont = new Font (Font.SERIF,Font.BOLD, 30);
     name.setFont (titleFont);
     score.setFont (titleFont);
+    ArrayList<HighScore> scores = HighScoreManager.getScores ();
     for (int x = 0;x < 10;x++)
     {
      nameLabels [x] = new JLabel (scores.get(x).getName());
@@ -108,72 +107,6 @@ public class HighScorePanel extends JPanel
     setVisible (true);
   }
   
-  public void importFile (String fileName)
-  {    
-    try
-    {   
-      BufferedReader in = new BufferedReader (new FileReader (fileName));
-      for (int x = 0; x < 10; x++)
-      {
-        String name = in.readLine();
-        int score;
-        try
-        {
-        score = Integer.parseInt (in.readLine());
-        }
-        catch (NumberFormatException e)
-        {
-          System.out.println ("Error with highscore file. Score is not an integer");
-          score = 0;
-        }
-        scores.add (new HighScore (name,score));
-      }
-      in.close ();
-    }
-    catch (IOException e)
-    {
-      System.out.println ("Error Loading High Scores");
-      writeBlankFile();
-      importFile (fileName);
-    }
-  }
   
-  public static void writeFile ()
-  {
-    try
-    {
-    PrintWriter out = new PrintWriter (new FileWriter (HIGHSCORES));
-    for (int x = 0; x < 10; x++)
-    {
-      HighScore score = scores.get (x);
-      out.println (score.getName());
-      out.println (score.getScore());
-    }
-    out.close();
-    }
-    catch (IOException e)
-    {
-     System.out.println ("Error writing highscore file"); 
-    }
-  }
-  
-  public static void writeBlankFile ()
-  {
-    try
-    {
-    PrintWriter out = new PrintWriter (new FileWriter (HIGHSCORES));
-    for (int x = 0; x < 10; x++)
-    {
-      out.println ("P'ngball Grandmaster");
-      out.println (0);
-    }
-    out.close();
-    }
-    catch (IOException e)
-    {
-     System.out.println ("Error writing highscore file"); 
-    }
-    
-  }
   
 }

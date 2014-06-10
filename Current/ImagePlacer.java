@@ -30,6 +30,19 @@ public class ImagePlacer extends JPanel
     }
   }
   
+  public static BufferedImage loadImage (String image,Class origin)
+  {
+    BufferedImage img = null;
+    try 
+    {
+      img = ImageIO.read (origin.getResourceAsStream(image)); 
+    }
+    catch (IOException e)
+    {
+      System.out.println ("Error Loading Image");
+    }
+    return img;
+  }
   public void paintComponent (Graphics g)
   {
    g.drawImage (img,x,y,width,height,null); 

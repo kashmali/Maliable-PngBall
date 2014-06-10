@@ -4,18 +4,17 @@ import java.awt.event.*;
 import javax.swing.SpringLayout;
 import java.util.*;
 
-
+import Files.Current.physicsEngine.GameEngine;
 
 
 public class QuestionPanel extends JPanel implements ActionListener
 {
   final JTextField inputField;
-  ArrayList <String> question;
+  Question question;
   JFrame parent;
   public QuestionPanel (JFrame parent)
   {
     this.parent = parent;
-    question = new ArrayList <String> ();
     question = QuestionManager.getQuestion ("Easy");
     Font headingFont = new Font (Font.SERIF,Font.BOLD, 25);
     JLabel headingOne = new JLabel ("QUESTION");
@@ -23,16 +22,17 @@ public class QuestionPanel extends JPanel implements ActionListener
     JLabel headingThree = new JLabel ("ANSWER");
      
     Font lineFont = new Font (Font.SERIF,Font.PLAIN, 17);
-    JLabel lineOne = new JLabel (question.get(0)); 
-    JLabel lineTwo = new JLabel (question.get(1)); 
-    JLabel lineThree = new JLabel (question.get(2));
-    JLabel line34 = new JLabel (question.get(3)); 
-    JLabel lineFour = new JLabel (question.get(4)); 
-    JLabel lineFive = new JLabel (question.get(5)); 
-    JLabel lineSix = new JLabel (question.get(6));
-    JLabel lineSeven = new JLabel (question.get(7)); 
-    JLabel lineEight = new JLabel (question.get(8)); 
-    JLabel lineNine = new JLabel (question.get(9)); 
+    JLabel [] questionLabels = new JLabel [10];
+    for (int x = 0; x < 6; x++)
+    {
+      questionLabels [x] = new JLabel (question.getQuestion()[x]);
+      questionLabels [x].setFont (lineFont);
+    }
+    for (int x = 6; x < 10; x++)
+    {
+      questionLabels [x] = new JLabel (question.getOptions() [x - 6]);
+      questionLabels [x].setFont (lineFont);
+    }
    // JLabel lineEleven = new JLabel (question.get(10)); // this is the answer!!
     JLabel lineTen = new JLabel ("When answering M/C, do not include spaces or punctuation. Remember significant digits!"); 
     inputField = new JTextField (10);
@@ -47,17 +47,17 @@ public class QuestionPanel extends JPanel implements ActionListener
     layout.setHorizontalGroup (layout.createSequentialGroup ()
                                  .addGroup (layout.createParallelGroup ()
                                               .addComponent (headingOne)
-                                              .addComponent (lineOne)
-                                              .addComponent (lineTwo)
-                                              .addComponent (lineThree)
-                                              .addComponent (line34)                                              
-                                              .addComponent (lineFour)
-                                              .addComponent (lineFive)
+                                              .addComponent (questionLabels[0])
+                                              .addComponent (questionLabels[1])
+                                              .addComponent (questionLabels[2])
+                                              .addComponent (questionLabels[3])                                              
+                                              .addComponent (questionLabels[4])
+                                              .addComponent (questionLabels[5])
                                               .addComponent (headingTwo)
-                                              .addComponent (lineSix)
-                                              .addComponent (lineSeven)
-                                              .addComponent (lineEight)
-                                              .addComponent (lineNine)
+                                              .addComponent (questionLabels[6])
+                                              .addComponent (questionLabels[7])
+                                              .addComponent (questionLabels[8])
+                                              .addComponent (questionLabels[9])
                                               .addComponent (lineTen)
                                               .addComponent (headingThree)
                                               .addComponent (inputField)
@@ -67,27 +67,27 @@ public class QuestionPanel extends JPanel implements ActionListener
                                .addGroup (layout.createParallelGroup ()
                                             .addComponent (headingOne))
                                .addGroup (layout.createParallelGroup ()
-                                            .addComponent (lineOne))
+                                            .addComponent (questionLabels[0]))
                                .addGroup (layout.createParallelGroup ()
-                                            .addComponent (lineTwo))
+                                            .addComponent (questionLabels[1]))
                                .addGroup (layout.createParallelGroup ()
-                                            .addComponent (lineThree))
+                                            .addComponent (questionLabels[2]))
                                .addGroup (layout.createParallelGroup ()
-                                            .addComponent (line34))
+                                            .addComponent (questionLabels[3]))
                                .addGroup (layout.createParallelGroup ()
-                                            .addComponent (lineFour))
+                                            .addComponent (questionLabels[4]))
                                .addGroup (layout.createParallelGroup ()
-                                            .addComponent (lineFive))
+                                            .addComponent (questionLabels[5]))
                                .addGroup (layout.createParallelGroup ()
                                             .addComponent (headingTwo))
                                .addGroup (layout.createParallelGroup ()
-                                            .addComponent (lineSix))
+                                            .addComponent (questionLabels[6]))
                                .addGroup (layout.createParallelGroup ()
-                                            .addComponent (lineSeven))
+                                            .addComponent (questionLabels[7]))
                                .addGroup (layout.createParallelGroup ()
-                                            .addComponent (lineEight))
+                                            .addComponent (questionLabels[8]))
                                .addGroup (layout.createParallelGroup ()
-                                            .addComponent (lineNine))
+                                            .addComponent (questionLabels[9]))
                                .addGroup (layout.createParallelGroup ()
                                             .addComponent (lineTen))
                                .addGroup (layout.createParallelGroup ()
@@ -103,16 +103,6 @@ public class QuestionPanel extends JPanel implements ActionListener
     headingOne.setFont (headingFont);
       headingTwo.setFont (headingFont);
      headingThree.setFont (headingFont);
-    lineOne.setFont(lineFont);
-    lineTwo.setFont(lineFont);
-    lineThree.setFont(lineFont);
-    line34.setFont(lineFont);
-    lineFour.setFont(lineFont);
-    lineFive.setFont(lineFont);
-    lineSix.setFont(lineFont);
-    lineSeven.setFont(lineFont);
-    lineEight.setFont(lineFont);
-    lineNine.setFont (lineFont);
     lineTen.setFont (lineFont);
     answerButton.setFont(lineFont);
     //setSize (layout.maximumLayoutSize(this));
@@ -128,17 +118,18 @@ public class QuestionPanel extends JPanel implements ActionListener
       answer = answer.replace (" ","");
       answer = answer.replace (",","");
       answer = answer.replace (".","");
-      if (answer.toUpperCase().equals(question.get(10)) || answer.toUpperCase().equals ("IAMMSDYKE"))
+      if (answer.toUpperCase().equals(question.getAnswer()) || answer.toUpperCase().equals ("IAMMSDYKE"))
       {
         //reset game keep score
         System.out.println ("Correct");
+        GameEngine.increaseScore (100);
       }
       else 
       {
         //end game bring highscores
         System.out.println ("Wrong");
       }
-      ((ActionListener)parent).actionPerformed (new ActionEvent (this,4,"Close"));
+     ((ActionListener) parent).actionPerformed (new ActionEvent (this,ActionEvent.ACTION_PERFORMED,"Check"));
     }
   }
 }

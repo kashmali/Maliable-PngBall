@@ -26,6 +26,10 @@ public class Question
    options [index] = option;
  }
  
+ public void setAnswer (String answer)
+ {
+   this.answer = answer;
+ }
  public String[] getQuestion ()
  {
    return question;

@@ -1,18 +1,16 @@
-package Files.Current.physicsEngine;
+
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
-
-
-
-
+import java.awt.image.BufferedImage;
 
 public class InformationPanel extends JPanel//ImagePlacer
 {
-  
+  BufferedImage header;
   public InformationPanel ( )
   {
     //super ("DownToEarthGames.png",0,0,400,500);
+    header = ImagePlacer.loadImage ("MaliablePngballHeader.png",this);
     repaint();
     setSize (400,500);
   }
@@ -20,6 +18,7 @@ public class InformationPanel extends JPanel//ImagePlacer
   public void paintComponent (Graphics g)
   {
     super.paintComponent (g);
+    g.drawImage (header (0,0,400,300,null));
     g.drawString (Integer.toString (GameEngine.score),20,20);
   }
 }

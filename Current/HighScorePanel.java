@@ -14,11 +14,10 @@ import Files.Current.physicsEngine.*;
 
 public class HighScorePanel extends JPanel
 {
-  
   public HighScorePanel (JFrame parent)
   {
-    JLabel[] nameLabels = new JLabel[10];;
-    JLabel[] scoreLabels = new JLabel[10];
+    JLabel[] nameLabels = new JLabel[10];
+   JLabel[] scoreLabels = new JLabel[10];
     JLabel name = new JLabel ("Name");
     JLabel score = new JLabel ("Score");
     JButton closeButton = new JButton ("Close");
@@ -104,9 +103,7 @@ public class HighScorePanel extends JPanel
                               
     setLayout (layout);
     setSize (layout.maximumLayoutSize(this));
-    setVisible (true);
-  }
-  
-  
-  
+    setVisible (true);  
+  }  
+
 }

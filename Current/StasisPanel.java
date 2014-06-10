@@ -1,7 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
-
+import Files.Current.physicsEngine.*;
 public class StasisPanel extends JPanel
 {
   public static boolean stasis = true;
@@ -21,6 +21,8 @@ public class StasisPanel extends JPanel
   {
     while (stasis == true)
     {
+      if (GameEngine.isRunning && GameEngine.terminated)
+         StasisPanel.removeStasis ();
       try {Thread.sleep (1);}
       catch (InterruptedException e){}
     }

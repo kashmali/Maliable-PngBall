@@ -57,9 +57,6 @@ public class QuestionManager
     {
       questionPortion.add(correctAnswers.get(answerNumber + x));
     }
-    System.out.println (questionNumber);
-    System.out.println (optionNumber);
-    System.out.println (answerNumber);
     return questionPortion;
   }
   

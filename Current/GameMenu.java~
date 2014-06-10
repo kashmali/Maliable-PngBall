@@ -33,6 +33,7 @@ public class GameMenu extends JMenuBar
     add (help);
 
   }
+  
   public void addMenuItem (JMenu menu, String name)
   {
    JMenuItem item = new JMenuItem (name);
