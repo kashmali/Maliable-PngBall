@@ -185,29 +185,7 @@ Accel theAccel = sumAccel();
             earliestCollisionResponse.copy(tempResponse);
       }
    }
-   
-  /**
-    * Check if this ball collides with the given BlockLineSegment in the interval 
-    * (0, timeLimit]. A line segment has two definite end-points.
-    * 
-    * @param lineSegment: the line-shape obstacle.
-    * @param timeLimit: upperbound of the time interval.
-    */
-   public boolean paddleHit = false;
-   public double angleVelocity = 0;
-   
-   public void intersect(Paddle paddle, float timeLimit) {
-      // Check the line segment for probable collision.
-      MoveEngine.pointIntersectsLineSegment(
-            this,
-            (float)paddle.getX(), (float)paddle.getY(), (float)paddle.getX2(),(float) paddle.getY2(),
-            timeLimit, tempResponse);
-      if (tempResponse.t < earliestCollisionResponse.t) {
-        paddleHit = true;
-        angleVelocity = paddle.getAngleVelocity();
-            earliestCollisionResponse.copy(tempResponse);
-      }
-   }
+
    /** 
     * Update the states of this ball for the given time, where time <= 1.
     * 
@@ -218,12 +196,7 @@ Accel theAccel = sumAccel();
    public void update(float time) {
     // float lastTime = time;
      float bounce = 0.9f;
-     if (paddleHit == true && angleVelocity > 0){
-       bounce = 2.5f;
-       System.out.println ("PAddle");
-       //if (earliestCollisionResponse.newSpeedX < 
-     }
-     else if (pseudoPaddleHit == true)
+    if (pseudoPaddleHit == true)
      {
        //if this happens twice within the same time frame, then move the ball upwards
        if (earliestCollisionResponse.newSpeedY >= 0)
@@ -247,9 +220,7 @@ Accel theAccel = sumAccel();
       }
       // Clear for the next collision detection
       earliestCollisionResponse.reset();
-      paddleHit = false;
       pseudoPaddleHit = false;
-      angleVelocity = 0;
    }
     
   public void keyPressed (KeyEvent e)

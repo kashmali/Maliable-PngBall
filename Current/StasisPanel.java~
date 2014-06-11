@@ -8,7 +8,8 @@ public class StasisPanel extends JPanel
   
   public StasisPanel (JFrame parent)
   {
-    JButton startButton = new JButton ("Start");
+    JButton startButton = new JButton ("<html><font size = \"20\" color = \"#009933\">Start</html>");
+    startButton.setActionCommand ("Start");
     startButton.addActionListener ((ActionListener)parent);
     BorderLayout layout = new BorderLayout ();
     setLayout (layout);

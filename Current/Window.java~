@@ -3,7 +3,6 @@ import javax.swing.*;
 import java.awt.event.*;
 import java.io.*;
 import Files.Current.physicsEngine.*;
-import Files.Current.physicsEngine.Paddle;
 
 //Every once in a while this program just errors with a null pointer exception
 /**
@@ -33,37 +32,11 @@ public class Window extends JFrame implements ActionListener
   static GameMenu menuBar;
   public Window ()
   {
-    super ("Maliable P'ngball");
-    
-    //Change to be better later
-//    SplashPanel splashScreen = new SplashPanel ();
-//    this.add (splashScreen);
-//    setSize (280,335);
-//    setResizable (false);
-//    setVisible (true);
-//    this.revalidate();
-//    this.repaint();
-//    try 
-//    {
-//      Thread.sleep (5000);
-//    }
-//    catch (InterruptedException ie)
-//    {
-//      //Do nothing
-//    }
-//    setVisible (false);
-//    this.remove(splashScreen);
-    
-    
-    
-    
-    
-    
+    super ("Maliable P'ngball");    
     menuBar = new GameMenu (this);
     setJMenuBar (menuBar);
-    //GamePanel gameP = new GamePanel ();
+
     infoP  = new InformationPanel ();
-    //this.add (gameP);
     
     //Game panel
     JPanel gamePanel = new JPanel ();
@@ -71,10 +44,9 @@ public class Window extends JFrame implements ActionListener
     e = new GameEngine();
     gq = new QuestionManager ();
     e.setVisible (true);
-    gamePanel.add (e); //getContentPane()    
+    gamePanel.add (e);  
     gamePanel.add (infoP);
     GridLayout layout = new GridLayout (1,2);
-    //layout.addLayoutComponent ("gameP",gameP);
     layout.addLayoutComponent ("gameP",e);
     layout.addLayoutComponent ("infoP",infoP);
     gamePanel.setLayout (layout);
@@ -133,7 +105,7 @@ public class Window extends JFrame implements ActionListener
       }
     });
     setResizable (false);
-    //setAutoRequestFocus (true);
+    setAutoRequestFocus (true);
     repaint();
   }
   
@@ -147,8 +119,6 @@ public class Window extends JFrame implements ActionListener
     }
     else if (command.equals ("Display"))
     {
-//      GameEngine.paused = true;
-//      InfoFrame frame = new InfoFrame ("High Scores");
       mainPanel.remove (highscores);
       highscores = new HighScorePanel (this);
       mainPanel.add ("High Scores", highscores);
@@ -156,14 +126,10 @@ public class Window extends JFrame implements ActionListener
     }
     else if (command.equals ("Instructions"))
     {
-//      GameEngine.paused = true;
-//      InfoFrame frame = new InfoFrame ("Instructions");
       show ("Instructions");
     }
     else if (command.equals ("Formulas"))
     {
-//      GameEngine.paused = true;
-//      InfoFrame frame = new InfoFrame ("Formulas");
       show ("Formulas");
     }
     else if (command.equals ("Easy"))
@@ -194,11 +160,7 @@ public class Window extends JFrame implements ActionListener
     else if (command.equals ("Start"))
     {
       StasisPanel.removeStasis ();
-      show ("Game");
-      //get out of stasis
-      //remove old panels
-      //put new panels
-      
+      show ("Game");      
     }
     else if (command.equals ("Close"))
     {
@@ -247,20 +209,15 @@ public class Window extends JFrame implements ActionListener
     while (true){
       StasisPanel.stasis ();
       menuBar.setVisible (false);
-      //the game paused screen right now.
-      //method in a consistent while loop until a button is pressed
-      //The loop that runs a full 
       for (int x = 0; x < 3; x++)
       {
         e.setGameLayout (x);
         e.gamerun();
         if (e.terminated){
           break;}
-        //add Ability to terminate
-        //update score
-        try {
-          Thread.sleep (300);
-          
+        try 
+        {
+          Thread.sleep (300);          
         }
         catch (InterruptedException e){}
         
@@ -292,29 +249,14 @@ public class Window extends JFrame implements ActionListener
   //organize this code
   private class TAdapter extends KeyAdapter 
   {   
-    public void keyReleased(KeyEvent e) 
+    public void keyReleased(KeyEvent k) 
     {
-      if (!Window.e.living.isEmpty())
-        Window.e.living.get (0).keyReleased(e);
-      for (Paddle p : Window.e.paddles)
-        p.keyReleased (e);
-      
+      e.keyReleased (k);
     }
     
-    public void keyPressed(KeyEvent e)
+    public void keyPressed(KeyEvent k)
     {
-      if (!Window.e.living.isEmpty())
-      {
-        for (Ball x : Window.e.living)
-          x.keyPressed(e);
-        Window.e.keyPressed (e);
-      }
-      for (Paddle p :Window.e.paddles)
-        p.keyPressed (e);
-      for (PseudoPaddle p : Window.e.pseudoPaddles)
-        p.keyPressed (e);
-      //if space is pressed and the game hasn't started yet
-      
+    e.keyPressed (k);
     }
   }
 }

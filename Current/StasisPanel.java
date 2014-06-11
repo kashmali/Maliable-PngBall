@@ -22,8 +22,10 @@ public class StasisPanel extends JPanel
   {
     while (stasis == true)
     {
-      if (GameEngine.isRunning && GameEngine.terminated)
-         StasisPanel.removeStasis ();
+      if (GameEngine.terminated)
+      {
+        StasisPanel.removeStasis ();
+      }
       try {Thread.sleep (1);}
       catch (InterruptedException e){}
     }

@@ -30,6 +30,10 @@ public class Window extends JFrame implements ActionListener
   static JPanel mainPanel;
   //Add a picture panel
   static GameMenu menuBar;
+  HighScorePromptPanel prompt;
+  
+  public static boolean answer = false;
+  
   public Window ()
   {
     super ("Maliable P'ngball");    
@@ -76,6 +80,8 @@ public class Window extends JFrame implements ActionListener
     //Question
     questions = new QuestionPanel (this);
     
+    CorrectPanel correct = new CorrectPanel (this);
+    WrongPanel wrong = new WrongPanel (this);
     //The main Panel
     mainPanel = new JPanel (new CardLayout()); 
     mainPanel.add ("Menu", menuPanel);
@@ -84,6 +90,8 @@ public class Window extends JFrame implements ActionListener
     mainPanel.add ("High Scores",highscores);
     mainPanel.add ("Formulas", formulas);
     mainPanel.add ("Question",questions);
+    mainPanel.add ("Correct", correct);
+    mainPanel.add ("Wrong", wrong);
     mainPanel.setFocusable(true);
     mainPanel.addKeyListener(new TAdapter());
     
@@ -168,8 +176,19 @@ public class Window extends JFrame implements ActionListener
     }
     else if (command.equals ("Check"))
     {
+       if (answer == true)
+       {
+        show ("Correct"); 
+       }
+       else 
+       {
+         show ("Wrong");
+       }
+    }
+    else if (command.equals ("Continue"))
+    {
       StasisPanel.removeStasis();
-      show ("Game"); 
+      show ("Game");
     }
     else if (command.equals ("Help"))
     {
@@ -180,6 +199,11 @@ public class Window extends JFrame implements ActionListener
       catch (IOException e)
       {
       }
+    }
+    else if (command.equals ("Submit"))
+    {
+      mainPanel.remove (prompt);
+      StasisPanel.removeStasis ();
     }
     repaint ();
   }
@@ -203,6 +227,13 @@ public class Window extends JFrame implements ActionListener
     CardLayout cl = (CardLayout)(mainPanel.getLayout());
     cl.show (mainPanel, panel);
   }
+  
+  public void namePrompt (int location)
+  {
+    prompt = new HighScorePromptPanel (location,e.getScore(),this);
+    mainPanel.add ("Prompt", prompt);
+      show ("Prompt");
+  }
   public  void runProgram()
   {
     //Window w = new Window ();   // Create a FrameTest frame
@@ -213,8 +244,11 @@ public class Window extends JFrame implements ActionListener
       {
         e.setGameLayout (x);
         e.gamerun();
-        if (e.terminated){
-          break;}
+        if (e.terminated)
+        {
+          e.isRunning = false;
+          break;
+        }
         try 
         {
           Thread.sleep (300);          
@@ -226,7 +260,14 @@ public class Window extends JFrame implements ActionListener
         StasisPanel.stasis ();
         e.started = false;
       }
-      e.highscoreManager.checkScores (e.getScore());
+      e.terminated = false;
+      int loc = e.highscoreManager.checkScores (e.getScore());
+      if (loc > -1)
+      {
+        namePrompt (loc);
+        StasisPanel.addStasis ();
+        StasisPanel.stasis ();
+      }
       e.resetGame ();
       StasisPanel.addStasis ();
       menuBar.setVisible (true);
@@ -240,6 +281,11 @@ public class Window extends JFrame implements ActionListener
       questions = new QuestionPanel (this);
       mainPanel.add ("Question", questions);
       show ("Question");
+  }
+  
+  public static void setAnswer (boolean newAnswer)
+  {
+    answer = newAnswer;
   }
   
   public void terminate ()

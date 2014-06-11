@@ -1,7 +1,7 @@
 package Files.Current.physicsEngine;
 import java.awt.Color;
 import java.awt.geom.Point2D;
-public class ButtonObstacle
+public class ButtonObstacle implements Obstacle
 {
   private float x,y;
   private float radius;
@@ -69,6 +69,15 @@ public class ButtonObstacle
   public float getRadius ()
   {
     return radius;
+  }
+  
+  public float getBounce ()
+  {
+    return bounce;
+  }
+  public int getScore ()
+  {
+   return 20; 
   }
   
   public void setRadius(float newRadius)

@@ -24,11 +24,7 @@ import java.awt.event.KeyAdapter;
 public class GameEngine extends JPanel
 {
   public static final int MAX_SPAWN = 20; //30
-  public static final int X = 500;
-  public static final int Y = 500;
-  public static final float GRAVITY = .0000981f; //1500
-  public static final float DRAG = 0.1f; //0.2
-  public static final float BOUNCE = 1f; //0.5
+
   public final int UPDATE_RATE = 60;
   public static final String TITLE = "Mike's 2d Physics Engine greatly modified by Jason using code written by Hock-Chuan Chua";
   private static Graphics graphics;
@@ -63,7 +59,7 @@ public class GameEngine extends JPanel
   {
     // Create canvas for painting...
     //setIgnoreRepaint(true);
-    setSize(X, Y);
+    setSize(500, 500);
     setBackground (Color.WHITE);
     // Add the canvas, and display.
     setVisible(true);
@@ -207,7 +203,11 @@ public class GameEngine extends JPanel
         ++frames;
         
         if (terminated)
+        {
+          
           break;
+          
+        }
         if (!paused && started)
         {
           moveEngine.run();
@@ -241,7 +241,6 @@ public class GameEngine extends JPanel
 //      }
         
     }
-    System.out.println ("Game Over");
     living.get (0).updatePos (16,16);
   }
 
@@ -250,7 +249,7 @@ public class GameEngine extends JPanel
   public void paintComponent (Graphics g)
   {
    super.paintComponent (g);
-   g.drawString ("Score: " + Integer.toString (score),70,20);
+   g.drawString ("Score: " + Integer.toString (score),20,20);
    for (int i = 0; i < living.size(); i++) 
    {
           Ball s = living.get(i);
@@ -263,7 +262,7 @@ public class GameEngine extends JPanel
     for (ButtonObstacle b : buttons){
       g.fillOval ((int)(b.getX() - b.getRadius()),(int)(b.getY() - b.getRadius()),(int)(b.getRadius() * 2),(int)(b.getRadius() * 2));}
 //         //display frames per second...
-        g.drawString(String.format("FPS: %s", fps), 20, 20);
+       // g.drawString(String.format("FPS: %s", fps), 20, 20);
       
 //          //Errors once and then stops. Don't know why it throws a NullPointerException
           if (isPaused())

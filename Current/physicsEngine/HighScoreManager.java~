@@ -34,6 +34,7 @@ public class HighScoreManager
       for (int x = 0; x < 10; x++)
       {
         String name = in.readLine();
+        String level = in.readLine ();
         int score;
         try
         {
@@ -44,7 +45,7 @@ public class HighScoreManager
           System.out.println ("Error with highscore file. Score is not an integer");
           score = 0;
         }
-        scores.add (new HighScore (name,score));
+        scores.add (new HighScore (name,level,score));
       }
       in.close ();
     }
@@ -65,6 +66,7 @@ public class HighScoreManager
       {
         HighScore score = scores.get (x);
         out.println (score.getName());
+        out.println (score.getLevel());
         out.println (score.getScore());
       }
       out.close();
@@ -83,6 +85,7 @@ public class HighScoreManager
       for (int x = 0; x < 10; x++)
       {
         out.println ("P'ngball Grandmaster");
+        out.println ("Level 1");
         out.println (0);
       }
       out.close();
@@ -99,6 +102,13 @@ public class HighScoreManager
     return scores;
   }
   
+  public void clearScores ()
+  {
+    scores.clear ();
+   writeBlankFile();
+   importFile (HIGHSCORES);
+  }
+  
   public boolean checkScores (int score)
   {
     for (int x = 0; x < scores.size();x++)
@@ -113,6 +123,7 @@ public class HighScoreManager
     
   }
   
+  //Change to a panel in the main window
   public void insertScore (final int location, final int score)
   {
     class NamePromptPanel extends JPanel implements ActionListener
@@ -141,7 +152,7 @@ public class HighScoreManager
           String name = nameField.getText();
           if (name.length() > 0)
           {
-            scores.add (location,new HighScore (name,score));
+            scores.add (location,new HighScore (name,GameEngine.getLayoutAsString(),score));
             scores.remove (10);
             parent.dispose ();
           }

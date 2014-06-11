@@ -10,12 +10,12 @@ public class Accel
   this.ay = ay;
  }
 
- public double ax()
+ public double getAx()
  {
   return this.ax;
  }
 
- public double ay()
+ public double getAy()
  {
   return this.ay;
  }

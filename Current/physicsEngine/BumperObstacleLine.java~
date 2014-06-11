@@ -5,7 +5,7 @@ public class BumperObstacleLine extends ObstacleLine
 {
   private float bounce;
   private int scoreValue;
-  public BumerLineObstacle (double x1, double y1, double x2, double y2)
+  public BumperObstacleLine (double x1, double y1, double x2, double y2)
   {
     super (x1,y1,x2,y2,Color.RED);
     scoreValue = 10;

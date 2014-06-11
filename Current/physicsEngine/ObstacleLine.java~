@@ -9,8 +9,7 @@ import java.awt.Graphics;
  * @author Hock-Chuan Chua
  * @version October 2010
  */
-public class ObstacleLine implements Obstacle
-{
+public class ObstacleLine {
    double x1, y1;   // Line-segment's starting point
    double x2, y2;   // Line-segment's ending point
    Color color;  // Line-segment's drawing color
@@ -55,14 +54,5 @@ public class ObstacleLine implements Obstacle
    {
      return y2;
    }
-   
-   public int getScore ()
-   {
-     return 0;
-   }
 
-   public float getBounce ()
-   {
-    return 0.9f; 
-   }
 }

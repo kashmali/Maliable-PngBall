@@ -7,7 +7,7 @@ import java.util.ArrayList;
 //Chamge time to be relative to the computer
 //Change collisions so that only the first one is registered
 //Speed is different between the two engines
-public class MoveEngine implements Pausable
+public class MoveEngine
 {
   public static final int MAX_SPEED = 500;
   public final int UPDATE_RATE = 30;
@@ -102,14 +102,6 @@ public class MoveEngine implements Pausable
       for (int i = 0; i < main.living.size(); i++) 
     {
       Ball s = main.living.get(i);
-
-      for (int x = 0;x < main.paddles.size();x++)
-      {
-        Paddle p = main.paddles.get (x);
-        s.intersect (p,tMin);
-           if (s.earliestCollisionResponse.t < tMin){
-             tMin = s.earliestCollisionResponse.t;}
-      }
       for (int y = 0;y < main.lines.size();y++)
       {
         
@@ -132,8 +124,10 @@ public class MoveEngine implements Pausable
       {
         ButtonObstacle b = main.buttons.get (c);
         s.intersect (b,tMin);
-        if (s.earliestCollisionResponse.t < tMin){
-             tMin = s.earliestCollisionResponse.t;}
+        if (s.earliestCollisionResponse.t < tMin)
+        {
+             tMin = s.earliestCollisionResponse.t;
+        }
       }
       s.update (tMin);
       }
@@ -700,20 +694,4 @@ public class MoveEngine implements Pausable
       rotateResult[1] = -x * sinTheta + y * cosTheta;
       return rotateResult;
    }
-   
-  public void pauseThread ()
-  {
-    while (main.isPaused())
-    {
-      try
-      {
-        Thread.sleep (1);
-        //System.out.println ("Paused");
-      }
-      catch (InterruptedException e)
-      {
-        
-      }
-    }    
-  }
 }
