@@ -2,13 +2,20 @@ public class ZPngBallRunner
 {
   public static void main (String [] args)
   {
+    SplashFrame s = new SplashFrame ();
+    s.showSplash ();
     Window w = new Window ();
     w.runProgram ();
   }
 }
 //code organization
-//  Circle spawn and spawn need to be merged
 //  each obstacle should have their own bounce factor
-//  getRadius should be used in the paintComponent 
 //  redundant code should be eliminated
-//  put the KeyListener methods in the right place
+// apply constant forces in the move engine
+// implement Obstacle interface
+// upgrade pseudoPaddle for better movement
+// inform the user when they get a question right or wrong
+// put highscore prompt in a panel
+// end the game when the user gets a question wrong
+// remove the fps in game
+// remove System println

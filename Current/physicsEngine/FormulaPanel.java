@@ -49,37 +49,20 @@ public class FormulaPanel extends JPanel
                                               .addComponent (closeButton))
                               );
     layout.setVerticalGroup (layout.createSequentialGroup()
-                               .addGroup (layout.createParallelGroup ()
-                                            .addComponent (headingOne))
-                               .addGroup (layout.createParallelGroup ()
-                                            .addComponent (lineOne))
-                               .addGroup (layout.createParallelGroup ()
-                                            .addComponent (lineTwo))
-                               .addGroup (layout.createParallelGroup ()
-                                            .addComponent (lineThree))
-                               .addGroup (layout.createParallelGroup ()
-                                            .addComponent (line34))
-                               .addGroup (layout.createParallelGroup ()
-                                            .addComponent (headingTwo))
-                               .addGroup (layout.createParallelGroup ()
-                                            .addComponent (lineFour))
-                               .addGroup (layout.createParallelGroup ()
-                                            .addComponent (lineFive))
-                               .addGroup (layout.createParallelGroup ()
-                                            .addComponent (lineSix))
-                               .addGroup (layout.createParallelGroup ()
-                                            .addComponent (lineSeven))
-                               .addGroup (layout.createParallelGroup ()
-                                            .addComponent (headingThree))
-                               .addGroup (layout.createParallelGroup ()
-                                            .addComponent (lineEight))
-                               .addGroup (layout.createParallelGroup ()
-                                            .addComponent (closeButton))
-                               
+                                            .addComponent (headingOne)
+                                            .addComponent (lineOne)
+                                            .addComponent (lineTwo)
+                                            .addComponent (lineThree)
+                                            .addComponent (line34)
+                                            .addComponent (headingTwo)
+                                            .addComponent (lineFour)
+                                            .addComponent (lineFive)
+                                            .addComponent (lineSix)
+                                            .addComponent (lineSeven)
+                                            .addComponent (headingThree)
+                                            .addComponent (lineEight)
+                                            .addComponent (closeButton)                               
                             );
-    
-    
-    
     headingOne.setFont (headingFont);
     lineOne.setFont(lineFont);
     lineTwo.setFont(lineFont);

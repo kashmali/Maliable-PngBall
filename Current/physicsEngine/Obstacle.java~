@@ -1,0 +1,6 @@
+package Files.Current.physicsEngine;
+interface Obstacle
+{
+  int score;
+  float bounce;
+}

@@ -15,7 +15,7 @@ public class QuestionPanel extends JPanel implements ActionListener
   public QuestionPanel (JFrame parent)
   {
     this.parent = parent;
-    question = QuestionManager.getQuestion ("Easy");
+    question = QuestionManager.getQuestion (GameEngine.getDifficultyAsString());
     Font headingFont = new Font (Font.SERIF,Font.BOLD, 25);
     JLabel headingOne = new JLabel ("QUESTION");
     JLabel headingTwo = new JLabel ("OPTIONS");

@@ -3,6 +3,7 @@ package Files.Current.physicsEngine;
 import java.awt.event.KeyEvent;
 import java.awt.Color;
 
+///add private variable bounce
 public class PseudoPaddle extends ObstacleLine
 {
   private double length;

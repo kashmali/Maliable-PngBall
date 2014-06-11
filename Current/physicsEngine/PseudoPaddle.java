@@ -42,4 +42,9 @@ public class PseudoPaddle extends ObstacleLine
      break;
    }
   }
+  
+  public void keyReleased (KeyEvent e)
+  {
+    //implementation for better movement
+  }
 }

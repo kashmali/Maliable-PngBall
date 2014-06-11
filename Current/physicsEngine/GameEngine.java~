@@ -34,7 +34,7 @@ public class GameEngine extends JPanel implements Pausable
   private static Graphics graphics;
   private static Graphics2D g2d;
 //  private static AffineTransform at;
-  public static ArrayList<Spawn> living = new ArrayList<Spawn>();
+  public static ArrayList<Ball> living = new ArrayList<Ball>();
   public static ArrayList<ButtonObstacle> buttons = new ArrayList<ButtonObstacle>();
   public static ArrayList<Paddle> paddles = new ArrayList<Paddle>();
   public static ArrayList<ObstacleLine> lines = new ArrayList<ObstacleLine>();
@@ -45,13 +45,19 @@ public class GameEngine extends JPanel implements Pausable
   public static boolean terminated = false;
   public static int score = 0;
   public static int layout;
-  MoveEngine moveEngine;
+  public static int difficulty = 0;
+  public boolean started = true;
+  
+  public MoveEngine moveEngine;
  public  HighScoreManager highscoreManager;
   
   public static final int EASY_LAYOUT = 0;
   public static final int MEDIUM_LAYOUT = 1;
   public static final int HARD_LAYOUT = 2;
   
+  public static final int EASY = 0;
+  public static final int MEDIUM= 1;
+  public static final int HARD = 2;
   
   public GameEngine ()
   {
@@ -74,7 +80,7 @@ public class GameEngine extends JPanel implements Pausable
   public void initialize ()
   {
     //The ball
-   living.add (new CircleSpawn (16,16,0,0,100));
+   living.add (new Ball (16,16,0,0));
 
 
     //walls
@@ -150,6 +156,27 @@ public class GameEngine extends JPanel implements Pausable
     }  
   }
   
+  public void setGameDifficulty (int difficulty)
+  {
+    switch (difficulty){
+      case EASY : this.difficulty = EASY;
+      break;
+      case MEDIUM: this.difficulty = MEDIUM;
+      break;
+      case HARD : this.difficulty = HARD;
+      break;
+    }      
+    }
+  
+  public static String getDifficultyAsString ()
+  {
+    switch (difficulty){
+      case EASY : return "Easy";
+      case MEDIUM : return "Medium";
+      case HARD : return "Hard";
+      default :return "Can't be found";
+    }  
+  }
   public void gamerun ()
   {
    
@@ -161,7 +188,7 @@ public class GameEngine extends JPanel implements Pausable
     long totalTime = 0;
     long curTime = System.currentTimeMillis();
     long lastTime = curTime;
-    
+    isRunning = true;
     // Start the loop.
     while (isRunning) {
         // Calculations for FPS.
@@ -181,13 +208,13 @@ public class GameEngine extends JPanel implements Pausable
         
         if (terminated)
           break;
-        if (!paused)
+        if (!paused && started)
         {
           moveEngine.run();
         }
-        else
+        else if (paused == true)
         {
-         pauseGame (); 
+         pauseGame ();
         }
         repaint ();
       //repaint the info panel somehow
@@ -216,10 +243,8 @@ public class GameEngine extends JPanel implements Pausable
     }
     System.out.println ("Game Over");
     living.get (0).updatePos (16,16);
-    isRunning = true;
-    //System.out.println (score);
     
-      pause();
+    //System.out.println (score);
    // score = 0;
    // run();
   }
@@ -235,8 +260,8 @@ public class GameEngine extends JPanel implements Pausable
           /*at = new AffineTransform();
           at.translate(living.get(i).getX(), living.get(i).getY());*/
           //g2d.setColor(Color.BLACK);
-          Spawn s = living.get(i);
-          g.fillOval ((int)s.getX() - 15,(int)s.getY() - 15,(int)(((CircleSpawn)s).getRadius() * 2),(int)(((CircleSpawn)s).getRadius() * 2));
+          Ball s = living.get(i);
+          g.fillOval ((int)(s.getX() - s.getRadius()),(int)(s.getY() - s.getRadius()),(int)(s.getRadius() * 2),(int)(s.getRadius() * 2));
           //g2d.fill(s.getShape());
         }
    //g2d.setColor (Color.GREEN);
@@ -284,10 +309,10 @@ public class GameEngine extends JPanel implements Pausable
     return false;
   }
 
-  public static synchronized int giveBirth(int x, int y, float vx, float vy,int m)
+  public static synchronized int giveBirth(int x, int y, float vx, float vy)
   {
     if (living.size() >= MAX_SPAWN) return 1;
-    living.add(new CircleSpawn(x, y, vx, vy,m));
+    living.add(new Ball(x, y, vx, vy));
     return 0;
   }
   
@@ -313,7 +338,10 @@ public class GameEngine extends JPanel implements Pausable
   
   public void pause ()
   {
+    if (isRunning)
+    {
    paused = true; 
+    }
   }
   
  public static boolean open = false;
@@ -321,7 +349,8 @@ public class GameEngine extends JPanel implements Pausable
   {
     if (open == false)
     {
-     new PauseWindow ();
+     PauseWindow p = new PauseWindow ();
+     
      open = true;
     }
   }
@@ -346,7 +375,7 @@ public void resetGame ()
   {
    int key = e.getKeyCode ();
    switch (key){
-     case KeyEvent.VK_P : paused = !paused;
+     case KeyEvent.VK_P : pause();
      break;
      case KeyEvent.VK_X : 
 //For some strange reason the repaint method stops refrshing once this is pressed
@@ -363,8 +392,10 @@ public void resetGame ()
        lines.remove (cheat);
        break;
      case KeyEvent.VK_ENTER :
-       terminated = true;
-       
+       terminated = true;      
+       break;
+     case KeyEvent.VK_SPACE :
+       started = true;
        break;
 
    }
