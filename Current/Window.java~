@@ -25,7 +25,8 @@ public class Window extends JFrame implements ActionListener
    * The Question manager to read in and access the questions from the question file.
    */
   static QuestionManager gq;
-  
+  HighScorePanel highscores;
+  QuestionPanel questions;
   static JPanel mainPanel;
   //Add a picture panel
   static GameMenu menuBar;
@@ -69,13 +70,13 @@ public class Window extends JFrame implements ActionListener
     InstructionsPanel instructions = new InstructionsPanel (this);
     
     //HighScores
-    HighScorePanel highscores = new HighScorePanel (this);
+    highscores = new HighScorePanel (this);
     
     //Formulas
     FormulaPanel formulas = new FormulaPanel (this);
     
     //Question
-    QuestionPanel questions = new QuestionPanel (this);
+    questions = new QuestionPanel (this);
     
     //The main Panel
     mainPanel = new JPanel (new CardLayout()); 
@@ -122,6 +123,9 @@ public class Window extends JFrame implements ActionListener
     {
 //      GameEngine.paused = true;
 //      InfoFrame frame = new InfoFrame ("High Scores");
+      mainPanel.remove (highscores);
+      highscores = new HighScorePanel (this);
+      mainPanel.add ("High Scores", highscores);
       show ("High Scores");
     }
     else if (command.equals ("Instructions"))
@@ -129,10 +133,6 @@ public class Window extends JFrame implements ActionListener
 //      GameEngine.paused = true;
 //      InfoFrame frame = new InfoFrame ("Instructions");
       show ("Instructions");
-    }
-    else if (command.equals ("Pause"))
-    {
-      GameEngine.paused = !GameEngine.paused;
     }
     else if (command.equals ("Formulas"))
     {
@@ -206,7 +206,7 @@ public class Window extends JFrame implements ActionListener
         }
         catch (InterruptedException e){}
         
-        show ("Question");
+        showQuestion ();
         StasisPanel.addStasis ();
         StasisPanel.stasis ();
         e.pause();
@@ -214,7 +214,6 @@ public class Window extends JFrame implements ActionListener
       e.highscoreManager.checkScores (e.getScore());
       e.resetGame ();
       StasisPanel.addStasis ();
-      
       menuBar.setVisible (true);
       show ("Menu");
     }
@@ -222,7 +221,10 @@ public class Window extends JFrame implements ActionListener
   
   public void showQuestion ()
   {
-    InfoFrame frame = new InfoFrame ("QuestionPanel");
+    mainPanel.remove (questions);
+      questions = new QuestionPanel (this);
+      mainPanel.add ("Question", questions);
+      show ("Question");
   }
   
   public void terminate ()
@@ -254,6 +256,7 @@ public class Window extends JFrame implements ActionListener
       for (PseudoPaddle p : Window.e.pseudoPaddles)
         p.keyPressed (e);
       //if space is pressed and the game hasn't started yet
+      
     }
   }
 }

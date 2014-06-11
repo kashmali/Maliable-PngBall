@@ -41,6 +41,9 @@ public class InfoFrame extends JFrame implements ActionListener
    }
    else if (panelName.equals ("QuestionPanel"))
    {
+     QuestionPanel panel = new QuestionPanel (this);
+     getContentPane().add (panel);
+     setSize ((int)(panel.getSize().getWidth()*1.1),(int)(panel.getSize().getHeight()*1.1));
    }
    else if (panelName.equals ("High Scores"))
    {
@@ -51,7 +54,7 @@ public class InfoFrame extends JFrame implements ActionListener
    
    
    setVisible (true);
-   setAutoRequestFocus (true);
+   //setAutoRequestFocus (true);
    setResizable (false);
    setDefaultCloseOperation (JFrame.DISPOSE_ON_CLOSE);
  }

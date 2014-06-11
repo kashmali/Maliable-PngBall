@@ -1,3 +1,4 @@
+package Files.Current.physicsEngine;
 import javax.swing.JPanel;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -9,8 +10,7 @@ import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.awt.*;
 import java.io.*;
-
-import Files.Current.physicsEngine.*;
+//import Files.Current.physicsEngine.*;
 
 public class HighScorePanel extends JPanel
 {

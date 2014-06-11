@@ -160,7 +160,7 @@ public class HighScoreManager
         add (new NamePromptPanel (score, this));
         setSize (300,200);
         setVisible (true);
-        setAutoRequestFocus (true);
+        //setAutoRequestFocus (true);
         setResizable (false);
         setDefaultCloseOperation (JFrame.DISPOSE_ON_CLOSE);
       }
@@ -170,7 +170,7 @@ public class HighScoreManager
     temp.add (new NamePromptPanel (score, temp));
         temp.setSize (300,200);
         temp.setVisible (true);
-        temp.setAutoRequestFocus (true);
+        //temp.setAutoRequestFocus (true);
         temp.setResizable (false);
         temp.setDefaultCloseOperation (JFrame.DISPOSE_ON_CLOSE);
                                 

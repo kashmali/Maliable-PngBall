@@ -45,13 +45,19 @@ public class GameEngine extends JPanel implements Pausable
   public static boolean terminated = false;
   public static int score = 0;
   public static int layout;
-  MoveEngine moveEngine;
+  public static int difficulty = 0;
+  public boolean started = true;
+  
+  public MoveEngine moveEngine;
  public  HighScoreManager highscoreManager;
   
   public static final int EASY_LAYOUT = 0;
   public static final int MEDIUM_LAYOUT = 1;
   public static final int HARD_LAYOUT = 2;
   
+  public static final int EASY = 0;
+  public static final int MEDIUM= 1;
+  public static final int HARD = 2;
   
   public GameEngine ()
   {
@@ -150,6 +156,27 @@ public class GameEngine extends JPanel implements Pausable
     }  
   }
   
+  public void setGameDifficulty (int difficulty)
+  {
+    switch (difficulty){
+      case EASY : this.difficulty = EASY;
+      break;
+      case MEDIUM: this.difficulty = MEDIUM;
+      break;
+      case HARD : this.difficulty = HARD;
+      break;
+    }      
+    }
+  
+  public static String getDifficultyAsString ()
+  {
+    switch (difficulty){
+      case EASY : return "Easy";
+      case MEDIUM : return "Medium";
+      case HARD : return "Hard";
+      default :return "Can't be found";
+    }  
+  }
   public void gamerun ()
   {
    
@@ -161,7 +188,7 @@ public class GameEngine extends JPanel implements Pausable
     long totalTime = 0;
     long curTime = System.currentTimeMillis();
     long lastTime = curTime;
-    
+    isRunning = true;
     // Start the loop.
     while (isRunning) {
         // Calculations for FPS.
@@ -181,9 +208,13 @@ public class GameEngine extends JPanel implements Pausable
         
         if (terminated)
           break;
-        if (!paused)
+        if (!paused && started)
         {
           moveEngine.run();
+        }
+        else if (paused == true)
+        {
+         pauseGame ();
         }
         repaint ();
       //repaint the info panel somehow
@@ -212,10 +243,8 @@ public class GameEngine extends JPanel implements Pausable
     }
     System.out.println ("Game Over");
     living.get (0).updatePos (16,16);
-    isRunning = true;
-    //System.out.println (score);
     
-      pause();
+    //System.out.println (score);
    // score = 0;
    // run();
   }
@@ -309,9 +338,22 @@ public class GameEngine extends JPanel implements Pausable
   
   public void pause ()
   {
+    if (isRunning)
+    {
    paused = true; 
+    }
   }
   
+ public static boolean open = false;
+  public void pauseGame ()
+  {
+    if (open == false)
+    {
+     PauseWindow p = new PauseWindow ();
+     
+     open = true;
+    }
+  }
   public static void increaseScore (int increment)
   {
     score += increment;
@@ -333,7 +375,7 @@ public void resetGame ()
   {
    int key = e.getKeyCode ();
    switch (key){
-     case KeyEvent.VK_P : paused = !paused;
+     case KeyEvent.VK_P : pause();
      break;
      case KeyEvent.VK_X : 
 //For some strange reason the repaint method stops refrshing once this is pressed
@@ -350,8 +392,10 @@ public void resetGame ()
        lines.remove (cheat);
        break;
      case KeyEvent.VK_ENTER :
-       terminated = true;
-       
+       terminated = true;      
+       break;
+     case KeyEvent.VK_SPACE :
+       started = true;
        break;
 
    }

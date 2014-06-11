@@ -21,7 +21,6 @@ public class GameMenu extends JMenuBar
 
     game.add (highScore);
     game.addSeparator();
-    addMenuItem (game, "Pause");
     addMenuItem (game, "Exit");
     
     options.add(difficulty);

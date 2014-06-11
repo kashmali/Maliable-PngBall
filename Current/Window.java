@@ -1,6 +1,7 @@
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
+import java.io.*;
 import Files.Current.physicsEngine.*;
 import Files.Current.physicsEngine.Paddle;
 
@@ -33,6 +34,31 @@ public class Window extends JFrame implements ActionListener
   public Window ()
   {
     super ("Maliable P'ngball");
+    
+    //Change to be better later
+    SplashPanel splashScreen = new SplashPanel ();
+    this.add (splashScreen);
+    setSize (280,335);
+    setResizable (false);
+    setVisible (true);
+    this.revalidate();
+    this.repaint();
+    try 
+    {
+      Thread.sleep (5000);
+    }
+    catch (InterruptedException ie)
+    {
+      //Do nothing
+    }
+    setVisible (false);
+    this.remove(splashScreen);
+    
+    
+    
+    
+    
+    
     menuBar = new GameMenu (this);
     setJMenuBar (menuBar);
     //GamePanel gameP = new GamePanel ();
@@ -144,18 +170,26 @@ public class Window extends JFrame implements ActionListener
     {
       //change question set.
       //Alert the user of the change.
+      e.setGameDifficulty (GameEngine.EASY);
+      System.out.println ("Difficulty : easy");
     }
     else if (command.equals ("Medium"))
     {
-      
+      e.setGameDifficulty (GameEngine.MEDIUM);
+      System.out.println ("Difficulty : Medium");
     }
     else if (command.equals ("Hard"))
     {
-      
+      e.setGameDifficulty (GameEngine.HARD);
+      System.out.println ("Difficulty : hard");
     }
     else if (command.equals ("Print"))
     {
       //print function
+    }
+    else if (command.equals ("Clear"))
+    {
+     e.highscoreManager.clearScores (); 
     }
     else if (command.equals ("Start"))
     {
@@ -175,7 +209,35 @@ public class Window extends JFrame implements ActionListener
       StasisPanel.removeStasis();
       show ("Game"); 
     }
+    else if (ae.getActionCommand().equals ("Help"))
+    {
+      try 
+      {
+        Runtime.getRuntime ().exec ("hh.exe Maliable_P'ngBall.chm");
+      }
+      catch (IOException e)
+      {
+      }
+    }
+    else if (ae.getActionCommand ().equals ("Print"));
+    {
+      print ();
+    }
     repaint ();
+  }
+  
+  public void print ()
+  {
+    System.out.println ("Printing");
+    Printer p = new Printer ();
+    p.println ("", "High Scores", "");
+    p.println ();
+    p.println ("Rank", "Score", "Level");
+    for (int x = 0; x < HighScoreManager.scores.size (); x ++)
+    {
+      p.println ((x+1) + ". " + HighScoreManager.scores.get (x).getName (), Integer.toString ( HighScoreManager.scores.get (x).getScore ()) , HighScoreManager.scores.get (x).getLevel ());
+    }
+    p.printUsingDialog();
   }
   
   public void show (String panel)
@@ -209,7 +271,7 @@ public class Window extends JFrame implements ActionListener
         showQuestion ();
         StasisPanel.addStasis ();
         StasisPanel.stasis ();
-        e.pause();
+        e.started = false;
       }
       e.highscoreManager.checkScores (e.getScore());
       e.resetGame ();

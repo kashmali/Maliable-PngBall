@@ -6,7 +6,7 @@ import java.awt.event.WindowEvent;
 import javax.swing.JButton;
 import java.awt.*;
 import javax.swing.*;
-
+import Files.Current.physicsEngine.*;
 /**
  * This is a JFrame that will contain various panels for the popup windows to display info to the user. <b>
  * This class is used to contain the instructions, highscores, formulas, and questions.

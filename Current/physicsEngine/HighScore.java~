@@ -4,7 +4,6 @@ public class HighScore
 {
  private String name;
  private int score;
- private String level;
  
  public HighScore ()
  {
@@ -12,11 +11,10 @@ public class HighScore
    this.score = 0;
  }
  
- public HighScore (String name,String level, int score)
+ public HighScore (String name, int score)
  {
    this.name = name;
    this.score = score;
-   this.level = level;
  }
  
  public HighScore (String name)
@@ -41,11 +39,6 @@ public class HighScore
   return score; 
  }
  
- public String getLevel ()
- {
-   return level;
- }
- 
  public void setName (String newName)
  {
   this.name = newName; 
@@ -54,10 +47,5 @@ public class HighScore
  public void setScore (int newScore)
  {
    this.score = newScore;
- }
- 
- public void setLevel (String newLevel)
- {
-  this.level = newLevel; 
  }
 }

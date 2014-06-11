@@ -18,6 +18,7 @@ public class GameMenu extends JMenuBar
     addMenuItem (difficulty, "Hard");
     addMenuItem (highScore, "Display");
     addMenuItem (highScore, "Print");
+    addMenuItem (highScore, "Clear");
 
     game.add (highScore);
     game.addSeparator();
@@ -26,6 +27,7 @@ public class GameMenu extends JMenuBar
     options.add(difficulty);
     addMenuItem (help, "Instructions");
     addMenuItem (help, "Formulas");
+    addMenuItem (help, "Help");
     
     add (game);
     add (options);
