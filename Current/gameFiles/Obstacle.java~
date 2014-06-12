@@ -1,0 +1,6 @@
+package gameFiles;
+interface Obstacle
+{
+  int getScore ();
+  float getBounce ();
+}
