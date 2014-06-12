@@ -89,7 +89,6 @@ public class QuestionPanel extends JPanel implements ActionListener
      headingThree.setFont (headingFont);
     lineTen.setFont (lineFont);
     answerButton.setFont(lineFont);
-    //setSize (layout.maximumLayoutSize(this));
     setSize (layout.preferredLayoutSize(this));
     setVisible (true);
   }

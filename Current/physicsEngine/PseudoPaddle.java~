@@ -7,7 +7,7 @@ import java.awt.Color;
 public class PseudoPaddle extends ObstacleLine
 {
   private double length;
-  public final static int moveSpeed = 7;
+  public float moveSpeed = 0;
   
  public PseudoPaddle (double x1, double y1, double length, Color color) {
       super (x1,y1,x1 + length,y1,color);
@@ -24,27 +24,57 @@ public class PseudoPaddle extends ObstacleLine
   this.length = newLength; 
  }
  
+ public void setMoveSpeed (float newSpeed)
+ {
+   moveSpeed = newSpeed;
+ }
+ 
+ public float getMoveSpeed ()
+ {
+   return moveSpeed;
+ }
+ 
+ public void updatePos (double x)
+ {
+   if (x < 100)
+   {
+     x = 100;
+   }
+   else if (x + length > 300)
+   {
+     x = 300 - length;
+   }
+   set (x,y1,x + length,y1);
+ }
+ 
   public void keyPressed (KeyEvent e)
   {
    int key = e.getKeyCode ();
    switch (key){
      case KeyEvent.VK_RIGHT : 
-       if (x1 + length + moveSpeed < 300)
-       set (x1 + moveSpeed,y1,x1 + length + moveSpeed, y1);
-       else
-         set (300 - length,y1,300, y1);
+//       if (x1 + length + moveSpeed < 300)
+//       set (x1 + moveSpeed,y1,x1 + length + moveSpeed, y1);
+//       else
+//         set (300 - length,y1,300, y1);
+       setMoveSpeed (7);
      break;
      case KeyEvent.VK_LEFT :
-       if (x1 - moveSpeed > 100)
-       set (x1 - moveSpeed,y1,x1 + length - moveSpeed, y1);
-       else
-         set (100,y1,100+ length, y1);
+//       if (x1 - moveSpeed > 100)
+//       set (x1 - moveSpeed,y1,x1 + length - moveSpeed, y1);
+//       else
+//         set (100,y1,100+ length, y1);
+       setMoveSpeed (-7);
      break;
    }
   }
   
   public void keyReleased (KeyEvent e)
   {
+    int key = e.getKeyCode ();
+    if (key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_LEFT)
+    {
+      setMoveSpeed (0);
+    }
     //implementation for better movement
   }
 }

@@ -213,10 +213,10 @@ public class Ball
     if (pseudoPaddleHit == true)
     {
       //if this happens twice within the same time frame, then move the ball upwards
-      if (earliestCollisionResponse.newSpeedY >= 0)
-        earliestCollisionResponse.newSpeedY = 5;
-      else if (earliestCollisionResponse.newSpeedY < 0)
-        earliestCollisionResponse.newSpeedY = -20;
+      if (earliestCollisionResponse.newSpeedY >= 0){
+        earliestCollisionResponse.newSpeedY = 5;}
+      else if (earliestCollisionResponse.newSpeedY < 0){
+        earliestCollisionResponse.newSpeedY = -20;}
     }
     // Check if this ball is responsible for the first collision?
     if (earliestCollisionResponse.t <= time) { // FIXME: threshold?
@@ -227,10 +227,8 @@ public class Ball
       this.vy = earliestCollisionResponse.newSpeedY * bounce;
     } else {
       // This ball does not involve in a collision. Move straight.
-      //if (time >= 1.0)
-      //sumForces (time);
-      this.x += this.vx * time;         
-      this.y += this.vy * time;         
+
+      updatePos (x + (vx * time),y + (vy * time));
     }
     GameEngine.increaseScore (scoreIncrease);
     // Clear for the next collision detection

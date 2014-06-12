@@ -28,6 +28,7 @@ public class HighScore
  {
    this.name = name;
    this.score = 0;
+   this.level = "level 1";
  }
  
  /* This is a constructor that sets the name and score of a current player.
@@ -38,6 +39,7 @@ public class HighScore
  {
    this.name = "P'ngball Grandmaster";
    this.score = score;
+   this.level = "level 1";
  }
  
  /* This method gets the name of the player.

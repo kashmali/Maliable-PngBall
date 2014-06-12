@@ -6,16 +6,22 @@ import java.awt.event.*;
 
 public class PausePanel extends JPanel
 {
+  JButton  highScoreButton;
+    JButton instructionsButton;
+    JButton formulaButton;
+    JButton resumeButton;
+    JButton exitButton;
   public PausePanel (JFrame parent)
   {
     Font headingFont = new Font (Font.SERIF,Font.BOLD, 25);
     Font lineFont = new Font (Font.SERIF,Font.PLAIN, 17);
     JLabel title = new JLabel ("Paused");
-    JButton  highScoreButton = new JButton ("Highscores");
-    JButton instructionsButton = new JButton ("Instructions");
-    JButton formulaButton = new JButton ("Formulas");
-    JButton resumeButton = new JButton ("Resume");
-    JButton exitButton = new JButton ("Exit");
+      highScoreButton = new JButton ("Highscores");
+     instructionsButton = new JButton ("Instructions");
+     formulaButton = new JButton ("Formulas");
+     resumeButton = new JButton ("Resume");
+     exitButton = new JButton ("Exit");
+    
     
     highScoreButton.addActionListener ((ActionListener)parent);
     instructionsButton.addActionListener ((ActionListener)parent);
@@ -57,6 +63,23 @@ public class PausePanel extends JPanel
     setVisible (true);
   }
   
+  public void keyPressed (KeyEvent e)
+  {
+    int key = e.getKeyCode ();
+    switch (key)
+    {
+      case KeyEvent.VK_1 : resumeButton.doClick (); System.out.println ("This works");
+      break;
+      case KeyEvent.VK_2 : highScoreButton.doClick ();
+      break;
+      case KeyEvent.VK_3 : instructionsButton.doClick ();
+      break;
+      case KeyEvent.VK_4 : formulaButton.doClick ();
+      break;
+      case KeyEvent.VK_5 : exitButton.doClick ();
+      break;
+    }
+  }
   
   
 }

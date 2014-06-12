@@ -21,6 +21,6 @@ public class InformationPanel extends JPanel//ImagePlacer
     g.drawImage (header,0,0,400,200,null);
     g.drawString (GameEngine.getLayoutAsString(),20,220);
     g.drawString ("Press \'p\' to pause the game",20,240);
-    g.drawString ("<Insert any other important info here>",20,260);
+    g.drawString ("Press space to release the ball",20,260);
   }
 }

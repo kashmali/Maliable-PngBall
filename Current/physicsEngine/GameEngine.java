@@ -1,18 +1,9 @@
 package Files.Current.physicsEngine;
-
-import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GraphicsConfiguration;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.*;
-import java.awt.image.BufferStrategy;
-import java.awt.image.BufferedImage;
 
 import java.util.ArrayList;
 import javax.swing.JFrame;
@@ -23,29 +14,26 @@ import java.awt.event.KeyAdapter;
 
 public class GameEngine extends JPanel
 {
-  public static final int MAX_SPAWN = 20; //30
-
+  public static final int MAX_SPAWN = 20;
   public final int UPDATE_RATE = 60;
   public static final String TITLE = "Mike's 2d Physics Engine greatly modified by Jason using code written by Hock-Chuan Chua";
-  private static Graphics graphics;
-  private static Graphics2D g2d;
-//  private static AffineTransform at;
   public static ArrayList<Ball> living = new ArrayList<Ball>();
   public static ArrayList<ButtonObstacle> buttons = new ArrayList<ButtonObstacle>();
- // public static ArrayList<Paddle> paddles = new ArrayList<Paddle>();
   public static ArrayList<ObstacleLine> lines = new ArrayList<ObstacleLine>();
   public static ArrayList<PseudoPaddle> pseudoPaddles = new ArrayList<PseudoPaddle>();
   public static boolean isRunning = true;
   private int fps;
   public static boolean paused = false;
   public static boolean terminated = false;
+  public static boolean open = false;
+  public boolean started = false;
   public static int score = 0;
   public static int layout;
   public static int difficulty = 0;
-  public boolean started = true;
+  
   
   public MoveEngine moveEngine;
- public  HighScoreManager highscoreManager;
+  public  HighScoreManager highscoreManager;
   
   public static final int EASY_LAYOUT = 0;
   public static final int MEDIUM_LAYOUT = 1;
@@ -65,10 +53,8 @@ public class GameEngine extends JPanel
     setVisible(true);
     // Set up the BufferStrategy for double buffering.
     setDoubleBuffered(true);
- moveEngine = new MoveEngine(this);
+    moveEngine = new MoveEngine(this);
     // Objects needed for rendering...
-    graphics = null;
-    g2d = null;
     initialize();
     highscoreManager = new HighScoreManager();
   }
@@ -76,9 +62,8 @@ public class GameEngine extends JPanel
   public void initialize ()
   {
     //The ball
-   living.add (new Ball (16,16,0,0));
-
-
+    living.add (new Ball (16,16,0,0));
+    
     //walls
     lines.add (new ObstacleLine (0,0,0,550,Color.BLACK));
     lines.add (new ObstacleLine (396,0,396,550,Color.BLACK));
@@ -87,6 +72,8 @@ public class GameEngine extends JPanel
     //slopes to the paddle
     lines.add (new ObstacleLine (0,400,100,500,Color.BLACK));
     lines.add (new ObstacleLine (400,400,300,500,Color.BLACK));
+    
+    //The paddle
     pseudoPaddles.add (new PseudoPaddle (150,500,100,Color.BLACK)); 
   }
   
@@ -95,20 +82,19 @@ public class GameEngine extends JPanel
     living.clear ();
     buttons.clear();
     lines.clear();
-   // paddles.clear();
     pseudoPaddles.clear();
   }
   
   public void easyLayout ()
   {
     
-   //Button
-   buttons.add (new ButtonObstacle (50,200,15,1.1f,Color.GREEN));
-   buttons.add (new ButtonObstacle (150,200,15,1.1f,Color.RED));
-   buttons.add (new ButtonObstacle (250,200,15,1.1f,Color.BLUE));
-   buttons.add (new ButtonObstacle (350,200,15,1.1f,Color.MAGENTA));
+    //Button
+    buttons.add (new ButtonObstacle (50,200,15,1.1f,Color.GREEN));
+    buttons.add (new ButtonObstacle (150,200,15,1.1f,Color.RED));
+    buttons.add (new ButtonObstacle (250,200,15,1.1f,Color.BLUE));
+    buttons.add (new ButtonObstacle (350,200,15,1.1f,Color.MAGENTA));
     layout = EASY_LAYOUT;
-
+    
   }
   
   public void mediumLayout ()
@@ -122,10 +108,10 @@ public class GameEngine extends JPanel
   
   public void hardLayout ()
   {
-       buttons.add (new ButtonObstacle (200,200,30,1.1f,Color.CYAN));
-       lines.add (new BumperObstacleLine (200,150,250,200));
-  lines.add (new BumperObstacleLine (200,150,150,200));
-  layout = HARD_LAYOUT;
+    buttons.add (new ButtonObstacle (200,200,30,1.1f,Color.CYAN));
+    lines.add (new BumperObstacleLine (200,150,250,200));
+    lines.add (new BumperObstacleLine (200,150,150,200));
+    layout = HARD_LAYOUT;
   }
   
   public void setGameLayout (int layout)
@@ -140,7 +126,7 @@ public class GameEngine extends JPanel
       case HARD_LAYOUT : hardLayout ();
       break;
     }      
-    }
+  }
   
   public static String getLayoutAsString ()
   {
@@ -162,7 +148,7 @@ public class GameEngine extends JPanel
       case HARD : this.difficulty = HARD;
       break;
     }      
-    }
+  }
   
   public static String getDifficultyAsString ()
   {
@@ -175,7 +161,7 @@ public class GameEngine extends JPanel
   }
   public void gamerun ()
   {
-   
+    
     //moveEngine.start();
 //    Thread makeBall = new MakeBall (this);
 //    makeBall.start();
@@ -187,74 +173,60 @@ public class GameEngine extends JPanel
     isRunning = true;
     // Start the loop.
     while (isRunning) {
-        // Calculations for FPS.
+      // Calculations for FPS.
       long beginTimeMillis, timeTakenMillis, timeLeftMillis;
-               beginTimeMillis = System.currentTimeMillis();
-               
-        lastTime = curTime;
-        curTime = System.currentTimeMillis();
-        totalTime += curTime - lastTime;
+      beginTimeMillis = System.currentTimeMillis();
+      
+      lastTime = curTime;
+      curTime = System.currentTimeMillis();
+      totalTime += curTime - lastTime;
+      
+      if (totalTime > 1000) {
+        totalTime -= 1000;
+        fps = frames;
+        frames = 0;
+      }
+      ++frames;
+      
+      if (terminated){       
+        break;
+      }
+      if (!paused && started){
+        moveEngine.run();
+      }
+      else if (paused == true){
+        pauseGame ();
+      }
+      repaint ();
+      //If the player dies
+      if (living.get(0).getY() > 590){
+        isRunning = false;
+      }        
+      timeTakenMillis = System.currentTimeMillis() - beginTimeMillis;
+      timeLeftMillis = 1000L / UPDATE_RATE - timeTakenMillis;
+      if (timeLeftMillis < 5) timeLeftMillis = 5; // Set a minimum
+      
+      // Delay and give other thread a chance
+      try {
+        Thread.sleep(timeLeftMillis);
         
-        if (totalTime > 1000) {
-          totalTime -= 1000;
-          fps = frames;
-          frames = 0;
-        }
-        ++frames;
-        
-        if (terminated)
-        {
-          
-          break;
-          
-        }
-        if (!paused && started)
-        {
-          moveEngine.run();
-        }
-        else if (paused == true)
-        {
-         pauseGame ();
-        }
-        repaint ();
-      //repaint the info panel somehow
-        //Maybe it doesn't even need to be repainted, just put in static information
-        
-        //If the player dies
-        if (living.get(0).getY() > 590){
-          isRunning = false;
-        }
-        
-        timeTakenMillis = System.currentTimeMillis() - beginTimeMillis;
-               timeLeftMillis = 1000L / UPDATE_RATE - timeTakenMillis;
-               if (timeLeftMillis < 5) timeLeftMillis = 5; // Set a minimum
-               
-               // Delay and give other thread a chance
-               try {
-                  Thread.sleep(timeLeftMillis);
-
-               } catch (InterruptedException e) {}
-//      } finally {
-//        // release resources
-//        if (graphics != null) graphics.dispose();
-//        if (g2d != null) g2d.dispose();
-//      }
-        
+      } catch (InterruptedException e) {}
+      
     }
     living.get (0).updatePos (16,16);
   }
-
+  
   //add color
   //add override tag
   public void paintComponent (Graphics g)
   {
-   super.paintComponent (g);
-   g.drawString ("Score: " + Integer.toString (score),20,20);
-   for (int i = 0; i < living.size(); i++) 
-   {
-          Ball s = living.get(i);
-          g.fillOval ((int)(s.getX() - s.getRadius()),(int)(s.getY() - s.getRadius()),(int)(s.getRadius() * 2),(int)(s.getRadius() * 2));
-        }
+    super.paintComponent (g);
+    g.drawString ("Score: " + Integer.toString (score),40,20);
+    for (int i = 0; i < living.size(); i++) 
+    {
+      Ball s = living.get(i);
+      g.fillOval ((int)(s.getX() - s.getRadius()),(int)(s.getY() - s.getRadius()),(int)(s.getRadius() * 2),(int)(s.getRadius() * 2));
+    }
     for (PseudoPaddle p : pseudoPaddles){
       g.drawLine ((int)p.getX(),(int)p.getY(),(int)p.getX2(),(int)p.getY2());}
     for (ObstacleLine l :lines){
@@ -262,24 +234,21 @@ public class GameEngine extends JPanel
       g.drawLine ((int)l.getX(),(int)l.getY(),(int)l.getX2(),(int)l.getY2());}
     for (ButtonObstacle b : buttons){
       g.setColor (b.getColour());
-      g.fillOval ((int)(b.getX() - b.getRadius()),(int)(b.getY() - b.getRadius()),(int)(b.getRadius() * 2),(int)(b.getRadius() * 2));}
-//         //display frames per second...
-       // g.drawString(String.format("FPS: %s", fps), 20, 20);
-      
-//          //Errors once and then stops. Don't know why it throws a NullPointerException
-          if (isPaused())
-          {
-           g.drawString ("Paused game", 20,40);
-          }
-        
-        if (isRunning == false)
-        {
-          g.setColor (Color.RED);
-          g.drawLine (0,0,400,550);
-          g.drawLine (0,550,400,0);
-        }
-        Toolkit.getDefaultToolkit().sync();
-        g.dispose ();
+      g.fillOval ((int)(b.getX() - b.getRadius()),(int)(b.getY() - b.getRadius()),(int)(b.getRadius() * 2),(int)(b.getRadius() * 2));
+    }
+    if (isPaused())
+    {
+      g.drawString ("Paused game", 40,40);
+    }
+    
+    if (isRunning == false)
+    {
+      g.setColor (Color.RED);
+      g.drawLine (0,0,400,550);
+      g.drawLine (0,550,400,0);
+    }
+    Toolkit.getDefaultToolkit().sync();
+    g.dispose ();
   }
   
   public static boolean allDead()
@@ -290,25 +259,40 @@ public class GameEngine extends JPanel
   
   public boolean isPaused ()
   {
-   return paused; 
+    return paused; 
+  }
+  
+  public void setTerminated (boolean state)
+  {
+    terminated = state;
+  }
+  
+  public static boolean isTerminated ()
+  {
+    return terminated;
+  }
+  
+  public void setStarted (boolean state)
+  {
+    started = state;
   }
   
   public void pause ()
   {
     if (isRunning)
     {
-   paused = true; 
+      paused = true; 
     }
   }
   
- public static boolean open = false;
+  
   public void pauseGame ()
   {
     if (open == false)
     {
-     PauseWindow p = new PauseWindow ();
-     
-     open = true;
+      PauseWindow p = new PauseWindow ();
+      
+      open = true;
     }
   }
   public static void increaseScore (int increment)
@@ -316,52 +300,43 @@ public class GameEngine extends JPanel
     score += increment;
   }
   
-public int getScore ()
-{
-  return score;
-}
-
-public void resetGame ()
-{
-  terminated = false;
-  score = 0;
-}
-  public boolean acknowledge = false;
-  private ObstacleLine cheat = new ObstacleLine (0,510,400,510,Color.BLACK);
+  public int getScore ()
+  {
+    return score;
+  }
   
+  public void resetGame ()
+  {
+    terminated = false;
+    score = 0;
+  }
+  
+//The super secret cheat to get a highscore
+  private ObstacleLine cheat = new ObstacleLine (0,510,400,510,Color.BLACK);
   public void keyPressed (KeyEvent e)
   {
     //For some strange reason the repaint method stops refrshing once this is pressed
-   int key = e.getKeyCode ();
-   switch (key){
-     case KeyEvent.VK_P : pause();
-     break;
-     case KeyEvent.VK_X : 
-       if (!lines.contains (cheat))
-       lines.add (cheat);
-       break;
-     case KeyEvent.VK_Z :
-       lines.remove (cheat);
-       break;
-     case KeyEvent.VK_ENTER :
-       terminated = true;      
-       break;
-     case KeyEvent.VK_SPACE :
-       started = true;
-       break;
-   }
-    if (!allDead())
-      {
-        for (Ball x : living)
-          x.keyPressed(e);
-      }
-      for (PseudoPaddle p : pseudoPaddles)
-        p.keyPressed (e);
+    int key = e.getKeyCode ();
+    switch (key){
+      case KeyEvent.VK_P : 
+        pause();
+        break;
+      case KeyEvent.VK_X : 
+        if (!lines.contains (cheat))
+        lines.add (cheat);
+        break;
+      case KeyEvent.VK_Z :
+        lines.remove (cheat);
+        break;
+      case KeyEvent.VK_ENTER :
+        terminated = true;      
+        break;
+      case KeyEvent.VK_SPACE :
+        started = true;
+        break;
     }
-  public void keyReleased (KeyEvent e)
-  {
-    
+    for (PseudoPaddle p : pseudoPaddles)
+      p.keyPressed (e);
   }
+
 }
-
-

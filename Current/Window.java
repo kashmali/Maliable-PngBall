@@ -25,12 +25,12 @@ public class Window extends JFrame implements ActionListener
    * The Question manager to read in and access the questions from the question file.
    */
   static QuestionManager gq;
-  HighScorePanel highscores;
-  QuestionPanel questions;
+  public HighScorePanel highscores;
+  public QuestionPanel questions;
   static JPanel mainPanel;
   //Add a picture panel
   static GameMenu menuBar;
-  HighScorePromptPanel prompt;
+  public HighScorePromptPanel prompt;
   
   public static boolean answer = false;
   
@@ -113,7 +113,7 @@ public class Window extends JFrame implements ActionListener
       }
     });
     setResizable (false);
-    ///setAutoRequestFocus (true);
+    setAutoRequestFocus (true);
     repaint();
   }
   
@@ -141,9 +141,7 @@ public class Window extends JFrame implements ActionListener
       show ("Formulas");
     }
     else if (command.equals ("Easy"))
-    {
-      //change question set.
-      //Alert the user of the change.
+    {      
       e.setGameDifficulty (GameEngine.EASY);
       JOptionPane.showMessageDialog (this,"Difficuly set to easy","Change in Difficulty",JOptionPane.INFORMATION_MESSAGE);
     }
@@ -198,7 +196,7 @@ public class Window extends JFrame implements ActionListener
       }
       else
       {
-        e.terminated = true;
+        e.setTerminated (true);
       }
     }
     else if (command.equals ("Help"))
@@ -245,33 +243,38 @@ public class Window extends JFrame implements ActionListener
     mainPanel.add ("Prompt", prompt);
       show ("Prompt");
   }
+  
   public  void runProgram()
   {
-    //Window w = new Window ();   // Create a FrameTest frame
     while (true){
       StasisPanel.stasis ();
       menuBar.setVisible (false);
       for (int x = 0; x < 3; x++)
       {
-        if (e.terminated)
+        //for quick exits
+        if (e.isTerminated ())
         {
           e.isRunning = false;
           break;
         }
+        //set the level
         e.setGameLayout (x);
-        e.gamerun();       
+        //start the game
+        e.gamerun();
+        //short delay before asking a question
         try 
         {
           Thread.sleep (300);    
         }
         catch (InterruptedException e){}
         
+        //Ask a question and pause the loop
         showQuestion ();
         StasisPanel.addStasis ();
         StasisPanel.stasis ();
-        e.started = false;
+        e.setStarted (false);
       }
-      e.terminated = false;
+      e.setTerminated (false);
       int loc = e.highscoreManager.checkScores (e.getScore());
       if (loc > -1)
       {
@@ -299,18 +302,8 @@ public class Window extends JFrame implements ActionListener
     answer = newAnswer;
   }
   
-  public void terminate ()
-  {
-  }
-  
-  //organize this code
   private class TAdapter extends KeyAdapter 
   {   
-    public void keyReleased(KeyEvent k) 
-    {
-      e.keyReleased (k);
-    }
-    
     public void keyPressed(KeyEvent k)
     {
     e.keyPressed (k);

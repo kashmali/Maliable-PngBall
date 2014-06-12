@@ -103,10 +103,10 @@ public class GameEngine extends JPanel
   {
     
    //Button
-   buttons.add (new ButtonObstacle (50,200,15,1.1f,Color.BLACK));
-   buttons.add (new ButtonObstacle (150,200,15,1.1f,Color.BLACK));
-   buttons.add (new ButtonObstacle (250,200,15,1.1f,Color.BLACK));
-   buttons.add (new ButtonObstacle (350,200,15,1.1f,Color.BLACK));
+   buttons.add (new ButtonObstacle (50,200,15,1.1f,Color.GREEN));
+   buttons.add (new ButtonObstacle (150,200,15,1.1f,Color.RED));
+   buttons.add (new ButtonObstacle (250,200,15,1.1f,Color.BLUE));
+   buttons.add (new ButtonObstacle (350,200,15,1.1f,Color.MAGENTA));
     layout = EASY_LAYOUT;
 
   }
@@ -122,7 +122,7 @@ public class GameEngine extends JPanel
   
   public void hardLayout ()
   {
-       buttons.add (new ButtonObstacle (200,200,30,1.1f,Color.BLACK));
+       buttons.add (new ButtonObstacle (200,200,30,1.1f,Color.CYAN));
        lines.add (new BumperObstacleLine (200,150,250,200));
   lines.add (new BumperObstacleLine (200,150,150,200));
   layout = HARD_LAYOUT;
@@ -258,8 +258,10 @@ public class GameEngine extends JPanel
     for (PseudoPaddle p : pseudoPaddles){
       g.drawLine ((int)p.getX(),(int)p.getY(),(int)p.getX2(),(int)p.getY2());}
     for (ObstacleLine l :lines){
+      g.setColor (l.getColour ());
       g.drawLine ((int)l.getX(),(int)l.getY(),(int)l.getX2(),(int)l.getY2());}
     for (ButtonObstacle b : buttons){
+      g.setColor (b.getColour());
       g.fillOval ((int)(b.getX() - b.getRadius()),(int)(b.getY() - b.getRadius()),(int)(b.getRadius() * 2),(int)(b.getRadius() * 2));}
 //         //display frames per second...
        // g.drawString(String.format("FPS: %s", fps), 20, 20);

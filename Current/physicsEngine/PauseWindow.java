@@ -21,7 +21,7 @@ public class PauseWindow extends JFrame implements ActionListener
     FormulaPanel formulas = new FormulaPanel (this);
     
     //Menu
-    PausePanel menu = new PausePanel (this);
+    final PausePanel menu = new PausePanel (this);
     //The main Panel
     mainPausePanel = new JPanel (new CardLayout()); 
     mainPausePanel.add ("Menu",menu);
@@ -29,9 +29,17 @@ public class PauseWindow extends JFrame implements ActionListener
     mainPausePanel.add ("Highscores",highscores);
     mainPausePanel.add ("Formulas", formulas);    
     mainPausePanel.setFocusable(true);
-    
+    mainPausePanel.addKeyListener (new KeyAdapter ()
+                      {
+      public void keyPressed (KeyEvent e)
+      {
+        System.out.println ("This owrkk");
+        menu.keyPressed (e);
+      }
+    });
     add (mainPausePanel,BorderLayout.CENTER);
-
+    
+    
     validate (); 
     pack();
     setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);

@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import Files.Current.physicsEngine.*;
+
 public class StasisPanel extends JPanel
 {
   public static boolean stasis = true;
@@ -15,6 +16,7 @@ public class StasisPanel extends JPanel
     setLayout (layout);
     add (startButton,BorderLayout.CENTER);
     setSize (400,550);
+    
     setVisible (true);
   }
   
@@ -22,7 +24,7 @@ public class StasisPanel extends JPanel
   {
     while (stasis == true)
     {
-      if (GameEngine.terminated)
+      if (GameEngine.isTerminated())
       {
         StasisPanel.removeStasis ();
       }

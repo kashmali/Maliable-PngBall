@@ -52,29 +52,11 @@ public class PseudoPaddle extends ObstacleLine
    int key = e.getKeyCode ();
    switch (key){
      case KeyEvent.VK_RIGHT : 
-//       if (x1 + length + moveSpeed < 300)
-//       set (x1 + moveSpeed,y1,x1 + length + moveSpeed, y1);
-//       else
-//         set (300 - length,y1,300, y1);
        setMoveSpeed (7);
      break;
      case KeyEvent.VK_LEFT :
-//       if (x1 - moveSpeed > 100)
-//       set (x1 - moveSpeed,y1,x1 + length - moveSpeed, y1);
-//       else
-//         set (100,y1,100+ length, y1);
        setMoveSpeed (-7);
      break;
    }
-  }
-  
-  public void keyReleased (KeyEvent e)
-  {
-    int key = e.getKeyCode ();
-    if (key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_LEFT)
-    {
-      setMoveSpeed (0);
-    }
-    //implementation for better movement
   }
 }

@@ -11,13 +11,7 @@ public class MoveEngine
 {
     public static final float GRAVITY = 0.45f; //1500
   public static final float DRAG = 0.00001f; //0.2
-  public static final float BOUNCE = 1f; //0.5
   public static final int MAX_SPEED = 500;
-  private long timePassed = 0;
-  private long curTime = 0;
-  private long lastTime = 0;
-  private long timeLeft = 0;
-  private double timeFraction = 0.0;
   private static GameEngine main;
   private ArrayList<Accel> constForces = new ArrayList<Accel>();
   private static CollisionResponse tempResponse = new CollisionResponse();
@@ -35,10 +29,7 @@ public class MoveEngine
 
   public void run()
   {
-    curTime = System.currentTimeMillis();
-    
-      //applyConstForces();
-     //sumForces();
+    applyConstForces ();
       moveEnts();
   }
   
@@ -81,21 +72,11 @@ public class MoveEngine
     }
   }
   
+  //rename
   private synchronized void moveEnts()
   {
-//     for (Ball s : main.living)
-//      s.updateVelocity (s.getvx(),s.getvy() + 0.45f);
-    // must be synchronized with the collision.
-    checkCollisions();
-  }
-  
-  //rename
-  private synchronized void checkCollisions()
-  {
     float time = 1.0f;
-    //apply constant forces
-    applyConstForces ();
-   
+    //apply constant forces   
     do
     {
       float tMin = time;

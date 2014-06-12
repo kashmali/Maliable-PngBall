@@ -37,18 +37,12 @@ public class PausePanel extends JPanel
                                               .addComponent (exitButton)
                               ));
     layout.setVerticalGroup (layout.createSequentialGroup()
-                               .addGroup (layout.createParallelGroup ()
-                                            .addComponent (title))
-                               .addGroup (layout.createParallelGroup ()
-                                            .addComponent (resumeButton))
-                               .addGroup (layout.createParallelGroup ()
-                                            .addComponent (highScoreButton))
-                               .addGroup (layout.createParallelGroup ()
-                                            .addComponent (instructionsButton))
-                               .addGroup (layout.createParallelGroup ()
-                                            .addComponent (formulaButton))
-                               .addGroup (layout.createParallelGroup ()
-                                            .addComponent (exitButton))                               
+                                            .addComponent (title)
+                                            .addComponent (resumeButton)
+                                            .addComponent (highScoreButton)
+                                            .addComponent (instructionsButton)
+                                            .addComponent (formulaButton)
+                                            .addComponent (exitButton)                      
                             );
     
     

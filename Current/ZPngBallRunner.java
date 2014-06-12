@@ -1,10 +1,13 @@
+/**
+ * The driver class for the program.
+ */
 public class ZPngBallRunner
 {
   public static void main (String [] args)
-  {
-    Window w = new Window ();
+  {  
     SplashFrame s = new SplashFrame ();    
-    s.showSplash ();    
+    s.showSplash ();   
+    Window w = new Window ();
     w.runProgram ();
   }
 }

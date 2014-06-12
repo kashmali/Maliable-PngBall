@@ -115,8 +115,8 @@ public class HighScoreManager
       PrintWriter out = new PrintWriter (new FileWriter (HIGHSCORES));
       for (int x = 0; x < 10; x++)
       {
-        out.println ("P'ngball Grandmaster");
-        out.println ("Level 1");
+        out.println ("<Empty>");
+        out.println ("<Empty>");
         out.println (0);
       }
       out.close();

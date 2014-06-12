@@ -20,7 +20,8 @@ public class InformationPanel extends JPanel//ImagePlacer
     super.paintComponent (g);
     g.drawImage (header,0,0,400,200,null);
     g.drawString (GameEngine.getLayoutAsString(),20,220);
-    g.drawString ("Press \'p\' to pause the game",20,240);
-    g.drawString ("Press space to release the ball",20,260);
+     g.drawString ("Difficulty: " + GameEngine.getDifficultyAsString(),20,240);
+    g.drawString ("Press \'p\' to pause the game",20,260);
+    g.drawString ("Press space to release the ball",20,280);
   }
 }

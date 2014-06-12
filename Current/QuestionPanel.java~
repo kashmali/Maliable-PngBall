@@ -105,13 +105,13 @@ public class QuestionPanel extends JPanel implements ActionListener
       if (answer.toUpperCase().equals(question.getAnswer()) || answer.toUpperCase().equals ("IAMMSDYKE"))
       {
         //reset game keep score
-        System.out.println ("Correct");
+        Window.setAnswer (true);
         GameEngine.increaseScore (100);
       }
       else 
       {
         //end game bring highscores
-        System.out.println ("Wrong");
+        Window.setAnswer (false);
       }
      ((ActionListener) parent).actionPerformed (new ActionEvent (this,ActionEvent.ACTION_PERFORMED,"Check"));
     }

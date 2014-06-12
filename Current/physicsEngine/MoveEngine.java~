@@ -9,8 +9,10 @@ import java.util.ArrayList;
 //Speed is different between the two engines
 public class MoveEngine
 {
+    public static final float GRAVITY = 0.45f; //1500
+  public static final float DRAG = 0.00001f; //0.2
+  public static final float BOUNCE = 1f; //0.5
   public static final int MAX_SPEED = 500;
-  public final int UPDATE_RATE = 30;
   private long timePassed = 0;
   private long curTime = 0;
   private long lastTime = 0;
@@ -22,18 +24,19 @@ public class MoveEngine
   
   public MoveEngine (GameEngine main)
   {
-    this.main = main; 
+    this.main = main;
+    initializeConstForces();
   }
   
   public MoveEngine ()
   {
-    
+    initializeConstForces();
   }
 
   public void run()
   {
     curTime = System.currentTimeMillis();
-    initializeConstForces();
+    
       //applyConstForces();
      //sumForces();
       moveEnts();
@@ -41,22 +44,26 @@ public class MoveEngine
   
   private void initializeConstForces()
   {
-    constForces.add(new Accel(0.0, main.GRAVITY));
+    constForces.add(new Accel(0.0,GRAVITY));
   }
   
   private synchronized void applyConstForces()
   {
     double xAccel = 0, yAccel = 0;
     // Find the total acceleration of all const forces.
-    for (int i = 0; i < constForces.size(); i++) {
-      xAccel += constForces.get(i).ax();
-      yAccel += constForces.get(i).ay();
+    for (Accel a : constForces) 
+    {
+      xAccel += a.getAx();
+      yAccel += a.getAy();
     }
     // Apply the sum acceleration to each entity.
-    for (int i = 0; i < main.living.size(); i++) {
-      Ball s = main.living.get(i);
+    for (Ball s : main.living) 
+    {
       s.addAccel(new Accel(xAccel, yAccel));
     }
+//    for (Ball s : main.living)
+//      s.updateVelocity (s.getvx(),s.getvy() + 0.45f);
+    sumForces ();
   }
   
   private synchronized void sumForces()
@@ -66,36 +73,29 @@ public class MoveEngine
       // Get the sum of all accelerations acting on object.
       Accel theAccel = s.sumAccel();
       // Apply the resulting change in velocity.
-      float vx = (float)Math.min (MAX_SPEED,s.getvx() + (theAccel.ax() * timeFraction));
-      float vy = (float)Math.min (MAX_SPEED,s.getvy() + (theAccel.ay() * timeFraction));
+      float vx = (float)Math.min (MAX_SPEED,s.getvx() + (theAccel.getAx()));
+      float vy = (float)Math.min (MAX_SPEED,s.getvy() + (theAccel.getAy()));
       s.updateVelocity(vx, vy);
       // Apply drag coefficient
-      s.applyDrag((float)(1.0 - (timeFraction * main.DRAG)));
+      s.applyDrag((float)(1.0 - (DRAG)));
     }
   }
   
   private synchronized void moveEnts()
   {
-    for (int i = 0; i < main.living.size(); i++) {
-      Ball s = main.living.get(i);
-      // Get the initial x and y coords.
-      double oldX = s.getX(), oldY = s.getY();
-      // Calculate the new x and y coords.
-      double newX = oldX + (s.getvx() * timeFraction);
-      double newY = oldY + (s.getvy() * timeFraction);
-      //s.updatePos(newX, newY);
-      //checkWallCollisions(s);
-    }
+//     for (Ball s : main.living)
+//      s.updateVelocity (s.getvx(),s.getvy() + 0.45f);
     // must be synchronized with the collision.
     checkCollisions();
   }
   
+  //rename
   private synchronized void checkCollisions()
   {
     float time = 1.0f;
     //apply constant forces
-    for (Ball s : main.living)
-      s.updateVelocity (s.getvx(),s.getvy() + 0.45f);
+    applyConstForces ();
+   
     do
     {
       float tMin = time;
@@ -108,11 +108,13 @@ public class MoveEngine
         ObstacleLine l = main.lines.get (y);
           //There is a little gap that balls can get into
         s.intersect (l,tMin);
-           if (s.earliestCollisionResponse.t < tMin){
-             tMin = s.earliestCollisionResponse.t;}
+           if (s.earliestCollisionResponse.t < tMin)
+           {
+             tMin = s.earliestCollisionResponse.t;
+           }
       }
       for (int y = 0;y < main.pseudoPaddles.size();y++)
-      {        
+      {
         PseudoPaddle p = main.pseudoPaddles.get (y);
         s.intersect (p,tMin);
            if (s.earliestCollisionResponse.t < tMin)
@@ -120,7 +122,7 @@ public class MoveEngine
              tMin = s.earliestCollisionResponse.t;
            }
       }
-      for (int c = 0; c< main.buttons.size();c++)
+      for (int c = 0; c < main.buttons.size();c++)
       {
         ButtonObstacle b = main.buttons.get (c);
         s.intersect (b,tMin);
@@ -130,59 +132,15 @@ public class MoveEngine
         }
       }
       s.update (tMin);
+        for (PseudoPaddle p : main.pseudoPaddles)
+        {
+          p.updatePos (p.getX() + p.getMoveSpeed() *tMin);
+        }
       }
     time -= tMin;
     } while (time > 1e-2f);
   }
 
-  //The only time Vector2D is used
-  private synchronized void collide(Ball s, Ball t, double distBetween)
-  {
-    // Get the relative x and y dist between them.
-    double relX = s.getX() - t.getX();
-    double relY = s.getY() - t.getY();
-    // Take the arctan to find the collision angle.
-    double collisionAngle = Math.atan2(relY, relX);
-    // if (collisionAngle < 0) collisionAngle += 2 * Math.PI;
-    // Rotate the coordinate systems for each object's velocity to align
-    // with the collision angle. We do this by supplying the collision angle
-    // to the vector's rotateCoordinates method.
-    Vector2D sVel = s.velVector(), tVel = t.velVector();
-    sVel.rotateCoordinates(collisionAngle);
-    tVel.rotateCoordinates(collisionAngle);
-    // In the collision coordinate system, the contact normals lie on the
-    // x-axis. Only the velocity values along this axis are affected. We can
-    // now apply a simple 1D momentum equation where the new x-velocity of
-    // the first object equals a negative times the x-velocity of the
-    // second.
-    float swap = sVel.x;
-    sVel.x = tVel.x;
-    tVel.x = swap;
-    // Now we need to get the vectors back into normal coordinate space.
-    sVel.restoreCoordinates();
-    tVel.restoreCoordinates();
-    // Give each object its new velocity.
-    s.updateVelocity(sVel.x * main.BOUNCE, sVel.y * main.BOUNCE);
-    t.updateVelocity(tVel.x * main.BOUNCE, tVel.y * main.BOUNCE);
-    // Back them up in the opposite angle so they are not overlapping.
-    double minDist = s.getRadius() + t.getRadius();
-    double overlap = minDist - distBetween;
-    double toMove = overlap / 2;
-    float newX = s.getX() + (float)(toMove * Math.cos(collisionAngle));
-    float newY = s.getY() + (float)(toMove * Math.sin(collisionAngle));
-    s.updatePos(newX, newY);
-    newX = t.getX() - (float)(toMove * Math.cos(collisionAngle));
-    newY = t.getY() - (float)(toMove * Math.sin(collisionAngle));
-    t.updatePos(newX, newY);
-  }
-  
-  public double formatAngle (double angle)
-  {
-    angle = angle % 360;
-    if (angle < 0)
-      angle = 360 + angle;
-    return angle;
-  }
   /**
     * Detect collision for a moving point hitting a vertical line,
     * within the given timeLimit.
@@ -230,7 +188,7 @@ public class MoveEngine
       // Accept 0 < t <= timeLimit
       if (t > 0 && t <= timeLimit) {
          response.t = t;
-         response.newSpeedX = -speedX * main.BOUNCE;  // Reflect horizontally
+         response.newSpeedX = -speedX;  // Reflect horizontally
          response.newSpeedY = speedY;   // No change vertically
       }
       // Error analysis:
@@ -272,7 +230,7 @@ public class MoveEngine
       if (t > 0 && t <= timeLimit) {
          response.t = t;
            //s.updateVelocity (s.getvx(),-s.getvy() * main.BOUNCE);
-         response.newSpeedY = -speedY * main.BOUNCE;  // Reflect vertically
+         response.newSpeedY = -speedY;  // Reflect vertically
          response.newSpeedX = speedX;   // No change horizontally
       }
    }
@@ -432,7 +390,7 @@ public class MoveEngine
                response.reset();// no collision
          }
          if (response.t > 0 && response.t <= timeLimit)
-           s.updateVelocity (-s.getvx()* main.BOUNCE,s.getvy());
+           s.updateVelocity (-s.getvx(),s.getvy());
          return;
       } else if (lineY1 == lineY2) {  // Horizontal line
          pointIntersectsLineHorizontal(s, lineY1, timeLimit,response);

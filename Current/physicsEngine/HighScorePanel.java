@@ -10,7 +10,6 @@ import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.awt.*;
 import java.io.*;
-//import Files.Current.physicsEngine.*;
 
 public class HighScorePanel extends JPanel
 {

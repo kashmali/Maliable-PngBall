@@ -7,6 +7,12 @@ import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
 
 //Warning: x and y and the coordinates of the top left corner
+/**
+ * The bouncing ball.
+ * 
+ * @author Hock-Chuan Chua,Jason P'ng
+ * @version v4.0 June 12th, 2014
+ */
 public class Ball
 {
   private float radius;
@@ -19,7 +25,15 @@ public class Ball
   public float bounce = 0.9f;
   public int scoreIncrease = 0;
   
-  
+   /* 
+   * This is the constructor of the CircleSpawn class and is responcible for creating the object with specified<br>
+   * dimensions and values.
+   * 
+   * @param int x This variable stores the innitial x position of the center.<br>
+   * @param int y This variabel stores the innitial y position of the center.<br>
+   * @param float vx This is the innitial x velocty of the object.<br>
+   * @param float vy This is the innitial y velocity of the object.<br>
+   */
   public Ball(int x, int y, float vx, float vy)
   {
     this.x = x;
@@ -29,14 +43,16 @@ public class Ball
     this.radius = 15f;
   }
   
+  /**
+   * constructor for the ball class with on the coordinates provided. <br>
+   * velocities are set to be 0.
+   * 
+   * @param int x the x coordinate of the center of the ball.
+   * @param int y the y coordinate of the center of the ball.
+   */
   public Ball(int x, int y)
   {
     this(x, y, 0.0f, 0.0f);
-  }
-  
-  public Vector2D velVector()
-  {
-    return new Vector2D(this.getvx(), this.getvy());
   }
   
   public void applyDrag(float drag)
@@ -60,6 +76,7 @@ public class Ball
   {
     this.accelerations.add(a);
   }
+  
   public void sumForces (float timeFraction)
   {
     Accel theAccel = sumAccel();
@@ -77,6 +94,11 @@ public class Ball
     this.vy = vy;
   }
   
+   /*This method is responsible for updating the position of the circle spawn.<br>
+   *
+   * @param float newX This is the new X position.<br>
+   * @param float newY This is the new Y position.<br>
+   */
   public void updatePos(float newX, float newY)
   {
     this.x = newX;
@@ -94,11 +116,6 @@ public class Ball
     return this.vy;
   }
   
-  public Point2D getCenter()
-  {
-    return new Point2D.Float(this.x, this.y);
-  }
-  
   public float getX()
   {
     return this.x;
@@ -107,16 +124,6 @@ public class Ball
   public float getY()
   {
     return this.y;
-  }
-  
-  public float getX2()
-  {
-    return (this.x + radius);
-  }
-  
-  public float getY2()
-  {
-    return (this.y + radius);
   }
   
   public Shape getShape ()
@@ -133,25 +140,25 @@ public class Ball
   {
     this.y = newY;
   }
-  
-  public int getLength()
+  /*This method returns the centre of the object as a Point2D.
+   */
+  public Point2D getCenter ()
   {
-    return (int) (this.radius * 2);
+    return new Point2D.Double (x,y);
   }
-  
-  public int getHeight()
-  {
-    return (int) (this.radius * 2);
-  }
-  
+ /*This method returns the radius of the object.
+  */
   public float getRadius()
   {
     return this.radius;
   }
-  
+  /*This method sets the radius of the object.
+   * 
+   * @param float newRadius This is the new radius of the object.
+   */
   public void setRadius (float newRadius)
   {
-    this.radius = newRadius; 
+   this.radius = newRadius; 
   }
   
   public void intersect (ButtonObstacle button, float timeLimit)
