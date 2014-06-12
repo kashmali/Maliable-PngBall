@@ -37,7 +37,6 @@ public class QuestionManager
     {
       questionNumber = questionNumber + 24;
     }
-System.out.println (questionNumber);
     return questions.get (questionNumber);
   }
   

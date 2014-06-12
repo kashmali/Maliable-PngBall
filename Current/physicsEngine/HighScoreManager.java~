@@ -109,81 +109,81 @@ public class HighScoreManager
    importFile (HIGHSCORES);
   }
   
-  public boolean checkScores (int score)
+  public int checkScores (int score)
   {
     for (int x = 0; x < scores.size();x++)
     {
       if (scores.get (x).getScore() < score)
       {
         insertScore (x,score);
-        return true;
+        return x;
       }
     }
-    return false;
+    return -1;
     
   }
   
   //Change to a panel in the main window
   public void insertScore (final int location, final int score)
   {
-    class NamePromptPanel extends JPanel implements ActionListener
-    {
-      JTextField nameField = new JTextField (10);
-      JFrame parent;
-      public NamePromptPanel (int score, JFrame parent)
-      {
-        this.parent = parent;
-        JButton submitButton = new JButton ("Submit");
-        submitButton.addActionListener (this);
-        add (new JLabel ("Score: " + score));
-        add (new JLabel ("Enter your name: "));
-        add (nameField);
-        add (submitButton);
-        setSize (300,200);
-        setFocusable (true);
-        setVisible (true);
-      }
-      
-      public void actionPerformed (ActionEvent ae)
-      {
-        System.out.println ("Pressed");
-        if (ae.getActionCommand().equals ("Submit"))
-        {
-          String name = nameField.getText();
-          if (name.length() > 0)
-          {
-            scores.add (location,new HighScore (name,GameEngine.getLayoutAsString(),score));
-            scores.remove (10);
-            parent.dispose ();
-          }
-          else
-          {
-            JOptionPane.showMessageDialog (this, "You must input a name", "Name Error", JOptionPane.ERROR_MESSAGE);
-          }
-        }
-      }
-    }
-    class NamePromptFrame extends JFrame
-    {
-      public NamePromptFrame (int score)
-      {
-        super ("New Highscore");
-        add (new NamePromptPanel (score, this));
-        setSize (300,200);
-        setVisible (true);
-        //setAutoRequestFocus (true);
-        setResizable (false);
-        setDefaultCloseOperation (JFrame.DISPOSE_ON_CLOSE);
-      }
-      
-    }
-    JFrame temp = new JFrame ("New HighScore");
-    temp.add (new NamePromptPanel (score, temp));
-        temp.setSize (300,200);
-        temp.setVisible (true);
-        //temp.setAutoRequestFocus (true);
-        temp.setResizable (false);
-        temp.setDefaultCloseOperation (JFrame.DISPOSE_ON_CLOSE);
+//    class NamePromptPanel extends JPanel implements ActionListener
+//    {
+//      JTextField nameField = new JTextField (10);
+//      JFrame parent;
+//      public NamePromptPanel (int score, JFrame parent)
+//      {
+//        this.parent = parent;
+//        JButton submitButton = new JButton ("Submit");
+//        submitButton.addActionListener (this);
+//        add (new JLabel ("Score: " + score));
+//        add (new JLabel ("Enter your name: "));
+//        add (nameField);
+//        add (submitButton);
+//        setSize (300,200);
+//        setFocusable (true);
+//        setVisible (true);
+//      }
+//      
+//      public void actionPerformed (ActionEvent ae)
+//      {
+//        System.out.println ("Pressed");
+//        if (ae.getActionCommand().equals ("Submit"))
+//        {
+//          String name = nameField.getText();
+//          if (name.length() > 0)
+//          {
+//            scores.add (location,new HighScore (name,GameEngine.getLayoutAsString(),score));
+//            scores.remove (10);
+//            parent.dispose ();
+//          }
+//          else
+//          {
+//            JOptionPane.showMessageDialog (this, "You must input a name", "Name Error", JOptionPane.ERROR_MESSAGE);
+//          }
+//        }
+//      }
+//    }
+//    class NamePromptFrame extends JFrame
+//    {
+//      public NamePromptFrame (int score)
+//      {
+//        super ("New Highscore");
+//        add (new NamePromptPanel (score, this));
+//        setSize (300,200);
+//        setVisible (true);
+//        //setAutoRequestFocus (true);
+//        setResizable (false);
+//        setDefaultCloseOperation (JFrame.DISPOSE_ON_CLOSE);
+//      }
+//      
+//    }
+//    JFrame temp = new JFrame ("New HighScore");
+//    temp.add (new NamePromptPanel (score, temp));
+//        temp.setSize (300,200);
+//        temp.setVisible (true);
+//        //temp.setAutoRequestFocus (true);
+//        temp.setResizable (false);
+//        temp.setDefaultCloseOperation (JFrame.DISPOSE_ON_CLOSE);
                                 
   }
   

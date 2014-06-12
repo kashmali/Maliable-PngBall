@@ -65,4 +65,9 @@ public class ObstacleLine implements Obstacle
    {
     return 0.9f; 
    }
+   
+   public Color getColour ()
+   {
+     return color;
+   }
 }

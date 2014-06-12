@@ -16,14 +16,14 @@ public class InstructionsPanel extends JPanel
     
     Font lineFont = new Font (Font.SERIF,Font.PLAIN, 17);
     JLabel lineOne = new JLabel ("The goal of the game is to prevent the ball from falling down the middle gap called the gutter."); 
-    JLabel lineTwo = new JLabel ("While keeping the ball in play aim for the bouncers (yellow coloured) which will score you points."); 
+    JLabel lineTwo = new JLabel ("While keeping the ball in play aim for the bouncers (Coloured objects) which will score you points."); 
     JLabel lineThree = new JLabel ("If the ball falls down the gutter the game will end and give you a chance to redeem yourself");
-    JLabel line34 = new JLabel ("by answering a physics question correctly."); 
-    JLabel lineFour = new JLabel ("The difficulty of the game will increase after you have had to answer 3 questions."); 
+    JLabel line34 = new JLabel ("by answering a physics question correctly. This extends for a maximum of 3 levels"); 
+    JLabel lineFour = new JLabel ("The difficulty of the game  can be changed in the main menu."); 
     JLabel lineFive = new JLabel ("If you fail to answer correctly, the game is over, and your score will be displayed. "); 
-    JLabel lineSix = new JLabel ("The difficulty will decide the radius of the ball (the more difficult the smaller),"); 
-    JLabel lineSeven = new JLabel (" as well as the difficulty of the physics questions."); 
-    JLabel lineEight = new JLabel ("Press ‘z’ to move the left flipper and ‘m’ to move the flipper. To release the ball press spacebar."); 
+    JLabel lineSix = new JLabel ("The difficulty will decide the difficulty of the physics questions."); 
+    JLabel lineSeven = new JLabel ("You may pause the game at any time by pressing \'p\'"); 
+    JLabel lineEight = new JLabel ("Press the right and left arrow keys to move the paddle. To release the ball press spacebar."); 
     JButton closeButton = new JButton ("Close");
     closeButton.addActionListener ((ActionListener)parent);
     

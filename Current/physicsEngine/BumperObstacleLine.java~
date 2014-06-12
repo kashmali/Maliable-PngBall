@@ -9,6 +9,7 @@ public class BumperObstacleLine extends ObstacleLine
   {
     super (x1,y1,x2,y2,Color.RED);
     scoreValue = 10;
+    bounce = 1.2f;
   }
   
   public float getBounce ()
@@ -16,7 +17,7 @@ public class BumperObstacleLine extends ObstacleLine
     return bounce;
   }
   
-  public int getScoreValue()
+  public int getScore()
   {
     return scoreValue;
   }

@@ -10,22 +10,36 @@ import javax.swing.GroupLayout;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.awt.Font;
+import java.util.Comparator;
 import java.awt.event.*;
 import java.awt.*;
 import java.io.*;
 
 public class HighScoreManager
 {
+  
+    /* ArrayList<HighScore> scores This keeps all the high scores.
+   * String HIGHSCORES This stores the location of the high score file.
+   */
   public static ArrayList<HighScore> scores = new ArrayList<HighScore>(10);
-  //static final File HIGHSCORES = new File ("highscores.jp");
   static final String HIGHSCORES = "highscores.txt";
   
+  /* This is the main constructor of the class responsible for importing the high scores.
+   */
   public HighScoreManager () 
   {
     importFile (HIGHSCORES);
-    //sort array just in case
   }
   
+  /* This method imports the file.
+   * 
+   * @param String fileName This is the name of the file. <br>
+   * @param BufferedReader in This is a reference to the BufferedReader class. <br>
+   * @param String name This is the name of the high score person. <br>
+   * @param int score This is the score of the high score person. <br>
+   * @throws NumberFormatException e Catches any mistakes in the file. <br>
+   * @throws IOException e Prevents the program from crashing due to a corrupted file. <br>
+   */
   public void importFile (String fileName)
   {    
     try
@@ -55,8 +69,20 @@ public class HighScoreManager
       writeBlankFile();
       importFile (fileName);
     }
+    Collections.sort (scores, new Comparator<HighScore>() {
+    public int compare (HighScore h1, HighScore h2){
+      return new Integer (h2.getScore()).compareTo (h1.getScore());
+    }
+    }
+      );
   }
   
+   /* This method writes back to the file to update the scores.
+   * 
+   * @param PrintWriter out This is a reference to the PrintWriter class. <br>
+   * @param HighScore score This is the score of a player. <br>
+   * @throws IOException e This catches an error in reading the highscore file. <br>
+   */
   public static void writeFile ()
   {
     try
@@ -77,6 +103,11 @@ public class HighScoreManager
     }
   }
   
+  /* This method writes a blank file if one does not exist.
+   * 
+   * @param PrintWriter out This is a reference to the PrintWriter class. <br>
+   * @throws IOException e This catches an error in reading the highscore file. <br>
+   */
   public static void writeBlankFile ()
   {
     try
@@ -97,6 +128,11 @@ public class HighScoreManager
     
   }
   
+  /**
+   * returns the current scores.
+   * 
+   * @return the array list of highscores.
+   */
   public static ArrayList<HighScore> getScores ()
   {
     return scores;
@@ -109,84 +145,20 @@ public class HighScoreManager
    importFile (HIGHSCORES);
   }
   
+  /*This method checks to see if a score makes a high score list.
+   * 
+   * @param int score This sends a score to check.
+   */
   public int checkScores (int score)
   {
     for (int x = 0; x < scores.size();x++)
     {
       if (scores.get (x).getScore() < score)
       {
-        insertScore (x,score);
         return x;
       }
     }
     return -1;
     
-  }
-  
-  //Change to a panel in the main window
-  public void insertScore (final int location, final int score)
-  {
-//    class NamePromptPanel extends JPanel implements ActionListener
-//    {
-//      JTextField nameField = new JTextField (10);
-//      JFrame parent;
-//      public NamePromptPanel (int score, JFrame parent)
-//      {
-//        this.parent = parent;
-//        JButton submitButton = new JButton ("Submit");
-//        submitButton.addActionListener (this);
-//        add (new JLabel ("Score: " + score));
-//        add (new JLabel ("Enter your name: "));
-//        add (nameField);
-//        add (submitButton);
-//        setSize (300,200);
-//        setFocusable (true);
-//        setVisible (true);
-//      }
-//      
-//      public void actionPerformed (ActionEvent ae)
-//      {
-//        System.out.println ("Pressed");
-//        if (ae.getActionCommand().equals ("Submit"))
-//        {
-//          String name = nameField.getText();
-//          if (name.length() > 0)
-//          {
-//            scores.add (location,new HighScore (name,GameEngine.getLayoutAsString(),score));
-//            scores.remove (10);
-//            parent.dispose ();
-//          }
-//          else
-//          {
-//            JOptionPane.showMessageDialog (this, "You must input a name", "Name Error", JOptionPane.ERROR_MESSAGE);
-//          }
-//        }
-//      }
-//    }
-//    class NamePromptFrame extends JFrame
-//    {
-//      public NamePromptFrame (int score)
-//      {
-//        super ("New Highscore");
-//        add (new NamePromptPanel (score, this));
-//        setSize (300,200);
-//        setVisible (true);
-//        //setAutoRequestFocus (true);
-//        setResizable (false);
-//        setDefaultCloseOperation (JFrame.DISPOSE_ON_CLOSE);
-//      }
-//      
-//    }
-//    JFrame temp = new JFrame ("New HighScore");
-//    temp.add (new NamePromptPanel (score, temp));
-//        temp.setSize (300,200);
-//        temp.setVisible (true);
-//        //temp.setAutoRequestFocus (true);
-//        temp.setResizable (false);
-//        temp.setDefaultCloseOperation (JFrame.DISPOSE_ON_CLOSE);
-                                
-  }
-  
-    
-    
+  }   
 }

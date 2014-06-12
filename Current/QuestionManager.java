@@ -4,16 +4,29 @@ import java.io.*;
 
 public class QuestionManager
 {
-  //public static ArrayList <String> questions = new ArrayList<String> ();
-  public static ArrayList <String> options = new ArrayList<String> ();
-  public static ArrayList <String> correctAnswers = new ArrayList<String> ();
-  public static ArrayList <Question> questions = new ArrayList<Question>();
-  
+ /* ArrayList <String> questions This is being used to store the questions.<br>
+   * BufferedReader in This is a reference to the BufferedReader class.<br>
+   */
+  public static ArrayList <Question> questions = new ArrayList<Question>();  
   static BufferedReader in;
+  
+  /* This is the constructor of the class which reads in the questions from a textfile and places them into an <br>
+   * ArrayList.
+   */
   public QuestionManager ()
   {
     importFile ("QuestionDocument.txt");
   }
+  
+  /* This method will return one randomized question depending on difficulty.
+   * 
+   * @param String questionSet This specifies the difficulty of the game.<br>
+   * @param ArrayList <String> questionPortion This stores all the data nessasary for the problem. <br>
+   * @param int questionNumber This stores the question number. <br>
+   * @param int optionNumber This stores the option number. <br>
+   * @param int answerNumber This stores the answer number. <br>
+   * @return ArrayList <String> questionPortion This returns the data necessary for the problem.<br>
+   */
   public static Question getQuestion (String questionSet)
   {
     
@@ -40,9 +53,15 @@ public class QuestionManager
     return questions.get (questionNumber);
   }
   
-  
-  
-  
+   /* This method imports the text file into the ArrayList.
+   * 
+   * @param String fileName This is the name of the file being imported. <br>
+
+   * @param String correctAnswer This is the correct answer. <br>
+   * @throws IOException ioe This catches any errors that might occur in importing the file.<br>
+   * @throws NullPointerException ne This stops the reading of the file.<br>
+   * @throws IOException ine This catches any errors that might occur in closing the file.<br>
+   */
   public static void importFile (String fileName)
   {  
     try
@@ -70,35 +89,6 @@ public class QuestionManager
         String answer = in.readLine ();
         questions.add (new Question (ques,opt,answer));
       }
-      
-//        lineOne = in.readLine();
-//        String lineTwo = in.readLine();
-//        String lineThree = in.readLine();
-//        String lineFour = in.readLine();
-//        String lineFive = in.readLine();
-//        String lineSix = in.readLine();
-//        String answerOne = in.readLine();
-//        String answerTwo = in.readLine();
-//        String answerThree = in.readLine();
-//        String answerFour = in.readLine();
-//        String correctAnswer = in.readLine();
-//        
-//        questions.add (lineOne);
-//        questions.add (lineTwo);
-//        questions.add (lineThree);
-//        questions.add (lineFour);
-//        questions.add (lineFive);
-//        questions.add (lineSix);
-//        
-//        options.add (answerOne);
-//        options.add (answerTwo);
-//        options.add (answerThree);
-//        options.add (answerFour);
-//        
-//        correctAnswers.add (correctAnswer);
-//        counter ++;
-//        System.out.print ("Question Number" + counter);
-//        System.out.println ("answer : " + correctAnswer);
       }
       
     catch (IOException ioe)
@@ -114,9 +104,6 @@ public class QuestionManager
       catch (IOException ine)
       {
       }
-      
-    }
-    
+    }  
   }
-  
 }

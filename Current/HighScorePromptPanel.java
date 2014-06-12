@@ -21,6 +21,7 @@ public class HighScorePromptPanel extends JPanel implements ActionListener
         this.score = score;
         JButton submitButton = new JButton ("Submit");
         submitButton.addActionListener (this);
+        add (new JLabel ("NEW HIGHSCORE"));
         add (new JLabel ("Score: " + score));
         add (new JLabel ("Enter your name: "));
         add (nameField);

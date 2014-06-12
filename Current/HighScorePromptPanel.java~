@@ -1,15 +1,24 @@
 import javax.swing.JPanel;
+import javax.swing.JFrame;
+import javax.swing.JButton;
   import javax.swing.JTextField;
+  import javax.swing.JLabel;
   import java.awt.event.ActionListener;
-  import Files.Current.physicsEngine;
+  import java.awt.event.ActionEvent;
+  import javax.swing.JOptionPane;
+  import Files.Current.physicsEngine.*;
 
-public class HighScorePromptPanel extends JPanel
+public class HighScorePromptPanel extends JPanel implements ActionListener
 {
   JTextField nameField = new JTextField (10);
       JFrame parent;
-      public NamePromptPanel (int score, JFrame parent)
+      private int location;
+      private int score;
+      public HighScorePromptPanel (int location,int score, JFrame parent)
       {
         this.parent = parent;
+        this.location = location;
+        this.score = score;
         JButton submitButton = new JButton ("Submit");
         submitButton.addActionListener (this);
         add (new JLabel ("Score: " + score));
@@ -23,7 +32,6 @@ public class HighScorePromptPanel extends JPanel
       
       public void actionPerformed (ActionEvent ae)
       {
-        System.out.println ("Pressed");
         if (ae.getActionCommand().equals ("Submit"))
         {
           String name = nameField.getText();
@@ -31,7 +39,7 @@ public class HighScorePromptPanel extends JPanel
           {
             HighScoreManager.scores.add (location,new HighScore (name,GameEngine.getLayoutAsString(),score));
             HighScoreManager.scores.remove (10);
-            ((ActionListener)parent).actionPerformed (new ActionEvent (this, ActionEvent.ACTION_PERFORMED,"Submit");
+            ((ActionListener)parent).actionPerformed (new ActionEvent (this, ActionEvent.ACTION_PERFORMED,"Submit"));
           }
           else
           {

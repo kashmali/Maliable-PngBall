@@ -113,7 +113,7 @@ public class Window extends JFrame implements ActionListener
       }
     });
     setResizable (false);
-    setAutoRequestFocus (true);
+    ///setAutoRequestFocus (true);
     repaint();
   }
   
@@ -145,17 +145,17 @@ public class Window extends JFrame implements ActionListener
       //change question set.
       //Alert the user of the change.
       e.setGameDifficulty (GameEngine.EASY);
-      System.out.println ("Difficulty : easy");
+      JOptionPane.showMessageDialog (this,"Difficuly set to easy","Change in Difficulty",JOptionPane.INFORMATION_MESSAGE);
     }
     else if (command.equals ("Medium"))
     {
       e.setGameDifficulty (GameEngine.MEDIUM);
-      System.out.println ("Difficulty : Medium");
+      JOptionPane.showMessageDialog (this,"Difficuly set to medium","Change in Difficulty",JOptionPane.INFORMATION_MESSAGE);
     }
     else if (command.equals ("Hard"))
     {
       e.setGameDifficulty (GameEngine.HARD);
-      System.out.println ("Difficulty : hard");
+      JOptionPane.showMessageDialog (this,"Difficuly set to HARD","Change in Difficulty",JOptionPane.INFORMATION_MESSAGE);
     }
     else if (command.equals ("Print"))
     {
@@ -163,7 +163,11 @@ public class Window extends JFrame implements ActionListener
     }
     else if (command.equals ("Clear"))
     {
-     e.highscoreManager.clearScores (); 
+      int option = JOptionPane.showConfirmDialog (this,"Are you sure you want to erase the highscores?","Clear highscores?",JOptionPane.YES_NO_OPTION);
+      if (option == JOptionPane.YES_OPTION)
+      {
+     e.highscoreManager.clearScores ();
+      }
     }
     else if (command.equals ("Start"))
     {
@@ -188,7 +192,14 @@ public class Window extends JFrame implements ActionListener
     else if (command.equals ("Continue"))
     {
       StasisPanel.removeStasis();
+      if (answer == true)
+      {
       show ("Game");
+      }
+      else
+      {
+        e.terminated = true;
+      }
     }
     else if (command.equals ("Help"))
     {
@@ -242,16 +253,16 @@ public class Window extends JFrame implements ActionListener
       menuBar.setVisible (false);
       for (int x = 0; x < 3; x++)
       {
-        e.setGameLayout (x);
-        e.gamerun();
         if (e.terminated)
         {
           e.isRunning = false;
           break;
         }
+        e.setGameLayout (x);
+        e.gamerun();       
         try 
         {
-          Thread.sleep (300);          
+          Thread.sleep (300);    
         }
         catch (InterruptedException e){}
         
